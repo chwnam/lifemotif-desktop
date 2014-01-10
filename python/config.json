@@ -1,0 +1,7 @@
+{
+    "secret_path": "client_secrets.json",
+    "storage_name": "credential.json",
+    "label": "개인/일기",
+    "email_address": "cs.chwnam@gmail.com",
+    "local_database": "id_map.dat"
+}
