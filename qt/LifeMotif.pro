@@ -13,9 +13,13 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
+    python_wrapper/basepythonwrapper.cpp \
+    python_wrapper/googleoauth2wrapper.cpp
 
 
-HEADERS  += mainwindow.h
+HEADERS  += mainwindow.h \
+    python_wrapper/basepythonwrapper.h \
+    python_wrapper/googleoauth2wrapper.h
 
 FORMS    += mainwindow.ui
 
@@ -27,10 +31,10 @@ OTHER_FILES += \
     ../python/imapUTF7.py
 
 INCLUDEPATH += \
-    /System/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
+    /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
     /opt/local/include
 
 LIBS += \
-    -L/System/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config -ldl -framework CoreFoundation -lpython2.7 \
-    -L/opt/local/lib
-
+    -L/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config \
+    -L /opt/local/lib -lboost_python-mt \
+    -ldl -framework CoreFoundation -lpython2.7
