@@ -11,7 +11,7 @@ GMAIL_SCOPE = 'https://mail.google.com/'
 GMAIL_IMAP = 'imap.gmail.com'
 REDIRECT_URI = 'urn:ietf:wg:oauth:2.0:oob'
 
-
+###### obsolete ######
 class oauth_manager(object):
 
     def authorize(self, storage_name, secret_path):
@@ -23,10 +23,7 @@ class oauth_manager(object):
         credentials = flow.step2_exchange(code)
         storage.put(credentials)
 
-    def user_permission_cli(self, auth_uri):
-        print '  %s' % auth_uri
-        code = raw_input('Please visit above url, and copy and paste code: ')
-        return code
+    
 
     def imap_authenticate(self, storage_name, email_address, debug_level=0):
         storage = Storage(storage_name)

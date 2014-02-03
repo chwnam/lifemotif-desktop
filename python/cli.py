@@ -5,9 +5,10 @@ import argparse
 import json
 import sys
 
-from local_database_manager import local_database_manager as locdb
-from oauth_manager import oauth_manager
 from email_parser import email_parser, email_message
+from google_imap_control import google_imap_control
+from google_oauth2_control import google_oauth2_control
+from local_database_manager import local_database_manager as locdb
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -28,7 +29,7 @@ def parse_args():
                         help='Print all mailboxes')
 
     parser.add_argument('--view', nargs=2, type=str,
-                        metavar=('yyyymmdd', 'n'),
+                        møetavar=('yyyymmdd', 'n'),
                         help='View diary written at yymmdd n')
 
     args = parser.parse_args()
@@ -38,22 +39,27 @@ def parse_args():
         return None
     return args
 
-
 def authorize(config):
-    oauth = oauth_manager()
-    oauth.authorize(config['storage_name'], config['secret_path'])
-
+    oauth = google_oauth2_control()
+    
+    url = oauth.get_authorization_url(config['secret_path'])
+    code = oauth.grant_user_permission(url)
+    credentials = oauth.make_credentials(code)
+    
+    oauth.set_credentials(config['storage_name'], credentials)
 
 def build_database(config):
-    oauth = oauth_manager()
-    imap = oauth.imap_authenticate(
+    oauth = google_oauth2_control()   
+    imap_obj = oauth.imap_authenticate(
                            config['storage_name'],
                            config['email_address'],
                            debug_level=4)
-    structure = imap.fetch_thread_structure(config['label'])
+    
+    imap = google_imap_control(imap_obj)
     db = locdb()
+    
+    structure = imap.fetch_thread_structure(config['label'])
     db.build(config['local_database'], structure)
-
 
 def list_database(config):
     db = locdb()
@@ -79,11 +85,13 @@ def view_diary(config, diary_date, diary_index):
     print 'Thread ID:', thread_id
     print 'Message ID:', message_id
 
-    oauth = oauth_manager()
-    imap = oauth.imap_authenticate(
+    oauth = google_oauth2_control()
+    imap_obj = oauth.imap_authenticate(
                            config['storage_name'],
                            config['email_address'],
                            debug_level=4)
+    
+    imap = google_imap_control(imap_obj)
     raw_message = imap.fetch_mail(config['label'], message_id)
 
     with open('%s-%s.txt' % (diary_date, diary_index), 'w') as f:
@@ -99,11 +107,13 @@ def view_diary(config, diary_date, diary_index):
 
 
 def list_mailbox(config):
-    oauth = oauth_manager()
-    imap = oauth.imap_authenticate(
+    oauth = google_oauth2_control()
+    imap_obj = oauth.imap_authenticate(
                            config['storage_name'],
                            config['email_address'],
                            debug_level=4)
+    
+    imap = google_imap_control(imap_obj)
     imap.list_mailbox()
 
 
