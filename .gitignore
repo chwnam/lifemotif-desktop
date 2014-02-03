@@ -1,3 +1,5 @@
+*.o
 *.pyc
+build/*
 client_secrets.json
 credential.json
