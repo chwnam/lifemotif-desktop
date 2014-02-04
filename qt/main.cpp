@@ -2,6 +2,8 @@
 #include <QApplication>
 #include <iostream>
 #include "./python_wrapper/googleoauth2wrapper.h"
+#include "./python_wrapper/googleimapwrapper.h"
+#include "./python_wrapper/localstructurewrapper.h"
 
 std::string GetPythonPath()
 {
@@ -24,7 +26,7 @@ void workaround()
   PyRun_SimpleString(runCode.c_str());
 }
 
-void testOauth2Wrapper()
+void testOauth2WrapperAuthentication()
 {
   std::string moduleName = "google_oauth2_control";
   std::string className = "google_oauth2_control";
@@ -43,6 +45,46 @@ void testOauth2Wrapper()
   wrapper.SetCredentials(storageName, credentials);
 }
 
+void CloseImapObject(bp::object& imapObject)
+{
+  PyObject_CallMethod(imapObject.ptr(), "close", NULL);
+  PyObject_CallMethod(imapObject.ptr(), "logout", NULL);
+}
+
+void testImap()
+{
+  std::string oauth2ModuleName = "google_oauth2_control";
+  std::string oauth2ClassName = "google_oauth2_control";
+
+  std::string imapModuleName = "google_imap_control";
+  std::string imapClassName = "google_imap_control";
+
+  std::string structureModuleName = "local_structure_control";
+  std::string structureClassName = "local_structure_control";
+
+  std::string storageName = GetPythonPath() + "credential.json";
+  std::string label = "개인/일기";
+
+  GoogleOauth2Wrapper oauth2Wrapper(oauth2ModuleName, oauth2ClassName);
+  bp::object imapObject;
+
+  imapObject = oauth2Wrapper.ImapAuthenticate(
+        storageName, "cs.chwnam@gmail.com", 4);
+
+  GoogleImapWrapper imapWrapper(imapModuleName, imapClassName, imapObject);
+  bp::object structure;
+
+  //imapWrapper.ListMailBox();
+  structure = imapWrapper.FetchThreadStructure(label);
+
+  LocalStructureWrapper
+      structureWrapper(structureModuleName, structureClassName);
+
+  structureWrapper.Build(GetPythonPath() + "build_by_cpp.dat", structure);
+
+  CloseImapObject(imapObject);
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -55,7 +97,8 @@ int main(int argc, char *argv[])
 
   try {
     workaround();
-    testOauth2Wrapper();
+    //testOauth2WrapperAuthentication();
+    testImap();
   } catch (const bp::error_already_set &) {
     PyErr_Print();
   }

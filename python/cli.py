@@ -8,7 +8,7 @@ import sys
 from email_parser import email_parser, email_message
 from google_imap_control import google_imap_control
 from google_oauth2_control import google_oauth2_control
-from local_database_manager import local_database_manager as locdb
+from local_structure_control import local_structure_control as loc
 
 def parse_args():
     parser = argparse.ArgumentParser()
@@ -29,7 +29,7 @@ def parse_args():
                         help='Print all mailboxes')
 
     parser.add_argument('--view', nargs=2, type=str,
-                        møetavar=('yyyymmdd', 'n'),
+                        metavar=('yyyymmdd', 'n'),
                         help='View diary written at yymmdd n')
 
     args = parser.parse_args()
@@ -56,13 +56,13 @@ def build_database(config):
                            debug_level=4)
     
     imap = google_imap_control(imap_obj)
-    db = locdb()
+    db = loc()
     
     structure = imap.fetch_thread_structure(config['label'])
     db.build(config['local_database'], structure)
 
 def list_database(config):
-    db = locdb()
+    db = loc()
     structure = db.load(config['local_database'])
 
     l = sorted(list(structure))

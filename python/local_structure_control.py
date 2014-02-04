@@ -1,7 +1,7 @@
 import cPickle
 
 
-class local_database_manager(object):
+class local_structure_control(object):
 
     def __init__(self):
         pass

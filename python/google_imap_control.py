@@ -1,4 +1,11 @@
+#! -*- coding: utf-8 -*-
+import email.utils
+import re
+
 from base_imap_control import base_imap_control
+from imapUTF7 import imapUTF7Encode as encode
+from imapUTF7 import imapUTF7Decode as decode
+
 
 class google_imap_control(base_imap_control):
 
@@ -6,7 +13,8 @@ class google_imap_control(base_imap_control):
         super(google_imap_control, self).__init__(imap)
         
     def fetch_thread_structure(self, label):
-        self.select_label(encode(label))
+        # label must be unicode!
+        self.select_mailbox(encode(label))
         data = self.treat_uid('SEARCH', 'ALL')
         ids = data[0].split()
         rng = '%s:%s' % (ids[0], ids[-1])
@@ -36,7 +44,7 @@ class google_imap_control(base_imap_control):
         return structure
 
     def fetch_mail(self, label, message_id):
-        self.select_label(encode(label))
+        self.select_mailbox(encode(label))
         uid = self.treat_uid('SEARCH', 'X-GM-MSGID', message_id)
         result = self.treat_uid('FETCH', uid[0], '(RFC822)')
         return result[0][1]

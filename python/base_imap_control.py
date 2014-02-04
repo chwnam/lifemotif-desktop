@@ -1,4 +1,3 @@
-from imapUTF7 import imapUTF7Encode as encode
 from imapUTF7 import imapUTF7Decode as decode
 
 class base_imap_control(object):

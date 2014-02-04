@@ -7,6 +7,18 @@
 
 namespace bp = boost::python;
 
+inline bp::object
+CreateObject(PyObject* pyObj)
+{
+  return bp::object(bp::handle<>(pyObj));
+}
+
+inline bp::object
+Utf8EncodedString(bp::object& obj)
+{
+  return bp::str(obj).encode("utf-8");
+}
+
 class BasePythonWrapper
 {
 public:
@@ -21,16 +33,9 @@ protected:
   bp::object module;
   bp::object instance;
 
-public:
+protected:
   void
   InitWrapper(PyObject* pArgs);
-
-private:
-  inline bp::object
-  CreateObject(PyObject* pyObj)
-  {
-    return bp::object(bp::handle<>(pyObj));
-  }
 };
 
 #endif // BASEPYTHONWRAPPER_H
