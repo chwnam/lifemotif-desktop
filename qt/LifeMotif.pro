@@ -44,7 +44,8 @@ OTHER_FILES += \
     ../python/google_imap_control.py \
     ../python/google_oauth2_control.py \
     ../python/imapUTF7.py \
-    ../python/local_structure_control.py
+    ../python/local_structure_control.py \
+    TODO.txt
 
 INCLUDEPATH += \
     /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
