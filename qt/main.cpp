@@ -6,6 +6,7 @@
 #include "./python_wrapper/googleimapwrapper.h"
 #include "./python_wrapper/localstructurewrapper.h"
 #include "settingscontrol.h"
+#include "localstructure.h"
 
 std::string GetPythonPath()
 {
@@ -87,7 +88,7 @@ void testImap()
   CloseImapObject(imapObject);
 }
 
-void testJson()
+void testSettings()
 {
   std::string python = GetPythonPath() + "config.json";
   std::string path = GetPythonPath();
@@ -101,6 +102,21 @@ void testJson()
   std::cout << python_config.toStdString() << std::endl;
 }
 
+void testStructure()
+{
+  std::string structureModuleName = "local_structure_control";
+  std::string structureClassName = "local_structure_control";
+
+  std::string path = GetPythonPath() + "id_map.dat";
+
+  LocalStructureWrapper
+      structureWrapper(structureModuleName, structureClassName);
+
+  bp::object structure = structureWrapper.Load(path);
+
+  LocalStructure loc(structure);
+  loc.PrintStructure();
+}
 
 int main(int argc, char *argv[])
 {
@@ -115,7 +131,8 @@ int main(int argc, char *argv[])
     workaround();
     //testOauth2WrapperAuthentication();
     //testImap();
-    testJson();
+    //testSettings();
+    testStructure();
   } catch (const bp::error_already_set &) {
     PyErr_Print();
   }

@@ -3,6 +3,8 @@
 
 #include "basepythonwrapper.h"
 
+class LocalStructure;
+
 class LocalStructureWrapper : public BasePythonWrapper
 {
 public:
@@ -17,5 +19,6 @@ public:
   bp::object
   Load(const std::string& fileName);
 };
+
 
 #endif // LOCALSTRUCTUREWRAPPER_H

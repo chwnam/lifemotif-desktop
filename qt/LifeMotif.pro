@@ -21,7 +21,8 @@ SOURCES += main.cpp\
     python_wrapper/imapwrapper.cpp \
     python_wrapper/oauth2wrapper.cpp \
     python_wrapper/localstructurewrapper.cpp \
-    settingscontrol.cpp
+    settingscontrol.cpp \
+    localstructure.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -32,7 +33,8 @@ HEADERS  += mainwindow.h \
     python_wrapper/imapwrapper.h \
     python_wrapper/oauth2wrapper.h \
     python_wrapper/localstructurewrapper.h \
-    settingscontrol.h
+    settingscontrol.h \
+    localstructure.h
 
 FORMS    += mainwindow.ui
 
