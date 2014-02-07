@@ -8,6 +8,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings
+
 TARGET = LifeMotif
 TEMPLATE = app
 
@@ -18,16 +20,19 @@ SOURCES += main.cpp\
     python_wrapper/googleimapwrapper.cpp \
     python_wrapper/imapwrapper.cpp \
     python_wrapper/oauth2wrapper.cpp \
-    python_wrapper/localstructurewrapper.cpp
+    python_wrapper/localstructurewrapper.cpp \
+    settingscontrol.cpp
 
 
 HEADERS  += mainwindow.h \
+    lifemotif_config.h \
     python_wrapper/basepythonwrapper.h \
     python_wrapper/googleoauth2wrapper.h \
     python_wrapper/googleimapwrapper.h \
     python_wrapper/imapwrapper.h \
     python_wrapper/oauth2wrapper.h \
-    python_wrapper/localstructurewrapper.h
+    python_wrapper/localstructurewrapper.h \
+    settingscontrol.h
 
 FORMS    += mainwindow.ui
 

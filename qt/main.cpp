@@ -1,9 +1,11 @@
 #include "mainwindow.h"
 #include <QApplication>
+#include <QDir>
 #include <iostream>
 #include "./python_wrapper/googleoauth2wrapper.h"
 #include "./python_wrapper/googleimapwrapper.h"
 #include "./python_wrapper/localstructurewrapper.h"
+#include "settingscontrol.h"
 
 std::string GetPythonPath()
 {
@@ -85,6 +87,20 @@ void testImap()
   CloseImapObject(imapObject);
 }
 
+void testJson()
+{
+  std::string python = GetPythonPath() + "config.json";
+  std::string path = GetPythonPath();
+
+  SettingsControl::Init(QDir::currentPath() + "/config.ini");
+  QSettings& settings = SettingsControl::GetSettings();
+
+  //settings.setValue("python_config", QString::fromStdString(python));
+  QString python_config = settings.value("python_config").toString();
+
+  std::cout << python_config.toStdString() << std::endl;
+}
+
 
 int main(int argc, char *argv[])
 {
@@ -98,7 +114,8 @@ int main(int argc, char *argv[])
   try {
     workaround();
     //testOauth2WrapperAuthentication();
-    testImap();
+    //testImap();
+    testJson();
   } catch (const bp::error_already_set &) {
     PyErr_Print();
   }
