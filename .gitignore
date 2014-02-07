@@ -1,6 +1,7 @@
 *.dat
 *.o
 *.pyc
+*.pro.user
 build/*
 client_secrets.json
 credential.json
