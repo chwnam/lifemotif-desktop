@@ -2,6 +2,13 @@
 *.o
 *.pyc
 *.pro.user
+
+# Visual Studio
+*.suo
+*.user
+*.sdf
+
+bin/
 build/*
 client_secrets.json
 credential.json
