@@ -14,7 +14,6 @@ private:
 public:
   static QSettings& GetSettings();
   static void Init(const QString& path);
-  static const QString FORMAT;
 };
 
 #endif // SETTINGSCONTROL_H

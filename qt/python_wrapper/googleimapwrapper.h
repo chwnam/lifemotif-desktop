@@ -2,6 +2,7 @@
 #define GOOGLEIMAPWRAPPER_H
 
 #include "imapwrapper.h"
+#include <string>
 
 class GoogleImapWrapper : public ImapWrapper
 {
@@ -13,6 +14,9 @@ public:
 
   bp::object
   FetchThreadStructure(const std::string label);
+
+  std::string
+  FetchMail(const std::string& label, unsigned long long messageId);
 
 private:
     bp::object imapTuple;

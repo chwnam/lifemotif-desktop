@@ -28,7 +28,9 @@ public:
 
   typedef std::map<DateType, DailyContainer> StructureType;
 
-  void PrintStructure();
+  void PrintStructure(); // for debugging
+
+  const StructureType& operator()(void) const { return structure; }
 
 private:
   void ExtractPyObject(bp::object structureObject);

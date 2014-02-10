@@ -22,7 +22,10 @@ SOURCES += main.cpp\
     python_wrapper/oauth2wrapper.cpp \
     python_wrapper/localstructurewrapper.cpp \
     settingscontrol.cpp \
-    localstructure.cpp
+    localstructure.cpp \
+    tester.cpp \
+    preferencewindow.cpp \
+    pythonscriptsettings.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -34,9 +37,14 @@ HEADERS  += mainwindow.h \
     python_wrapper/oauth2wrapper.h \
     python_wrapper/localstructurewrapper.h \
     settingscontrol.h \
-    localstructure.h
+    localstructure.h \
+    tester.h \
+    preferencewindow.h \
+    pythonscriptsettings.h \
+    python_wrapper/python_wrapper.h
 
-FORMS    += mainwindow.ui
+FORMS    += mainwindow.ui \
+    preferencewindow.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \

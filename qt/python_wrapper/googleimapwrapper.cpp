@@ -30,3 +30,16 @@ GoogleImapWrapper::FetchThreadStructure(const std::string label)
 
   return structure;
 }
+
+std::string
+GoogleImapWrapper::FetchMail(
+    const std::string& label, unsigned long long messageId)
+{
+  bp::object fetch;
+  bp::object unicodeLabel;
+  std::string message;
+
+  unicodeLabel = CreateObject(PyUnicode_FromString(label.c_str()));
+  fetch = instance.attr("fetch_mail");
+  return std::string(bp::extract<const char*>(fetch(unicodeLabel, messageId)));
+}
