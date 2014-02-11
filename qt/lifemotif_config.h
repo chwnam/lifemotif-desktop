@@ -7,7 +7,7 @@
 #define LIFEMOTIF_ORGANIZATION "changwoo"
 #define LIFEMOTIF_APPLICATION "lifemotif-desktop"
 
-#define LIFEMOTIF_PREFERENCE_PATH "./config.ini"
+#define LIFEMOTIF_DEFAULT_SETTINGS_PATH "./config.ini"
 
 #define LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE "google_imap_control"
 #define LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS "google_imap_control"

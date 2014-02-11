@@ -1,9 +1,11 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
+#include <boost/shared_ptr.hpp>
 #include <QMainWindow>
+
 #include "./python_wrapper/python_wrapper.h"
-#include "localstructure.h"
+#include "localstructure_extract.h"
 
 namespace Ui {
 class MainWindow;
@@ -24,19 +26,26 @@ private slots:
 
      void on_actionOptions_triggered();
 
-     void on_listStructureButton_clicked();
-
      void on_calendarWidget_clicked(const QDate &date);
 
      void on_diaryList_clicked(const QModelIndex &index);
 
+     void on_actionBuild_Local_Structure_triggered();
+
+private:
+    void InitWrappers();
+    void LoadLocalStructure();
+    void UpdateCalendar();
+
 private:
     Ui::MainWindow *ui;
-    LocalStructure *localStructure;
 
     // wrappers
-    GoogleImapWrapper *imapWrapper;
-    GoogleOauth2Wrapper *oauth2Wrapper;
+    boost::shared_ptr<GoogleOauth2Wrapper> oauth2Wrapper;
+    boost::shared_ptr<GoogleImapWrapper>   imapWrapper;
+
+    // local structure
+    LocalStructureType localStructure;
 };
 
 #endif // MAINWINDOW_H

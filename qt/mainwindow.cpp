@@ -1,55 +1,116 @@
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
 #include "preferencewindow.h"
+
 #include <QMessageBox>
 #include <iostream>
 #include <QVector>
-#include "settingscontrol.h"
-#include "pythonscriptsettings.h"
-#include "lifemotif_config.h"
-#include "./python_wrapper/localstructurewrapper.h"
 
+#include "lifemotif_settings.h"
+#include "lifemotif_config.h"
+#include "lifemotif_path_helper.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    localStructure = NULL;
-
-    imapWrapper = NULL;
-    oauth2Wrapper = NULL;
-
-    // wrapper initialization
-    oauth2Wrapper = new GoogleOauth2Wrapper(
-          LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
-          LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS);
-
-
-    std::string path;
-    std::string storageName;
-    std::string emailAddress;
-
-    path = SettingsControl::GetSettings().value("python_script_path").toString().toStdString();
-    storageName = PythonScriptSettings::GetSettings()["storage_name"].toString().toStdString();
-    storageName = path + storageName;
-    emailAddress = PythonScriptSettings::GetSettings()["email_address"].toString().toStdString();
-
-    bp::object imapObject = oauth2Wrapper->ImapAuthenticate(storageName, emailAddress, 4);
-
-    imapWrapper = new GoogleImapWrapper(
-          LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
-          LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
-          imapObject);
+    InitWrappers();
+    LoadLocalStructure();
+    UpdateCalendar();
 }
 
 MainWindow::~MainWindow()
 {
     delete ui;
+}
 
-    if (localStructure) { delete localStructure; localStructure = NULL; }
-    if (imapWrapper) { delete imapWrapper; imapWrapper = NULL; }
-    if (oauth2Wrapper) { delete oauth2Wrapper; oauth2Wrapper = NULL; }
+void MainWindow::InitWrappers()
+{
+  // wrapper initialization
+  oauth2Wrapper = boost::shared_ptr<GoogleOauth2Wrapper>(
+        new GoogleOauth2Wrapper(
+        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
+        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS));
+
+
+  std::string tempStorageName;
+  std::string scriptPath, storageName, emailAddress;
+  int debugLevel;
+
+  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
+  tempStorageName = LifeMotifSettings::StorageName().toStdString();
+
+  storageName = LifeMotifPathHelper::Join(
+                  2, scriptPath.c_str(), tempStorageName.c_str());
+
+  emailAddress = LifeMotifSettings::EmailAddress().toStdString();
+
+  debugLevel = LifeMotifSettings::DebugLevel();
+
+  bp::object imapObject
+      = oauth2Wrapper->ImapAuthenticate(storageName, emailAddress, debugLevel);
+
+  imapWrapper = boost::shared_ptr<GoogleImapWrapper>(
+        new GoogleImapWrapper(
+        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
+        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
+        imapObject));
+}
+
+void MainWindow::LoadLocalStructure()
+{
+  std::string tmpls = LifeMotifSettings::LocalStructure().toStdString();
+  std::string scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
+  std::string lsPath;
+
+  lsPath = LifeMotifPathHelper::Join(
+        2, scriptPath.c_str(), tmpls.c_str());
+
+  bp::object obj = LocalStructureWrapper(
+                    LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
+                    LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS).Load(
+                      lsPath);
+
+  LocalStructureExtract(obj, localStructure);
+}
+
+void MainWindow::UpdateCalendar()
+{
+  // sorted list of date
+  QVector<QString> dateVector;
+  dateVector.reserve(localStructure.size());
+  for(LocalStructureType::iterator it = localStructure.begin();
+      it != localStructure.end(); ++it) {
+    dateVector.push_back(QString::fromStdString(it->first));
+  }
+  qSort(dateVector);
+
+  if (dateVector.empty() == false) {
+
+    QDate minDate, maxDate;
+
+    minDate = QDate::fromString(*(dateVector.begin()), "yyyyMMdd");
+    maxDate = QDate::fromString(*(dateVector.end()-1), "yyyyMMdd");
+
+    ui->calendarWidget->setMinimumDate(minDate);
+    ui->calendarWidget->setMaximumDate(maxDate);
+    ui->calendarWidget->setEnabled(true);
+  } else {
+    ui->calendarWidget->setEnabled(false);
+  }
+
+  for(QVector<QString>::iterator it = dateVector.begin();
+      it != dateVector.end(); ++it) {
+
+    QDate d = QDate::fromString(*it, "yyyyMMdd");
+    QTextCharFormat charFormat = ui->calendarWidget->dateTextFormat(d);
+
+    charFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
+    charFormat.setFontWeight(QFont::Bold);
+
+    ui->calendarWidget->setDateTextFormat(d, charFormat);
+  }
 }
 
 void MainWindow::on_activateButton_clicked()
@@ -76,99 +137,54 @@ void MainWindow::on_actionOptions_triggered()
   }
 }
 
-void MainWindow::on_listStructureButton_clicked()
-{
-  if (localStructure) {
-    return;
-  }
-
-  QSettings& pref = SettingsControl::GetSettings();
-  QVariantMap map = PythonScriptSettings::GetSettings();
-
-  QString pythonScriptRoot = pref.value("python_script_path").toString();
-  QString localStructureFilename = map["local_database"].toString();
-
-  // change to more robust one...
-  QString locstructPath = pythonScriptRoot + localStructureFilename;
-
-  LocalStructureWrapper
-      wrapper(LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-              LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
-
-  bp::object obj = wrapper.Load(locstructPath.toStdString());
-
-  localStructure = new LocalStructure(obj);
-
-  // sorted list of date
-  QVector<QString> dateVector;
-  for(LocalStructure::StructureType::const_iterator cit = (*localStructure)().begin();
-      cit != (*localStructure)().end(); ++cit) {
-    dateVector.push_back(QString::fromStdString(cit->first));
-  }
-  qSort(dateVector);
-
-//  for(QVector<QString>::iterator it = dateVector.begin();
-//      it != dateVector.end(); ++it) {
-//    std::cout << it->toStdString() << "\n";
-//  }
-
-  QDate minDate, maxDate;
-  minDate = QDate::fromString(*(dateVector.begin()), "yyyyMMdd");
-  maxDate = QDate::fromString(*(dateVector.end()-1), "yyyyMMdd");
-
-  ui->calendarWidget->setMinimumDate(minDate);
-  ui->calendarWidget->setMaximumDate(maxDate);
-
-  for(QVector<QString>::iterator it = dateVector.begin();
-      it != dateVector.end(); ++it) {
-
-    QDate d = QDate::fromString(*it, "yyyyMMdd");
-    QTextCharFormat charFormat = ui->calendarWidget->dateTextFormat(d);
-
-    charFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-    charFormat.setFontWeight(QFont::Bold);
-
-    ui->calendarWidget->setDateTextFormat(d, charFormat);
-  }
-}
-
 void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
-    LocalStructure::DateType
-        datestring = date.toString("yyyyMMdd").toStdString();
-
-    const LocalStructure::StructureType& struc = (*localStructure)();
-
-    const LocalStructure::DailyContainer& cont = struc.at(datestring);
-
-    std::cout << datestring << '\t';
-    std::cout << cont.threadId << std::endl;
+    DateType datestring = date.toString("yyyyMMdd").toStdString();
+    const MessageGroup& group = localStructure[datestring];
 
     QListWidget& list = *ui->diaryList;
     list.clear();
 
-    for(std::size_t i = 0; i < cont.messageIds.size(); ++i) {
-      list.addItem(QString::number(cont.messageIds[i]));
-      std::cout << cont.messageIds[i] << ' ';
+    for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
+      list.addItem(QString::number(group.messageIds[i]));
     }
-    std::cout << "\n\n";
 }
 
 void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 {
   QCalendarWidget& cal = *ui->calendarWidget;
-
   QDate d = cal.selectedDate();
-  LocalStructure::DateType ds = d.toString("yyyyMMdd").toStdString();
+  DateType ds = d.toString("yyyyMMdd").toStdString();
 
-  const LocalStructure::StructureType& struc = (*localStructure)();
-  const LocalStructure::DailyContainer& cont = struc.at(ds);
+  const MessageGroup& group = localStructure[ds];
+  MsgIdType msgId = group.messageIds[index.row()];
 
-  LocalStructure::MsgIdType msgId = cont.messageIds[index.row()];
-  std::string label = PythonScriptSettings::GetSettings()["label"].toString().toStdString();
+  std::string label = LifeMotifSettings::Label().toStdString();
   std::string rawMessage = imapWrapper->FetchMail(label, msgId);
 
   QPlainTextEdit& edit = *ui->plainTextEdit;
   edit.clear();
   edit.setPlainText(QString::fromStdString(rawMessage));
+}
+
+void MainWindow::on_actionBuild_Local_Structure_triggered()
+{
+  bp::object pythonStructureObject =
+  imapWrapper->FetchThreadStructure(LifeMotifSettings::Label().toStdString());
+
+  std::string tempPath;
+  std::string scriptPath;
+  std::string lsPath;
+
+  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
+  tempPath = LifeMotifSettings::LocalStructure().toStdString();
+  lsPath = LifeMotifPathHelper::Join(2, scriptPath.c_str(), tempPath.c_str());
+
+  LocalStructureWrapper(
+        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
+        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS).Build(
+        lsPath, pythonStructureObject);
+
+  LocalStructureExtract(pythonStructureObject, localStructure);
+  UpdateCalendar();
 }

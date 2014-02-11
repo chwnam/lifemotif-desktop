@@ -6,8 +6,6 @@ GoogleImapWrapper::GoogleImapWrapper(
     bp::object& _imapObject)
   : ImapWrapper(_moduleName, _className)
 {
-  std::cout << "Init GoogleImapWrapper...\n";
-
   // _imapObject is copied, and passed to python object as tuple type.
   imapTuple = CreateObject(Py_BuildValue("(O)", _imapObject.ptr()));
 

@@ -3,5 +3,6 @@
     "storage_name": "credential.json",
     "label": "개인/일기",
     "email_address": "cs.chwnam@gmail.com",
-    "local_database": "id_map.dat"
+    "local_structure": "local_structure.dat",
+		"debug_level": 0
 }

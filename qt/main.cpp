@@ -1,15 +1,7 @@
 #include "mainwindow.h"
 #include <QApplication>
-#include <QDir>
-#include <iostream>
-#include "./python_wrapper/googleoauth2wrapper.h"
-#include "./python_wrapper/googleimapwrapper.h"
-#include "./python_wrapper/localstructurewrapper.h"
 #include "lifemotif_config.h"
-#include "settingscontrol.h"
-#include "pythonscriptsettings.h"
-#include "localstructure.h"
-#include "tester.h"
+#include "lifemotif_settings.h"
 
 void Init();
 void PythonWorkAround();
@@ -40,29 +32,18 @@ int main(int argc, char *argv[])
 void Init()
 {
   // this application's ini settings
-  SettingsControl::Init(LIFEMOTIF_PREFERENCE_PATH);
-
-  // retrieve python script's json settings
-  QSettings& settings = SettingsControl::GetSettings();
-  PythonScriptSettings::Init(settings.value("python_config").toString());
+  LifeMotifSettings::Init(LIFEMOTIF_DEFAULT_SETTINGS_PATH);
 
   if (Py_IsInitialized() == false) {
     Py_Initialize();
     PythonWorkAround();
   }
-
-  // test
-  //QVariantMap& jsonConfig = PythonScriptSettings::GetSettings();
-  //std::cout << "label: " << jsonConfig["label"].toString().toStdString() << std::endl;
 }
 
 void PythonWorkAround()
 {
-  QSettings &settings = SettingsControl::GetSettings();
-  QString qscriptpath;
-  std::string runCode;
-
-  qscriptpath = settings.value("python_script_path").toString();
+  const QString& qscriptpath = LifeMotifSettings::PythonScriptPath();
+  std::string runCode;  
 
   runCode += "import sys\n";
   runCode += "sys.path.append('" + qscriptpath.toStdString() + "')\n";

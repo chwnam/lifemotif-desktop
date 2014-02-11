@@ -1,6 +1,6 @@
 #include "preferencewindow.h"
 #include "ui_preferencewindow.h"
-#include "settingscontrol.h"
+#include "lifemotif_settings.h"
 
 PreferenceWindow::PreferenceWindow(
     QWidget *parent) :
@@ -21,10 +21,10 @@ void PreferenceWindow::UpdateUI()
 
 void PreferenceWindow::ReadFromSettings()
 {
-  QSettings& settings = SettingsControl::GetSettings();
+  QString pythonConfig = LifeMotifSettings::PythonConfig();
 
   // python_config
-  ui->scriptPathEdit->setText(settings.value("python_config").toString());
+  ui->scriptPathEdit->setText(pythonConfig);
 }
 
 void PreferenceWindow::on_refreshSettingButton_clicked()

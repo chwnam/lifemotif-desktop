@@ -1,4 +1,5 @@
 import cPickle
+import os
 
 
 class local_structure_control(object):
@@ -11,6 +12,8 @@ class local_structure_control(object):
             cPickle.dump(structure, f, cPickle.HIGHEST_PROTOCOL)
 
     def load(self, file_name):
-        with open(file_name, 'rb') as f:
-            sturcture = cPickle.load(f)
-        return sturcture
+        structure = {}
+        if os.path.exists(file_name):
+          with open(file_name, 'rb') as f:
+              structure = cPickle.load(f)
+        return structure

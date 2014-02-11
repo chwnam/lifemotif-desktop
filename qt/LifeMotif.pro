@@ -21,11 +21,11 @@ SOURCES += main.cpp\
     python_wrapper/imapwrapper.cpp \
     python_wrapper/oauth2wrapper.cpp \
     python_wrapper/localstructurewrapper.cpp \
-    settingscontrol.cpp \
-    localstructure.cpp \
-    tester.cpp \
     preferencewindow.cpp \
-    pythonscriptsettings.cpp
+    lifemotif_exceptions.cpp \
+    lifemotif_settings.cpp \
+    localstructure_extract.cpp \
+    lifemotif_path_helper.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -36,12 +36,12 @@ HEADERS  += mainwindow.h \
     python_wrapper/imapwrapper.h \
     python_wrapper/oauth2wrapper.h \
     python_wrapper/localstructurewrapper.h \
-    settingscontrol.h \
-    localstructure.h \
-    tester.h \
     preferencewindow.h \
-    pythonscriptsettings.h \
-    python_wrapper/python_wrapper.h
+    python_wrapper/python_wrapper.h \
+    lifemotif_exceptions.h \
+    lifemotif_settings.h \
+    localstructure_extract.h \
+    lifemotif_path_helper.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui

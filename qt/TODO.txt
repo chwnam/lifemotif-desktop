@@ -3,9 +3,11 @@ TODOS
 
 Version 0.1.0002
 ================
-- 코드 수정단계
-  - 이원화되어 있는 settings control, pythonscriptsetting 두 개를 편리하게 쓰도록
-  - 싱글톤 인터페이스 개선
++ 코드 수정단계
+  + 이원화되어 있는 settings control, pythonscriptsetting 두 개를 편리하게 쓰도록
+    : LifeMotifSettings에 넣고, 어떤 세팅인지는 추상화하도록 함.
+  + 싱글톤 인터페이스 개선
+    : 모든 속성에 대해 Get/Set 메소드화
 
 - 환경설정 윈도우 만들기
   - 아주 간단하게... 일단.
@@ -15,6 +17,8 @@ Version 0.1.0002
 
 - 캘린더 배경 색상 변화 조사.
 
++ 불안한 포인터들 모두 boost 스마트 포인터로 변환.
++ debug_level을 config.json에 추가.
 
 Version 0.1.0001
 ================

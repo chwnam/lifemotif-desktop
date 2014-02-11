@@ -14,8 +14,6 @@ GoogleOauth2Wrapper::GetAuthorizationURL(const std::string& secret_path)
 {
   bp::object urlObject;
 
-  std::cout << "Testing AuthorizationURL...\n";
-
   urlObject = CreateObject(
                 PyObject_CallMethod(
                   instance.ptr(),
@@ -32,8 +30,6 @@ GoogleOauth2Wrapper::MakeCredentials(const std::string& code)
 {
   bp::object credentialsObj;
 
-  std::cout << "Testing MakeCredentials...\n";
-
   credentialsObj = CreateObject(
                 PyObject_CallMethod(
                   instance.ptr(),
@@ -48,8 +44,6 @@ GoogleOauth2Wrapper::SetCredentials(
     const std::string& storageName,
     bp::object& credentials)
 {
-  std::cout << "Testing SetCredentials...\n";
-
   assert(credentials.ptr());
 
   PyObject_CallMethod(
@@ -63,8 +57,6 @@ GoogleOauth2Wrapper::SetCredentials(
 bp::object
 GoogleOauth2Wrapper::GetCredentials(const std::string& storageName)
 {
-  std::cout << "Testing GetCredentials...\n";
-
   bp::object credentials;
 
   credentials = CreateObject(
@@ -83,8 +75,6 @@ GoogleOauth2Wrapper::ImapAuthenticate(
     const std::string& emailAddress,
     const int debugLevel)
 {
-  std::cout << "Testing ImapAuthenticate...\n";
-
   bp::object imapObject;
 
   imapObject = CreateObject(

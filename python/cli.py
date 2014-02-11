@@ -59,11 +59,11 @@ def build_database(config):
     db = loc()
     
     structure = imap.fetch_thread_structure(config['label'])
-    db.build(config['local_database'], structure)
+    db.build(config['local_structure'], structure)
 
 def list_database(config):
     db = loc()
-    structure = db.load(config['local_database'])
+    structure = db.load(config['local_structure'])
 
     l = sorted(list(structure))
     for x in l:
@@ -75,7 +75,7 @@ def list_database(config):
 
 def view_diary(config, diary_date, diary_index):
     db = locdb()
-    structure = db.load(config['local_database'])
+    structure = db.load(config['local_structure'])
 
     print 'Date:', diary_date
     print 'Index:', diary_index
