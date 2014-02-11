@@ -6,21 +6,9 @@
 #include <vector>
 #include <map>
 
+#include "message_types.h"
+
 namespace bp = boost::python;
-
-typedef unsigned long long ThrIdType;
-typedef unsigned long long MsgIdType;
-typedef std::string DateType;
-
-struct MessageGroup
-{
-  ThrIdType threadId;
-  std::vector<MsgIdType> messageIds;
-};
-
-// key: date
-// val: (thread_id, [message_ids])
-typedef std::map<DateType, MessageGroup> LocalStructureType;
 
 // function class
 class LocalStructureExtract

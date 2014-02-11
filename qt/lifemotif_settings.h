@@ -45,6 +45,15 @@ public:
   }
 
   /***************************************************************************/
+  // cache_dir: path to cache directory, storing email messages.
+  inline static const QString CacheDir() {
+    return iniInstance->value("cache_dir").toString();
+  }
+  inline static void CacheDir(const QString& value) {
+    iniInstance->setValue("cache_dir", value);
+  }
+
+  /***************************************************************************/
   /* JSON configuration                                                      */
   /***************************************************************************/
   // secret_path

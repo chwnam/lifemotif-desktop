@@ -8,7 +8,7 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings
+QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings -DBOOST_ALL_DYN_LINK
 
 TARGET = LifeMotif
 TEMPLATE = app
@@ -25,7 +25,9 @@ SOURCES += main.cpp\
     lifemotif_exceptions.cpp \
     lifemotif_settings.cpp \
     localstructure_extract.cpp \
-    lifemotif_path_helper.cpp
+    lifemotif_path_helper.cpp \
+    message_types.cpp \
+    email_cache.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -41,7 +43,9 @@ HEADERS  += mainwindow.h \
     lifemotif_exceptions.h \
     lifemotif_settings.h \
     localstructure_extract.h \
-    lifemotif_path_helper.h
+    lifemotif_path_helper.h \
+    message_types.h \
+    email_cache.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui
@@ -61,5 +65,8 @@ INCLUDEPATH += \
 
 LIBS += \
     -L/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config \
-    -L /opt/local/lib -lboost_python-mt \
+    -L/opt/local/lib \
+    -lboost_system-mt \
+    -lboost_filesystem-mt \
+    -lboost_python-mt  \
     -ldl -framework CoreFoundation -lpython2.7

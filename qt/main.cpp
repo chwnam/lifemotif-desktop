@@ -3,9 +3,18 @@
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
 
+#include <QTextStream>
+#include <QFile>
+
+void test_read_email()
+{
+
+}
+
 void Init();
 void PythonWorkAround();
 void Fin();
+
 
 int main(int argc, char *argv[])
 {

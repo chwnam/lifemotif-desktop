@@ -10,6 +10,7 @@
 #include "lifemotif_config.h"
 #include "lifemotif_path_helper.h"
 
+
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
@@ -18,6 +19,10 @@ MainWindow::MainWindow(QWidget *parent) :
     InitWrappers();
     LoadLocalStructure();
     UpdateCalendar();
+
+    QString emailCacheDir = LifeMotifSettings::CacheDir();
+    emailCache = boost::shared_ptr<EmailCache>(
+          new EmailCache(emailCacheDir));
 }
 
 MainWindow::~MainWindow()
@@ -159,12 +164,22 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
   const MessageGroup& group = localStructure[ds];
   MsgIdType msgId = group.messageIds[index.row()];
 
-  std::string label = LifeMotifSettings::Label().toStdString();
-  std::string rawMessage = imapWrapper->FetchMail(label, msgId);
+  std::string rawMessage;
+  if (emailCache->HasCache(msgId) == false) {
+    std::cout << msgId << " not found from cache...";
+    std::cout << " build new file\n";
+    std::string label = LifeMotifSettings::Label().toStdString();
+    rawMessage = imapWrapper->FetchMail(label, msgId);
+    emailCache->SetCache(msgId, rawMessage);
+  } else {
+    std::cout << "cache hit: " << msgId << "\n";
+    rawMessage = emailCache->GetCache(msgId);
+  }
 
+  QString qrawMessage = QString::fromStdString(rawMessage);
   QPlainTextEdit& edit = *ui->plainTextEdit;
   edit.clear();
-  edit.setPlainText(QString::fromStdString(rawMessage));
+  edit.setPlainText(qrawMessage);
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()

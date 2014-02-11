@@ -6,6 +6,7 @@
 
 #include "./python_wrapper/python_wrapper.h"
 #include "localstructure_extract.h"
+#include "email_cache.h"
 
 namespace Ui {
 class MainWindow;
@@ -46,6 +47,8 @@ private:
 
     // local structure
     LocalStructureType localStructure;
+
+    boost::shared_ptr<EmailCache> emailCache;
 };
 
 #endif // MAINWINDOW_H
