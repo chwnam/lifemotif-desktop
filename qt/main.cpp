@@ -1,40 +1,64 @@
+#include <boost/python.hpp>
 #include "mainwindow.h"
 #include <QApplication>
+#include <QDebug>
+#include <QMessageBox>
+#include <cstdio>
+#include <stdio_ext.h>
+#include <string>
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
-
-#include <QTextStream>
-#include <QFile>
-
-void test_read_email()
-{
-
-}
+#include "lifemotif_exceptions.h"
 
 void Init();
 void PythonWorkAround();
 void Fin();
-
+void SetBuffer(FILE* stream, char* buffer, const int bufferSize);
 
 int main(int argc, char *argv[])
 {
   int returnCode = EXIT_FAILURE;
-
-  Init();
+  QApplication a(argc, argv);
 
   try {
+    Init();
+    qDebug() << "Initialization complete. Ready to show main window...";
 
-    QApplication a(argc, argv);
     MainWindow w;
-
     w.show();
-    returnCode = a.exec();
 
-  } catch(const bp::error_already_set&) {
+    returnCode = a.exec();
+    qDebug() << "Main window is closed. Return code =" << returnCode;
+  }
+
+  // python script error
+  catch(const bp::error_already_set&) {
+    char*     errorBuffer = NULL;
+    const int bufferSize = 4096;
+
+    fflush(stderr);
+    SetBuffer(stderr, errorBuffer, bufferSize);
     PyErr_Print();
+
+    QString message = QString("Program is unexpectedly terminated due to the python script error:\n");
+    message += errorBuffer ? QString(errorBuffer) : QString("See console printout.");
+    QMessageBox::critical(NULL, "Critical Error", message);
+
+    fflush(stderr);
+    free(errorBuffer);
+    SetBuffer(stderr, NULL, bufferSize);
+  }
+
+  // lifemotif program exception
+  catch(const LifeMotifException& e) {
+    QString message;
+    message = "Program is unexpectedly terminated due to the error:\n";
+    message += QString(e.what());
+    QMessageBox::critical(NULL, "Critical Error", message);
   }
 
   Fin();
+  qDebug() << "Program finished.";
   return returnCode;
 }
 
@@ -45,6 +69,8 @@ void Init()
 
   if (Py_IsInitialized() == false) {
     Py_Initialize();
+    qDebug() << "python initialized.";
+
     PythonWorkAround();
   }
 }
@@ -52,17 +78,28 @@ void Init()
 void PythonWorkAround()
 {
   const QString& qscriptpath = LifeMotifSettings::PythonScriptPath();
-  std::string runCode;  
+  std::string workAroundCode;
 
-  runCode += "import sys\n";
-  runCode += "sys.path.append('" + qscriptpath.toStdString() + "')\n";
-  runCode += "sys.path.append('.')\n";
+  workAroundCode += "import sys\n";
+  workAroundCode += "sys.path.append('" + qscriptpath.toStdString() + "')\n";
+  workAroundCode += "sys.path.append('.')\n";
 
-  if(PyRun_SimpleString(runCode.c_str()) != 0) {
-    std::cerr << "Could not run python workaround code. ";
-    std::cerr << "Stop the program.";
-    Fin();
-    exit(EXIT_FAILURE);
+  if (PyRun_SimpleString(workAroundCode.c_str()) != 0) {
+    throw bp::error_already_set();
+  }
+  qDebug() << qscriptpath << "is now added to python path.";
+}
+
+void SetBuffer(FILE* stream, char* buffer, const int bufferSize)
+{
+  if (buffer) memset(buffer, 0, bufferSize);
+  if(setvbuf(stream, buffer, _IOFBF, bufferSize)) {
+    // failure.
+    if (buffer) {
+      free(buffer);
+      buffer = NULL;
+    }
+    throw LifeMotifException("setvbuf failed!");
   }
 }
 
@@ -70,5 +107,7 @@ void Fin()
 {
   if (Py_IsInitialized() == true) {
     Py_Finalize();
+    qDebug() << "python finalized.";
   }
+  qDebug() << "Finalization complete.";
 }

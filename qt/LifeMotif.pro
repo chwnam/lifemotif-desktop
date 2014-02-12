@@ -8,7 +8,13 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
+<<<<<<< HEAD
+QMAKE_CXXFLAGS += -DBOOST_ALL_DYN_LINK
+=======
+DEFINES += HAVE_STDINT_H
+
 QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings -DBOOST_ALL_DYN_LINK
+>>>>>>> e7056e74daaf386bb4301541f8074de4628c239a
 
 TARGET = LifeMotif
 TEMPLATE = app
@@ -23,12 +29,12 @@ SOURCES += main.cpp\
     python_wrapper/localstructurewrapper.cpp \
     preferencewindow.cpp \
     lifemotif_exceptions.cpp \
-    lifemotif_settings.cpp \
     localstructure_extract.cpp \
-    lifemotif_path_helper.cpp \
     message_types.cpp \
     email_cache.cpp \
-    email_parser.cpp
+    email_parser.cpp \
+    lifemotif_settings.cpp \
+    lifemotif_utils.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -44,10 +50,10 @@ HEADERS  += mainwindow.h \
     lifemotif_exceptions.h \
     lifemotif_settings.h \
     localstructure_extract.h \
-    lifemotif_path_helper.h \
     message_types.h \
     email_cache.h \
-    email_parser.h
+    email_parser.h \
+    lifemotif_utils.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui
@@ -60,14 +66,23 @@ OTHER_FILES += \
     ../python/google_oauth2_control.py \
     ../python/imapUTF7.py \
     ../python/local_structure_control.py \
-    TODO.txt
+    TODO.txt \
+    ../python/config_checker.py
 
 INCLUDEPATH += \
-    /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
+    /usr/include \
+    /usr/include/python2.7 \
+    /usr/local/include \
+    /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7z \
     /opt/local/include
 
 LIBS += \
-    -L/opt/local/lib -lmimetic \
-    -lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
+    -L/usr/lib \
+    -L/usr/local/lib \
+    -L/opt/local/lib \
+    -lmimetic \
+    #-lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
+    -lboost_python-2.7-mt \
     -L/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config \
-    -ldl -framework CoreFoundation -lpython2.7
+    #-ldl -framework CoreFoundation \
+    -lpython2.7

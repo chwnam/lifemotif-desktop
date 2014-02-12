@@ -22,8 +22,12 @@ private:
 
   static QVariantMap LoadJson(const QString& path);
 
-public:
+private:
+  static void IniValueCheck(const QString& iniPath);
+  static void JsonValueCheck();
+  static void SetIniDefault();
 
+public:
   /***************************************************************************/
   /* INI configuration                                                       */
   /***************************************************************************/
@@ -42,6 +46,16 @@ public:
   }
   inline static void PythonConfig(const QString& value) {
     iniInstance->setValue("python_config", value);
+  }
+
+  /***************************************************************************/
+  // use_file_cache: use file cache.
+  inline static bool UseFileCache() {
+    return iniInstance->value("use_file_cache").toBool();
+  }
+
+  inline static void UseFileCache(bool value) {
+    iniInstance->setValue("use_file_cache", value);
   }
 
   /***************************************************************************/
