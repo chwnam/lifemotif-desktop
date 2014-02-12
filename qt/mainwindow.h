@@ -37,6 +37,7 @@ private:
     void InitWrappers();
     void LoadLocalStructure();
     void UpdateCalendar();
+    void ParseMessage(const std::string& rawMessage);
 
 private:
     Ui::MainWindow *ui;

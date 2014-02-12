@@ -164,6 +164,7 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
   const MessageGroup& group = localStructure[ds];
   MsgIdType msgId = group.messageIds[index.row()];
 
+  // query cache
   std::string rawMessage;
   if (emailCache->HasCache(msgId) == false) {
     std::cout << msgId << " not found from cache...";
@@ -176,10 +177,14 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
     rawMessage = emailCache->GetCache(msgId);
   }
 
+  // parse email message
+  ParseMessage(rawMessage);
+
+  // display message
   QString qrawMessage = QString::fromStdString(rawMessage);
-  QPlainTextEdit& edit = *ui->plainTextEdit;
-  edit.clear();
-  edit.setPlainText(qrawMessage);
+  QPlainTextEdit& text = *ui->diaryText;
+  text.clear();
+  text.setPlainText(qrawMessage);
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()
@@ -202,4 +207,9 @@ void MainWindow::on_actionBuild_Local_Structure_triggered()
 
   LocalStructureExtract(pythonStructureObject, localStructure);
   UpdateCalendar();
+}
+
+void MainWindow::ParseMessage(const std::string& rawMessage)
+{
+
 }
