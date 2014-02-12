@@ -18,4 +18,9 @@
 #define LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE "local_structure_control"
 #define LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS "local_structure_control"
 
+#define LIFEMOTIF_DEFAULT_PYTHON_SCRIPT_PATH "../../python/"
+#define LIFEMOTIF_DEFAULT_PYTHON_CONFIG "../../python/config.json"
+#define LIFEMOTIF_DEFAULT_USE_FILE_CACHE true
+#define LIFEMOTIF_DEFAULT_CACHE_DIR "./cache/"
+
 #endif // LIFEMOTIF_CONFIG_H

@@ -2,13 +2,14 @@
 #include "ui_mainwindow.h"
 #include "preferencewindow.h"
 
+#include <QDebug>
 #include <QMessageBox>
 #include <iostream>
 #include <QVector>
 
 #include "lifemotif_settings.h"
 #include "lifemotif_config.h"
-#include "lifemotif_path_helper.h"
+#include "lifemotif_utils.h"
 
 
 MainWindow::MainWindow(QWidget *parent) :
@@ -17,8 +18,6 @@ MainWindow::MainWindow(QWidget *parent) :
 {
     ui->setupUi(this);
     InitWrappers();
-    LoadLocalStructure();
-    UpdateCalendar();
 
     QString emailCacheDir = LifeMotifSettings::CacheDir();
     emailCache = boost::shared_ptr<EmailCache>(
@@ -37,30 +36,30 @@ void MainWindow::InitWrappers()
         new GoogleOauth2Wrapper(
         LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
         LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS));
+  qDebug() << "oauth2wrapper assigned";
 
+//  std::string tempStorageName;
+//  std::string scriptPath, storageName, emailAddress;
+//  int debugLevel;
 
-  std::string tempStorageName;
-  std::string scriptPath, storageName, emailAddress;
-  int debugLevel;
+//  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
+//  tempStorageName = LifeMotifSettings::StorageName().toStdString();
 
-  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
-  tempStorageName = LifeMotifSettings::StorageName().toStdString();
+//  storageName = LifeMotifUtils::JoinPath(
+//                  2, scriptPath.c_str(), tempStorageName.c_str());
 
-  storageName = LifeMotifPathHelper::Join(
-                  2, scriptPath.c_str(), tempStorageName.c_str());
+//  emailAddress = LifeMotifSettings::EmailAddress().toStdString();
 
-  emailAddress = LifeMotifSettings::EmailAddress().toStdString();
+//  debugLevel = LifeMotifSettings::DebugLevel();
 
-  debugLevel = LifeMotifSettings::DebugLevel();
+//  bp::object imapObject
+//      = oauth2Wrapper->ImapAuthenticate(storageName, emailAddress, debugLevel);
 
-  bp::object imapObject
-      = oauth2Wrapper->ImapAuthenticate(storageName, emailAddress, debugLevel);
-
-  imapWrapper = boost::shared_ptr<GoogleImapWrapper>(
-        new GoogleImapWrapper(
-        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
-        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
-        imapObject));
+//  imapWrapper = boost::shared_ptr<GoogleImapWrapper>(
+//        new GoogleImapWrapper(
+//        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
+//        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
+//        imapObject));
 }
 
 void MainWindow::LoadLocalStructure()
@@ -69,7 +68,7 @@ void MainWindow::LoadLocalStructure()
   std::string scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
   std::string lsPath;
 
-  lsPath = LifeMotifPathHelper::Join(
+  lsPath = LifeMotifUtils::JoinPath(
         2, scriptPath.c_str(), tmpls.c_str());
 
   bp::object obj = LocalStructureWrapper(
@@ -165,26 +164,25 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
   MsgIdType msgId = group.messageIds[index.row()];
 
   // query cache
-  std::string rawMessage;
+  QString rawMessage;
   if (emailCache->HasCache(msgId) == false) {
-    std::cout << msgId << " not found from cache...";
-    std::cout << " build new file\n";
+    qDebug() << msgId << "is uncached. Fetch from the server.";
+
     std::string label = LifeMotifSettings::Label().toStdString();
-    rawMessage = imapWrapper->FetchMail(label, msgId);
+    rawMessage = QString::fromStdString(imapWrapper->FetchMail(label, msgId));
     emailCache->SetCache(msgId, rawMessage);
   } else {
-    std::cout << "cache hit: " << msgId << "\n";
+    qDebug() << msgId << "is cached. Load from local disk.";
     rawMessage = emailCache->GetCache(msgId);
   }
 
   // parse email message
-  ParseMessage(rawMessage);
+  ParseMessage(rawMessage.toStdString());
 
   // display message
-  QString qrawMessage = QString::fromStdString(rawMessage);
   QPlainTextEdit& text = *ui->diaryText;
   text.clear();
-  text.setPlainText(qrawMessage);
+  text.setPlainText(rawMessage);
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()
@@ -198,7 +196,7 @@ void MainWindow::on_actionBuild_Local_Structure_triggered()
 
   scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
   tempPath = LifeMotifSettings::LocalStructure().toStdString();
-  lsPath = LifeMotifPathHelper::Join(2, scriptPath.c_str(), tempPath.c_str());
+  lsPath = LifeMotifUtils::JoinPath(2, scriptPath.c_str(), tempPath.c_str());
 
   LocalStructureWrapper(
         LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,

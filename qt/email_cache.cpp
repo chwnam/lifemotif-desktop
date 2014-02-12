@@ -1,5 +1,5 @@
 #include "email_cache.h"
-#include <QDir>
+#include <QDebug>
 #include <QTextStream>
 #include <iostream>
 
@@ -14,41 +14,29 @@ bool EmailCache::HasCache(MsgIdType messageId) const
   return cacheIndex.find(messageId) != cacheIndex.end();
 }
 
-std::string EmailCache::GetCache(MsgIdType messageId) const
+QString EmailCache::GetCache(MsgIdType messageId) const
 {
-  QDir dir(cacheDir);
-  QString s = QString::number(messageId);
-  QString path = dir.absoluteFilePath(s);
+  QString path = cacheDir.absoluteFilePath(QString::number(messageId));
+  qDebug() << "get file cache" << path;
 
-  std::cout << path.toStdString() << std::endl;
-
-  QFile f(path);
-  QString m;
-
+  QFile f(path);  
   f.open(QIODevice::ReadOnly|QIODevice::Text);
-  QTextStream in(&f);
 
-  while(!in.atEnd()) {
-    QString line = in.readLine();
-    m += line;
-  }
+  QString m = QTextStream(&f).readAll();
+  f.close();
 
-  return m.toStdString();
+  return m;
 }
 
-void EmailCache::SetCache(MsgIdType messageId, const std::string message)
+void EmailCache::SetCache(MsgIdType messageId, const QString& message)
 {
-  QDir dir(cacheDir);
-  QString s = QString::number(messageId);
-  QString path = dir.absoluteFilePath(s);
-  QString m = QString::fromStdString(message);
+  QString path = cacheDir.absoluteFilePath(QString::number(messageId));
+  qDebug() << "set file cache" << path;
 
   QFile f(path);
   f.open(QIODevice::WriteOnly|QIODevice::Text);
 
-  QTextStream out(&f);
-  out << m;
-  out.flush();
+  QTextStream(&f) << message;
   f.close();
 
   cacheIndex.insert(messageId);
@@ -60,26 +48,12 @@ void EmailCache::BuildCacheIndex()
     cacheIndex.clear();
   }
 
-  QDir p(cacheDir);
-
-  if (p.exists()) {
-    QStringList list = p.entryList(QDir::Files|QDir::NoDotAndDotDot);
-    std::cout << list.size() << " entries\n";
-
-    for(int i = 0; i < list.size(); ++i) {
-      std::cout << list[i].toStdString() << std::endl;
-      MsgIdType messageId = list[i].toULongLong();
-      cacheIndex.insert(messageId);
-    }
-  } else {
-    // warning! cache directory is not exists or is not a directory!
+  // Assume that cacheDir is good.
+  QStringList list = cacheDir.entryList(QDir::Files|QDir::NoDotAndDotDot);
+  qDebug() << "current file cache:" << list.size() << " entries\n";
+  for(int i = 0; i < list.size(); ++i) {
+    MsgIdType messageId = list[i].toULongLong();
+    qDebug() << '\t' << messageId;
+    cacheIndex.insert(messageId);
   }
-
-  // debug
-  std::cout << "Debug cache:\n";
-  for(std::set<MsgIdType>::iterator it = cacheIndex.begin();
-      it != cacheIndex.end(); ++it) {
-    std::cout << (*it) << std::endl;
-  }
-  std::cout << "\n";
 }

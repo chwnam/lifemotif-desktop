@@ -3,7 +3,7 @@
 
 #include "message_types.h"
 #include <set>
-#include <QString>
+#include <QDir>
 
 class EmailCache
 {
@@ -11,13 +11,13 @@ public:
   EmailCache(const QString& _cacheDir);
 
   bool HasCache(MsgIdType messageId) const;
-  std::string GetCache(MsgIdType messageId) const;
-  void SetCache(MsgIdType messageId, const std::string message);
+  QString GetCache(MsgIdType messageId) const;
+  void SetCache(MsgIdType messageId, const QString& message);
 
 private:
   void BuildCacheIndex();
 
-  QString cacheDir;
+  QDir cacheDir;
   std::set<MsgIdType> cacheIndex;
 };
 
