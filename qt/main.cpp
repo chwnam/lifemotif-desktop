@@ -4,7 +4,6 @@
 #include <QDebug>
 #include <QMessageBox>
 #include <cstdio>
-#include <stdio_ext.h>
 #include <string>
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"

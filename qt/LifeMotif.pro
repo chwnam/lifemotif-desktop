@@ -8,14 +8,18 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-DEFINES += HAVE_STDINT_H
 QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings -DBOOST_ALL_DYN_LINK
+
+macx {
+  QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
+  CONFIG -= app_bundle
+}
 
 TARGET = LifeMotif
 TEMPLATE = app
 
 SOURCES += main.cpp\
-        mainwindow.cpp \
+    mainwindow.cpp \
     python_wrapper/basepythonwrapper.cpp \
     python_wrapper/googleoauth2wrapper.cpp \
     python_wrapper/googleimapwrapper.cpp \
@@ -64,20 +68,30 @@ OTHER_FILES += \
     TODO.txt \
     ../python/config_checker.py
 
+unix:!macx {
 INCLUDEPATH += \
     /usr/include \
     /usr/include/python2.7 \
-    /usr/local/include \
-    /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7z \
-    /opt/local/include
+    /usr/local/include
 
 LIBS += \
     -L/usr/lib \
     -L/usr/local/lib \
+    -lboost_python-2.7-mt
+}
+
+macx {
+INCLUDEPATH += \
+    /opt/local/Library/Frameworks/Python.framework/Versions/2.7/include/python2.7 \
+    /opt/local/include
+
+LIBS += \
     -L/opt/local/lib \
-    -lmimetic \
-    #-lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
-    -lboost_python-2.7-mt \
+    -lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
     -L/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config \
-    #-ldl -framework CoreFoundation \
+    -ldl -framework CoreFoundation
+}
+
+LIBS += \
+    -lmimetic \
     -lpython2.7
