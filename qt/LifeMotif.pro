@@ -8,13 +8,8 @@ QT       += core gui
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
-<<<<<<< HEAD
-QMAKE_CXXFLAGS += -DBOOST_ALL_DYN_LINK
-=======
 DEFINES += HAVE_STDINT_H
-
 QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings -DBOOST_ALL_DYN_LINK
->>>>>>> e7056e74daaf386bb4301541f8074de4628c239a
 
 TARGET = LifeMotif
 TEMPLATE = app
