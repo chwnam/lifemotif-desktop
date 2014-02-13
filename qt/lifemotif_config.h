@@ -23,4 +23,6 @@
 #define LIFEMOTIF_DEFAULT_USE_FILE_CACHE true
 #define LIFEMOTIF_DEFAULT_CACHE_DIR "./cache/"
 
+#define LIFEMOTIF_GOOGLE_OAUTH_SUCCESS_PATH "/o/oauth2/approval"
+
 #endif // LIFEMOTIF_CONFIG_H

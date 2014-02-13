@@ -44,12 +44,14 @@ private slots:
 
 private:
     void AuthenticateOnConsole();
+    void AuthenticateUsingWebBrowser();
     void BuildLocalStructre();
     void LoadLocalStructure();
     void ParseMessage(const std::string& rawMessage);
     void UpdateCalendar();
 
     QString FetchMessage(const MsgIdType& id);
+    bool HasCredentials();
 
 private:
     Ui::MainWindow *ui;

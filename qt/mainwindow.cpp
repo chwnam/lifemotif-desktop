@@ -4,11 +4,13 @@
 
 #include <QDebug>
 #include <QMessageBox>
+#include <QUrl>
 #include <QVector>
 
 #include "email_parser.h"
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
+#include "web_browser_dialog.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -36,7 +38,7 @@ void MainWindow::BuildLocalStructre()
 
 void MainWindow::LoadLocalStructure()
 {
-  const Qstring lsPath = LifeMotifSettings::LocalStructure();
+  const QString lsPath = LifeMotifSettings::LocalStructure();
 
   if (LifeMotifUtils::IsFileReadable(lsPath)) {
     LocalStructureWrapper lsWrapper(
@@ -172,7 +174,19 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 
 void MainWindow::on_actionBrowserAuthentication_triggered()
 {
+  if (HasCredentials()) {
+    int answer
+        = QMessageBox::question(
+          this,
+          QString("Double Authentication"),
+          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"));
 
+    if (answer == QMessageBox::No) {
+      return;
+    }
+  }
+
+  AuthenticateUsingWebBrowser();
 }
 
 void MainWindow::on_actionConsoleAuthentication_triggered()
@@ -183,26 +197,41 @@ void MainWindow::on_actionConsoleAuthentication_triggered()
 
 void MainWindow::AuthenticateOnConsole()
 {
-  if (oauth2Wrapper()) {
+  QString secretPath = LifeMotifSettings::SecretPath(true);
+  QString storageName = LifeMotifSettings::StorageName(true);
 
-    QString secretPath = LifeMotifSettings::SecretPath(true);
-    QString storageName = LifeMotifSettings::StorageName(true);
+  qDebug() << "Authentication by console."
+           << "Client secret path:" << secretPath;
 
-    qDebug() << "Authentication by console."
-             << "Client secret path:" << secretPath;
+  const std::string
+      url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
 
-    const std::string
-        url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
+  const std::string
+      code = oauth2Wrapper()->GrantUserPermission(url);
 
-    const std::string
-        code = oauth2Wrapper()->GrantUserPermission(url);
+  bp::object
+      credentials = oauth2Wrapper()->MakeCredentials(code);
 
-    bp::object
-        credentials = oauth2Wrapper()->MakeCredentials(code);
+  // keep this credentials
+  oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
 
-    // keep this credentials
-    oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
+  qDebug() << "Successfully authorized.";
+}
 
-    qDebug() << "Successfully authorized.";
+void MainWindow::AuthenticateUsingWebBrowser()
+{
+  WebBrowserDialog wbDlg(this, oauth2Wrapper());
+
+  wbDlg.setWindowModality(Qt::ApplicationModal);
+  int result = wbDlg.exec();
+  if (result == QDialog::Accepted) {
+    QMessageBox::information(this, "Authentication Success", "인증에 성공했어요.");
+  } else {
+    QMessageBox::warning(this, "Authentication failed", "인증에 실패했어요.");
   }
+}
+
+bool MainWindow::HasCredentials()
+{
+  return LifeMotifUtils::IsFile(LifeMotifSettings::StorageName(true));
 }

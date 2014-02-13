@@ -7,6 +7,8 @@ from oauth2client.file import Storage
 
 from base_oauth2_control import base_oauth2_control
 
+# google ouath2client documentation
+# http://google-api-python-client.googlecode.com/hg/docs/epy/oauth2client-module.html
 
 class google_oauth2_control(base_oauth2_control):
     

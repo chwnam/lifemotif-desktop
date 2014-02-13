@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui
+QT       += core gui webkit webkitwidgets
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -33,7 +33,8 @@ SOURCES += main.cpp\
     email_cache.cpp \
     email_parser.cpp \
     lifemotif_settings.cpp \
-    lifemotif_utils.cpp
+    lifemotif_utils.cpp \
+    web_browser_dialog.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -52,10 +53,12 @@ HEADERS  += mainwindow.h \
     message_types.h \
     email_cache.h \
     email_parser.h \
-    lifemotif_utils.h
+    lifemotif_utils.h \
+    web_browser_dialog.h
 
 FORMS    += mainwindow.ui \
-    preferencewindow.ui
+    preferencewindow.ui \
+    web_browser_dialog.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \
