@@ -1,12 +1,15 @@
 #ifndef MAINWINDOW_H
 #define MAINWINDOW_H
 
-#include <boost/shared_ptr.hpp>
 #include <QMainWindow>
 
 #include "./python_wrapper/python_wrapper.h"
-#include "localstructure_extract.h"
+
 #include "email_cache.h"
+#include "lifemotif_settings.h"
+#include "lifemotif_utils.h"
+#include "message_types.h"
+
 
 namespace Ui {
 class MainWindow;
@@ -21,35 +24,78 @@ public:
     ~MainWindow();
 
 private slots:
-     void on_activateButton_clicked();
-
-     void on_authenticateButton_clicked();
-
+    // when the option menu is clicked
      void on_actionOptions_triggered();
 
+     // when the calendar widget is clicked
      void on_calendarWidget_clicked(const QDate &date);
 
+     // when the diary list widget is clicked
      void on_diaryList_clicked(const QModelIndex &index);
 
+     // build local structure menu
      void on_actionBuild_Local_Structure_triggered();
 
+     // authentication by webbrowser (GUI)
+     void on_actionBrowserAuthentication_triggered();
+
+     // authentication by console (CLI)
+     void on_actionConsoleAuthentication_triggered();
+
 private:
-    void InitWrappers();
+    void AuthenticateOnConsole();
+    void BuildLocalStructre();
     void LoadLocalStructure();
-    void UpdateCalendar();
     void ParseMessage(const std::string& rawMessage);
+    void UpdateCalendar();
+
+    QString FetchMessage(const MsgIdType& id);
 
 private:
     Ui::MainWindow *ui;
 
     // wrappers
-    boost::shared_ptr<GoogleOauth2Wrapper> oauth2Wrapper;
-    boost::shared_ptr<GoogleImapWrapper>   imapWrapper;
+    GoogleOauth2WrapperPtr _oauth2Wrapper;
+    GoogleImapWrapperPtr _imapWrapper;
+
+    // email cache
+    typedef boost::shared_ptr<EmailCache> EmailCachePtr;
+    EmailCachePtr _emailCache;
+
+    // late type binding.
+    inline GoogleOauth2WrapperPtr& oauth2Wrapper() {
+      if (_oauth2Wrapper == NULL) {
+        _oauth2Wrapper = LifeMotifUtils::CreateOauth2Wrapper();
+      }
+      return _oauth2Wrapper;
+    }
+    inline const GoogleOauth2WrapperPtr& oauth2Wrapper() const {
+      return oauth2Wrapper();
+    }
+
+    inline GoogleImapWrapperPtr& imapWrapper() {
+      if (_imapWrapper == NULL) {
+        _imapWrapper = LifeMotifUtils::CreateImapWrapper(oauth2Wrapper());
+      }
+      return _imapWrapper;
+    }
+    inline const GoogleImapWrapperPtr& imapWrapper() const {
+      return imapWrapper();
+    }
+
+    inline EmailCachePtr& emailCache() {
+      if (_emailCache == NULL) {
+        _emailCache
+            = EmailCachePtr(new EmailCache(LifeMotifSettings::CacheDir()));
+      }
+      return _emailCache;
+    }
+    inline const EmailCachePtr& emailCache() const {
+      return emailCache();
+    }
 
     // local structure
     LocalStructureType localStructure;
-
-    boost::shared_ptr<EmailCache> emailCache;
 };
 
 #endif // MAINWINDOW_H

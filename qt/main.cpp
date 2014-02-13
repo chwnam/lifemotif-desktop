@@ -1,10 +1,12 @@
 #include <boost/python.hpp>
+
 #include "mainwindow.h"
 #include <QApplication>
 #include <QDebug>
 #include <QMessageBox>
 #include <cstdio>
 #include <string>
+
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_exceptions.h"
@@ -36,6 +38,7 @@ int main(int argc, char *argv[])
     const int bufferSize = 4096;
 
     fflush(stderr);
+    errorBuffer = (char*)malloc(sizeof(char)*bufferSize);
     SetBuffer(stderr, errorBuffer, bufferSize);
     PyErr_Print();
 

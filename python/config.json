@@ -1,6 +1,6 @@
 {
     "secret_path": "client_secrets.json",
-    "storage_name": "credential.json",
+    "storage_name": "credentials.json",
     "label": "개인/일기",
     "email_address": "cs.chwnam@gmail.com",
     "local_structure": "local_structure.dat",

@@ -4,24 +4,20 @@
 
 #include <QDebug>
 #include <QMessageBox>
-#include <iostream>
 #include <QVector>
 
-#include "lifemotif_settings.h"
+#include "email_parser.h"
 #include "lifemotif_config.h"
-#include "lifemotif_utils.h"
-
+#include "localstructure_extract.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-    InitWrappers();
 
-    QString emailCacheDir = LifeMotifSettings::CacheDir();
-    emailCache = boost::shared_ptr<EmailCache>(
-          new EmailCache(emailCacheDir));
+    LoadLocalStructure();
+    UpdateCalendar();
 }
 
 MainWindow::~MainWindow()
@@ -29,58 +25,35 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::InitWrappers()
+void MainWindow::BuildLocalStructre()
 {
-  // wrapper initialization
-  oauth2Wrapper = boost::shared_ptr<GoogleOauth2Wrapper>(
-        new GoogleOauth2Wrapper(
-        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
-        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS));
-  qDebug() << "oauth2wrapper assigned";
+  QString label = LifeMotifSettings::Label();
+  bp::object structureObject =
+      imapWrapper()->FetchThreadStructure(label.toStdString());
 
-//  std::string tempStorageName;
-//  std::string scriptPath, storageName, emailAddress;
-//  int debugLevel;
-
-//  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
-//  tempStorageName = LifeMotifSettings::StorageName().toStdString();
-
-//  storageName = LifeMotifUtils::JoinPath(
-//                  2, scriptPath.c_str(), tempStorageName.c_str());
-
-//  emailAddress = LifeMotifSettings::EmailAddress().toStdString();
-
-//  debugLevel = LifeMotifSettings::DebugLevel();
-
-//  bp::object imapObject
-//      = oauth2Wrapper->ImapAuthenticate(storageName, emailAddress, debugLevel);
-
-//  imapWrapper = boost::shared_ptr<GoogleImapWrapper>(
-//        new GoogleImapWrapper(
-//        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
-//        LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
-//        imapObject));
+  LocalStructureExtract(structureObject, localStructure);
 }
 
 void MainWindow::LoadLocalStructure()
 {
-  std::string tmpls = LifeMotifSettings::LocalStructure().toStdString();
-  std::string scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
-  std::string lsPath;
+  if (LifeMotifUtils::IsFileReadable(LifeMotifSettings::LocalStructure())) {
+    LocalStructureWrapper lsWrapper(
+          LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
+          LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
 
-  lsPath = LifeMotifUtils::JoinPath(
-        2, scriptPath.c_str(), tmpls.c_str());
+    bp::object object
+        = lsWrapper.Load(LifeMotifSettings::LocalStructure().toStdString());
 
-  bp::object obj = LocalStructureWrapper(
-                    LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-                    LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS).Load(
-                      lsPath);
-
-  LocalStructureExtract(obj, localStructure);
+    LocalStructureExtract(object, localStructure);
+  }
 }
 
 void MainWindow::UpdateCalendar()
 {
+  if (localStructure.empty()) {
+    return;
+  }
+
   // sorted list of date
   QVector<QString> dateVector;
   dateVector.reserve(localStructure.size());
@@ -117,16 +90,6 @@ void MainWindow::UpdateCalendar()
   }
 }
 
-void MainWindow::on_activateButton_clicked()
-{
-    QMessageBox::information(this, "Hello!", "Activated!", QMessageBox::Ok);
-}
-
-void MainWindow::on_authenticateButton_clicked()
-{
-    QMessageBox::information(this, "Authenticate", "Authentication", QMessageBox::Ok);
-}
-
 void MainWindow::on_actionOptions_triggered()
 {
   // show preference modal dialog
@@ -156,26 +119,13 @@ void MainWindow::on_calendarWidget_clicked(const QDate &date)
 
 void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 {
+  // get message id
   QCalendarWidget& cal = *ui->calendarWidget;
-  QDate d = cal.selectedDate();
-  DateType ds = d.toString("yyyyMMdd").toStdString();
+  DateType ds = cal.selectedDate().toString("yyyyMMdd").toStdString();
+  MsgIdType msgId = localStructure[ds].messageIds[index.row()];
 
-  const MessageGroup& group = localStructure[ds];
-  MsgIdType msgId = group.messageIds[index.row()];
-
-  // query cache
-  QString rawMessage;
-  if (emailCache->HasCache(msgId) == false) {
-    qDebug() << msgId << "is uncached. Fetch from the server.";
-
-    std::string label = LifeMotifSettings::Label().toStdString();
-    rawMessage = QString::fromStdString(imapWrapper->FetchMail(label, msgId));
-    emailCache->SetCache(msgId, rawMessage);
-  } else {
-    qDebug() << msgId << "is cached. Load from local disk.";
-    rawMessage = emailCache->GetCache(msgId);
-  }
-
+  // fetch message by message id
+  QString rawMessage = FetchMessage(msgId);
   // parse email message
   ParseMessage(rawMessage.toStdString());
 
@@ -187,27 +137,64 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()
 {
-  bp::object pythonStructureObject =
-  imapWrapper->FetchThreadStructure(LifeMotifSettings::Label().toStdString());
-
-  std::string tempPath;
-  std::string scriptPath;
-  std::string lsPath;
-
-  scriptPath = LifeMotifSettings::PythonScriptPath().toStdString();
-  tempPath = LifeMotifSettings::LocalStructure().toStdString();
-  lsPath = LifeMotifUtils::JoinPath(2, scriptPath.c_str(), tempPath.c_str());
-
-  LocalStructureWrapper(
-        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS).Build(
-        lsPath, pythonStructureObject);
-
-  LocalStructureExtract(pythonStructureObject, localStructure);
+  BuildLocalStructre();
   UpdateCalendar();
+}
+
+QString MainWindow::FetchMessage(const MsgIdType& id)
+{
+  QString rawMessage;
+  if (emailCache()->HasCache(id)) {
+    qDebug() << id << "is cached. Load from local disk.";
+    rawMessage = emailCache()->GetCache(id);
+  } else {
+    qDebug() << id << "is uncached. Fetch from the server.";
+    std::string label = LifeMotifSettings::Label().toStdString();
+    rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
+    emailCache()->SetCache(id, rawMessage);
+  }
+  return rawMessage;
 }
 
 void MainWindow::ParseMessage(const std::string& rawMessage)
 {
+  EmailParser parser;
+  parser.FeedParser(rawMessage);
+}
 
+void MainWindow::on_actionBrowserAuthentication_triggered()
+{
+
+}
+
+void MainWindow::on_actionConsoleAuthentication_triggered()
+{
+  // TODO: if the program already has been authenticated?
+  AuthenticateOnConsole();
+}
+
+void MainWindow::AuthenticateOnConsole()
+{
+  if (oauth2Wrapper()) {
+
+    QString secretPath = LifeMotifSettings::SecretPath(true);
+    QString storageName = LifeMotifSettings::StorageName(true);
+
+    qDebug() << "Authentication by console."
+             << "Client secret path:" << secretPath;
+
+    const std::string
+        url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
+
+    const std::string
+        code = oauth2Wrapper()->GrantUserPermission(url);
+
+    bp::object
+        credentials = oauth2Wrapper()->MakeCredentials(code);
+
+    // keep this credentials
+    oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
+
+    qDebug() << "Successfully authorized.";
+  }
 }

@@ -134,14 +134,11 @@ void LifeMotifSettings::SetIniDefault()
 
 void LifeMotifSettings::JsonValueCheck()
 {
-  QString path = QDir::cleanPath(PythonScriptPath());
-  if (!path.endsWith('/')) {
-    path.append('/');
-  }
-
-  QString secretPath = QDir::cleanPath(path + SecretPath());
-  QString storPath = QFileInfo(path + StorageName()).dir().path();
-  QString locPath = QFileInfo(path + LocalStructure()).dir().path();
+  QString secretPath = SecretPath(true);
+  QString storageName = StorageName(true);
+  QString storPath = QFileInfo(storageName).dir().path();
+  QString localStructure = LocalStructure(true);
+  QString locPath = QFileInfo(localStructure).dir().path();
 
   if (LifeMotifUtils::IsFileReadable(secretPath) == false) {
     // secret_path is invalid. This is bad. Terminate.
@@ -159,6 +156,18 @@ void LifeMotifSettings::JsonValueCheck()
     errMsg += "'" + storPath.toStdString() + "'";
     errMsg += " is not a directory or not writable.";
     throw LifeMotifInvalidSetting(errMsg);
+  } else {
+    // directory is accessible and writable.
+    // storage name should be readable/writable if it exists
+    if (LifeMotifUtils::Exists(storageName) &&
+        LifeMotifUtils::IsFileReadableWritable(storageName) == false ) {
+      // storageName is not a file or not readable or not writable. Terminate.
+      std::string errMsg;
+      errMsg = "Critical error - storage_name: ";
+      errMsg += "'" + storageName.toStdString() + "'";
+      errMsg += " is not a file, or not readable/writable.";
+      throw LifeMotifInvalidSetting(errMsg);
+    }
   }
 
   if (LifeMotifUtils::IsDirectoryAccessibleWritable(locPath) == false) {
@@ -168,6 +177,18 @@ void LifeMotifSettings::JsonValueCheck()
     errMsg += "'" + locPath.toStdString() + "'";
     errMsg += " is not a directory or not writable.";
     throw LifeMotifInvalidSetting(errMsg);
+  } else {
+    // directory is accessible and writable.
+    // local structure shoud be readable and writable if it exists
+    if (LifeMotifUtils::Exists(localStructure) &&
+        LifeMotifUtils::IsFileReadableWritable(localStructure) == false) {
+      // local structure is not a file or not readable or not writable. Terminate.
+      std::string errMsg;
+      errMsg = "Critical error - local_structure: ";
+      errMsg += "'" + localStructure.toStdString() + "'";
+      errMsg += " is not a file, or not readable/writable.";
+      throw LifeMotifInvalidSetting(errMsg);
+    }
   }
 
   qDebug(".json setting is ok!");

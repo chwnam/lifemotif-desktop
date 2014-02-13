@@ -1,9 +1,16 @@
 #ifndef LIFEMOTIF_UTILS_H
 #define LIFEMOTIF_UTILS_H
 
+#include <boost/shared_ptr.hpp>
 #include <stdarg.h>
 #include <string>
+#include <QDir>
 #include <QFileInfo>
+
+#include "python_wrapper/python_wrapper.h"
+
+typedef boost::shared_ptr<GoogleImapWrapper> GoogleImapWrapperPtr;
+typedef boost::shared_ptr<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
 
 class LifeMotifUtils
 {
@@ -11,16 +18,29 @@ public:
   /* join N path c-strings */
   static std::string JoinPath(int n, ...);
 
+  static QString
+  inline JoinPath(const QString& pre, const QString& add);
+
   /* is path or file exists? */
   inline static bool Exists(const QString& path);
 
   inline static bool IsFile(const QString& path);
   inline static bool IsFileReadable(const QString& path);
+  inline static bool IsFileReadableWritable(const QString& path);
 
   inline static bool IsDirectory(const QString& path);
   inline static bool IsDirectoryAccessible(const QString& path);
   inline static bool IsDirectoryAccessibleWritable(const QString& path);
+
+  /* create wrappers */
+  static GoogleImapWrapperPtr CreateImapWrapper(GoogleOauth2WrapperPtr ptr);
+  static GoogleOauth2WrapperPtr CreateOauth2Wrapper();
 };
+
+QString LifeMotifUtils::JoinPath(const QString& pre, const QString& add)
+{
+  return QDir(pre + QDir::separator() + add).absolutePath();
+}
 
 bool LifeMotifUtils::Exists(const QString& path)
 {
@@ -37,6 +57,12 @@ bool LifeMotifUtils::IsFileReadable(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isFile() && fi.isReadable();
+}
+
+bool LifeMotifUtils::IsFileReadableWritable(const QString& path)
+{
+  QFileInfo fi(path);
+  return fi.exists() && fi.isFile() && fi.isReadable() && fi.isWritable();
 }
 
 bool LifeMotifUtils::IsDirectory(const QString& path)

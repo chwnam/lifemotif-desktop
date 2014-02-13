@@ -12,8 +12,6 @@ Oauth2Wrapper::GrantUserPermission(const std::string &url)
 {
   bp::object codeObject;
 
-  std::cout << "Testing GrantUserPermission...\n";
-
   codeObject = CreateObject(
                 PyObject_CallMethod(
                   instance.ptr(),

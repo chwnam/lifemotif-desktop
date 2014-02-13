@@ -1,9 +1,9 @@
 #ifndef BASEPYTHONWRAPPER_H
 #define BASEPYTHONWRAPPER_H
 
-#include <boost/python.hpp>
+#include <iostream> // DO NOT remove. Will make compile error!
 #include <string>
-#include <cassert>
+#include <boost/python.hpp>
 
 namespace bp = boost::python;
 

@@ -50,10 +50,10 @@ void EmailCache::BuildCacheIndex()
 
   // Assume that cacheDir is good.
   QStringList list = cacheDir.entryList(QDir::Files|QDir::NoDotAndDotDot);
-  qDebug() << "current file cache:" << list.size() << " entries\n";
+  qDebug() << "current file cache:" << list.size() << "entrie(s)";
   for(int i = 0; i < list.size(); ++i) {
     MsgIdType messageId = list[i].toULongLong();
-    qDebug() << '\t' << messageId;
+    qDebug() << "  >>" << messageId;
     cacheIndex.insert(messageId);
   }
 }

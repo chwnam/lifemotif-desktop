@@ -5,4 +5,4 @@
 *.swp # vim swap file
 build/*
 client_secrets.json
-credential.json
+credentials.json

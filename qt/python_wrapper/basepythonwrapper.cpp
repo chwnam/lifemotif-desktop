@@ -1,4 +1,3 @@
-#include <stdarg.h>
 #include "basepythonwrapper.h"
 
 BasePythonWrapper::BasePythonWrapper(
@@ -6,7 +5,6 @@ BasePythonWrapper::BasePythonWrapper(
         const std::string& _className)
     : moduleName(_moduleName), className(_className)
 {
-  assert(Py_IsInitialized());
 }
 
 void
@@ -23,5 +21,4 @@ BasePythonWrapper::InitWrapper(PyObject* pArgs)
 
   instance = CreateObject(
                     PyObject_CallObject(classObj.ptr(), pArgs));
-  assert(instance.ptr());
 }

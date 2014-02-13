@@ -18,9 +18,9 @@
     <property name="geometry">
      <rect>
       <x>250</x>
-      <y>50</y>
+      <y>10</y>
       <width>471</width>
-      <height>371</height>
+      <height>491</height>
      </rect>
     </property>
     <property name="readOnly">
@@ -33,7 +33,7 @@
       <x>10</x>
       <y>10</y>
       <width>231</width>
-      <height>166</height>
+      <height>231</height>
      </rect>
     </property>
     <property name="gridVisible">
@@ -47,9 +47,9 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>210</y>
+      <y>390</y>
       <width>231</width>
-      <height>71</height>
+      <height>111</height>
      </rect>
     </property>
    </widget>
@@ -57,39 +57,13 @@
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>190</y>
+      <y>360</y>
       <width>62</width>
       <height>16</height>
      </rect>
     </property>
     <property name="text">
      <string>일기 목록</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="activateButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>460</y>
-      <width>221</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>프로그램 동작</string>
-    </property>
-   </widget>
-   <widget class="QPushButton" name="authenticateButton">
-    <property name="geometry">
-     <rect>
-      <x>10</x>
-      <y>420</y>
-      <width>221</width>
-      <height>32</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>클라이언트 인증</string>
     </property>
    </widget>
   </widget>
@@ -115,9 +89,11 @@
    </widget>
    <widget class="QMenu" name="menuTestMenu">
     <property name="title">
-     <string>Test</string>
+     <string>테스트</string>
     </property>
-    <addaction name="actionAuthentication_Console"/>
+    <addaction name="actionConsoleAuthentication"/>
+    <addaction name="actionBrowserAuthentication"/>
+    <addaction name="separator"/>
     <addaction name="actionList_Mailboxes"/>
     <addaction name="actionBuild_Local_Structure"/>
    </widget>
@@ -133,9 +109,9 @@
     <string>Preferences</string>
    </property>
   </action>
-  <action name="actionAuthentication_Console">
+  <action name="actionConsoleAuthentication">
    <property name="text">
-    <string>Authentication (Console)</string>
+    <string>콘솔에서 인증하기...</string>
    </property>
   </action>
   <action name="actionList_Mailboxes">
@@ -146,6 +122,11 @@
   <action name="actionBuild_Local_Structure">
    <property name="text">
     <string>Build Local Structure</string>
+   </property>
+  </action>
+  <action name="actionBrowserAuthentication">
+   <property name="text">
+    <string>웹브라우저로 인증하기...</string>
    </property>
   </action>
  </widget>

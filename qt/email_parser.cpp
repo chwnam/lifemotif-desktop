@@ -10,7 +10,6 @@ void EmailParser::FeedParser(const std::string& message)
 {
   mimetic::MimeEntity entity(message.begin(), message.end());
 
-  /*
   const mimetic::Header& header = entity.header();
   const mimetic::Body& body = entity.body();
 
@@ -32,7 +31,7 @@ void EmailParser::FeedParser(const std::string& message)
   // mailboxlist
   for(mimetic::MailboxList::const_iterator it = from.begin();
       it != from.end(); ++it) {
-    //std::cout << *it;
+    std::cout << *it;
   }
 
   // addresslist
@@ -42,12 +41,12 @@ void EmailParser::FeedParser(const std::string& message)
 
     if (adr.isGroup()) {
       std::cout<< "addresslist is a group";
-      //std::cout<< adr.group();
+      std::cout<< adr.group();
     } else {
-      //std::cout<< adr.mailbox();
+      std::cout<< adr.mailbox();
     }
   }
 
   std::cout<< "subject: " << subject;
-  std::cout<< "messageId: " << messageId; */
+  std::cout<< "messageId: " << messageId;
 }

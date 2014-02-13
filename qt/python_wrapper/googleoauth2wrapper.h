@@ -26,7 +26,6 @@ public:
             const std::string& storageName,
             const std::string& emailAddress,
             const int debugLevel = 0);
-
 };
 
 #endif // GOOGLEOAUTH2CONTROLLER_H

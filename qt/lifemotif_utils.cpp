@@ -1,5 +1,9 @@
 #include "lifemotif_utils.h"
 
+#include <QDebug>
+
+#include "lifemotif_config.h"
+#include "lifemotif_settings.h"
 
 std::string LifeMotifUtils::JoinPath(int n, ...)
 {
@@ -19,4 +23,44 @@ std::string LifeMotifUtils::JoinPath(int n, ...)
   va_end(argp);
 
   return out;
+}
+
+GoogleImapWrapperPtr
+LifeMotifUtils::CreateImapWrapper(GoogleOauth2WrapperPtr ptr)
+{
+  GoogleImapWrapperPtr imapWrapper;
+
+  if (ptr) {
+    const QString storage = LifeMotifSettings::StorageName();
+    const QString emailAddress = LifeMotifSettings::EmailAddress();
+    const int debugLevel = LifeMotifSettings::DebugLevel();
+
+    bp::object imapObject =
+        ptr->ImapAuthenticate(
+          storage.toStdString(),
+          emailAddress.toStdString(),
+          debugLevel);
+
+    imapWrapper = GoogleImapWrapperPtr(new GoogleImapWrapper(
+            LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
+            LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
+            imapObject));
+
+    if (imapWrapper == NULL) throw std::bad_alloc();
+    qDebug() << "imapwrapper assigned";
+  }
+
+  return imapWrapper;
+}
+
+GoogleOauth2WrapperPtr LifeMotifUtils::CreateOauth2Wrapper()
+{
+  GoogleOauth2WrapperPtr ptr
+      = GoogleOauth2WrapperPtr(new GoogleOauth2Wrapper(
+        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
+        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS));
+
+  if (ptr == NULL) throw std::bad_alloc();
+  qDebug() << "oauth2wrapper assigned";
+  return ptr;
 }
