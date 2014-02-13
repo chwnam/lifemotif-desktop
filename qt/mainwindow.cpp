@@ -36,14 +36,14 @@ void MainWindow::BuildLocalStructre()
 
 void MainWindow::LoadLocalStructure()
 {
-  if (LifeMotifUtils::IsFileReadable(LifeMotifSettings::LocalStructure())) {
+  const Qstring lsPath = LifeMotifSettings::LocalStructure();
+
+  if (LifeMotifUtils::IsFileReadable(lsPath)) {
     LocalStructureWrapper lsWrapper(
           LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
           LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
 
-    bp::object object
-        = lsWrapper.Load(LifeMotifSettings::LocalStructure().toStdString());
-
+    bp::object object = lsWrapper.Load(lsPath.toStdString());
     LocalStructureExtract(object, localStructure);
   }
 }
@@ -51,6 +51,7 @@ void MainWindow::LoadLocalStructure()
 void MainWindow::UpdateCalendar()
 {
   if (localStructure.empty()) {
+    ui->calendarWidget->setEnabled(false);
     return;
   }
 
@@ -63,26 +64,22 @@ void MainWindow::UpdateCalendar()
   }
   qSort(dateVector);
 
-  if (dateVector.empty() == false) {
+  // calendar min/max date
+  QDate minDate, maxDate;
 
-    QDate minDate, maxDate;
+  minDate = QDate::fromString(*(dateVector.begin()), "yyyyMMdd");
+  maxDate = QDate::fromString(*(dateVector.end()-1), "yyyyMMdd");
 
-    minDate = QDate::fromString(*(dateVector.begin()), "yyyyMMdd");
-    maxDate = QDate::fromString(*(dateVector.end()-1), "yyyyMMdd");
+  ui->calendarWidget->setMinimumDate(minDate);
+  ui->calendarWidget->setMaximumDate(maxDate);
+  ui->calendarWidget->setEnabled(true);
 
-    ui->calendarWidget->setMinimumDate(minDate);
-    ui->calendarWidget->setMaximumDate(maxDate);
-    ui->calendarWidget->setEnabled(true);
-  } else {
-    ui->calendarWidget->setEnabled(false);
-  }
-
-  for(QVector<QString>::iterator it = dateVector.begin();
-      it != dateVector.end(); ++it) {
-
+  // calendar formatting.
+  for(QVector<QString>::iterator it = dateVector.begin(); it != dateVector.end(); ++it) {
     QDate d = QDate::fromString(*it, "yyyyMMdd");
     QTextCharFormat charFormat = ui->calendarWidget->dateTextFormat(d);
 
+    // currently underline, bold
     charFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
     charFormat.setFontWeight(QFont::Bold);
 
@@ -107,13 +104,19 @@ void MainWindow::on_actionOptions_triggered()
 void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
     DateType datestring = date.toString("yyyyMMdd").toStdString();
-    const MessageGroup& group = localStructure[datestring];
 
-    QListWidget& list = *ui->diaryList;
-    list.clear();
+    // yyyyMMdd date string is the key.
+    // find the email thread of the day and display in the list widget.
+    if (localStructure.find(datestring) != localStructure.end()) {
 
-    for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
-      list.addItem(QString::number(group.messageIds[i]));
+      const MessageGroup& group = localStructure[datestring];
+      QListWidget& list = *ui->diaryList;
+
+      list.clear();
+      for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
+        list.addItem(QString::number(group.messageIds[i]));
+      }
+
     }
 }
 
@@ -122,17 +125,22 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
   // get message id
   QCalendarWidget& cal = *ui->calendarWidget;
   DateType ds = cal.selectedDate().toString("yyyyMMdd").toStdString();
-  MsgIdType msgId = localStructure[ds].messageIds[index.row()];
 
-  // fetch message by message id
-  QString rawMessage = FetchMessage(msgId);
-  // parse email message
-  ParseMessage(rawMessage.toStdString());
+  if (localStructure.find(ds) != localStructure.end()) {
 
-  // display message
-  QPlainTextEdit& text = *ui->diaryText;
-  text.clear();
-  text.setPlainText(rawMessage);
+    MsgIdType msgId = localStructure[ds].messageIds[index.row()];
+
+    // fetch message by message id
+    QString rawMessage = FetchMessage(msgId);
+    // parse email message
+    ParseMessage(rawMessage.toStdString());
+
+    // display message
+    QPlainTextEdit& text = *ui->diaryText;
+    text.clear();
+    text.setPlainText(rawMessage);
+
+  }
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()

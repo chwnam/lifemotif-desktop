@@ -81,7 +81,7 @@ void LifeMotifSettings::IniValueCheck(const QString& iniPath)
     std::string errMsg;
     errMsg = "Critical error - python_script_path: ";
     errMsg += "'" + pythonScriptPath.toStdString() + "'";
-    errMsg += " is not a directory or not readable.";
+    errMsg += " is not a directory or not accessible.";
     throw LifeMotifInvalidSetting(errMsg);
   }
   if (LifeMotifUtils::IsFileReadable(pythonConfig) == false) {
@@ -95,7 +95,8 @@ void LifeMotifSettings::IniValueCheck(const QString& iniPath)
   if (useFileCache && LifeMotifUtils::IsDirectoryAccessible(cacheDir) == false) {
     // cache directory should be accesible.
     if (LifeMotifUtils::Exists(cacheDir) == false) {
-      // this is acceptable. Create cacheDir and go ahead.
+      // We couldn't access cacheDir because it does not exist.
+      // In this casse, try to create cacheDir and go ahead.
       QString absPath = QDir(cacheDir).absolutePath();
       QDir root = QDir::root();
       if(root.mkpath(absPath) == false) {
@@ -107,12 +108,15 @@ void LifeMotifSettings::IniValueCheck(const QString& iniPath)
       }
       qDebug() << cacheDir << "for file cache is missing. Newly created.";
     } else {
+      // cache directory exsists, but cannot accessible.
       // This is bad. Stop the program.
       std::string errMsg;
       errMsg = "Critical error - cache_dir: ";
       errMsg += "'" + cacheDir.toStdString() + "'";
       errMsg += " is not a directory or inaccessible.";
       throw LifeMotifInvalidSetting(errMsg);
+
+      // or we can disable cache function and go ahead...
     }
   }
 
