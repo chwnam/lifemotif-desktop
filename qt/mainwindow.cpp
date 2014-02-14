@@ -7,7 +7,6 @@
 #include <QUrl>
 #include <QVector>
 
-#include "email_parser.h"
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
 #include "web_browser_dialog.h"
@@ -132,17 +131,29 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 
     MsgIdType msgId = localStructure[ds].messageIds[index.row()];
 
-    // fetch message by message id
-    QString rawMessage = FetchMessage(msgId);
-    // parse email message
-    ParseMessage(rawMessage.toStdString());
-
-    // display message
-    QPlainTextEdit& text = *ui->diaryText;
-    text.clear();
-    text.setPlainText(rawMessage);
-
+    // fetch message by message id, and parse email message
+    ParseMessage(FetchMessage(msgId).toStdString());
+    // update ui
+    UpdateDiaryInformationUI();
   }
+}
+
+void MainWindow::UpdateDiaryInformationUI(void)
+{
+    // from, to, subject
+    ui->fromEdit->setText(diary->From());
+    ui->toEdit->setText(diary->To());
+    ui->subjectEdit->setText(diary->Subject());
+
+    // diary text
+    ui->diaryText->clear();
+    if (diary->TextHtmlContent().isEmpty()) {
+      ui->diaryText->setPlainText(diary->TextPlainContent());
+    } else {
+      ui->diaryText->setPlainText(diary->TextHtmlContent());
+    }
+
+    // attachment
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()
@@ -168,22 +179,30 @@ QString MainWindow::FetchMessage(const MsgIdType& id)
 
 void MainWindow::ParseMessage(const std::string& rawMessage)
 {
-  EmailParser parser;
-  parser.FeedParser(rawMessage);
+  diary = LifeMotifDiaryPtr(new LifeMotifDiary(rawMessage));
+
+  qDebug() << "From:" << diary->From();
+  qDebug() << "To:" << diary->To();
+  qDebug() << "Subject:" << diary->Subject();
+  qDebug() << "Plain text:" << diary->TextPlainContent().mid(0, 20) << "...";
+  qDebug() << "HTML text:" << diary->TextHtmlContent().mid(0, 20) << "...";
+
+  qDebug() << diary->NumberOfAttach() << "attachment(s)";
+  if (diary->NumberOfAttach() > 0) {
+      for(int i = 0; i < diary->NumberOfAttach(); ++i) {
+          qDebug() << "  " << diary->GetAttachment(i).name;
+      }
+  }
 }
 
 void MainWindow::on_actionBrowserAuthentication_triggered()
 {
-  if (HasCredentials()) {
-    int answer
-        = QMessageBox::question(
+  if (HasCredentials() &&
+      QMessageBox::No == QMessageBox::question(
           this,
           QString("Double Authentication"),
-          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"));
-
-    if (answer == QMessageBox::No) {
+          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"))) {
       return;
-    }
   }
 
   AuthenticateUsingWebBrowser();

@@ -6,6 +6,7 @@
 #include "./python_wrapper/python_wrapper.h"
 
 #include "email_cache.h"
+#include "lifemotif_diary.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_utils.h"
 #include "message_types.h"
@@ -49,6 +50,7 @@ private:
     void LoadLocalStructure();
     void ParseMessage(const std::string& rawMessage);
     void UpdateCalendar();
+    void UpdateDiaryInformationUI();
 
     QString FetchMessage(const MsgIdType& id);
     bool HasCredentials();
@@ -98,6 +100,10 @@ private:
 
     // local structure
     LocalStructureType localStructure;
+
+    // parsed email becomes diary
+    typedef boost::shared_ptr<LifeMotifDiary> LifeMotifDiaryPtr;
+    LifeMotifDiaryPtr diary;
 };
 
 #endif // MAINWINDOW_H

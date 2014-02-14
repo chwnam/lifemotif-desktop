@@ -31,10 +31,10 @@ SOURCES += main.cpp\
     localstructure_extract.cpp \
     message_types.cpp \
     email_cache.cpp \
-    email_parser.cpp \
     lifemotif_settings.cpp \
     lifemotif_utils.cpp \
-    web_browser_dialog.cpp
+    web_browser_dialog.cpp \
+    lifemotif_diary.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -52,9 +52,9 @@ HEADERS  += mainwindow.h \
     localstructure_extract.h \
     message_types.h \
     email_cache.h \
-    email_parser.h \
     lifemotif_utils.h \
-    web_browser_dialog.h
+    web_browser_dialog.h \
+    lifemotif_diary.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui \
