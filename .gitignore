@@ -3,7 +3,6 @@
 *.pyc
 *.pro.user
 *.swp # vim swap file
-build/*
 client_secrets.json
 credentials.json
 
@@ -11,3 +10,7 @@ credentials.json
 *.suo
 *.user
 *.sdf
+bin/
+build/*
+
+*.netrc
