@@ -6,3 +6,8 @@
 build/*
 client_secrets.json
 credentials.json
+
+# Visual Studio
+*.suo
+*.user
+*.sdf
