@@ -3,14 +3,25 @@
 *.pyc
 *.pro.user
 *.swp # vim swap file
+*.netrc
+
+bin/
+build/*
 client_secrets.json
 credentials.json
 
 # Visual Studio
-*.suo
-*.user
+*.ipch
+*.manifest
+*.opensdf
+*.pdb
 *.sdf
-bin/
-build/*
+*.suo
+*.tlog
+*.user
+msvc/msvc2010/win32/GeneratedFiles/*
+msvc/msvc2010/win32/Debug/*
+msvc/msvc2010/win32/Release/*
 
-*.netrc
+
+
