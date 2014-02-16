@@ -19,9 +19,9 @@ credentials.json
 *.suo
 *.tlog
 *.user
-msvc/msvc2010/win32/GeneratedFiles/*
-msvc/msvc2010/win32/Debug/*
-msvc/msvc2010/win32/Release/*
+msvc/msvc2010/lifemotif-desktop/GeneratedFiles/*
+msvc/msvc2010/lifemotif-desktop/Debug/*
+msvc/msvc2010/lifemotif-desktop/Release/*
 
 
 

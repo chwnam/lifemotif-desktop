@@ -13,7 +13,7 @@ public:
       bp::object& _imapObject);
 
   bp::object
-  FetchThreadStructure(const std::string label);
+  FetchThreadStructure(const std::string& label);
 
   std::string
   FetchMail(const std::string& label, unsigned long long messageId);

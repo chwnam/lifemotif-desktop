@@ -13,7 +13,7 @@ GoogleImapWrapper::GoogleImapWrapper(
 }
 
 bp::object
-GoogleImapWrapper::FetchThreadStructure(const std::string label)
+GoogleImapWrapper::FetchThreadStructure(const std::string& label)
 {
   bp::object structure;
   bp::object unicodeLabel;

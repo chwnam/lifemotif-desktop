@@ -29,7 +29,7 @@ private slots:
      void on_actionOptions_triggered();
 
      // when the calendar widget is clicked
-     void on_calendarWidget_clicked(const QDate &date);
+     void OnCalendarWidgetClicked(const QDate &date);
 
      // when the diary list widget is clicked
      void on_diaryList_clicked(const QModelIndex &index);

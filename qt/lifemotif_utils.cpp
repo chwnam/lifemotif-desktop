@@ -64,3 +64,25 @@ GoogleOauth2WrapperPtr LifeMotifUtils::CreateOauth2Wrapper()
   qDebug() << "oauth2wrapper assigned";
   return ptr;
 }
+
+LocalStructureWrapperPtr LifeMotifUtils::CreateLocalStructureWrapper()
+{
+  LocalStructureWrapperPtr ptr
+    = LocalStructureWrapperPtr(new LocalStructureWrapper(
+        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
+        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS));
+
+  if (ptr == NULL) throw std::bad_alloc();
+  qDebug() << "localstructurewrapper assigned";
+  return ptr;
+}
+
+QString LifeMotifUtils::Trim(const QString& input, const QChar& s)
+{
+  int b, e;
+
+  b = (*input.begin() == s) ? 1 : 0;
+  e = (*(input.end()-1) == s) ? input.size() - 2 : input.size() - 1;
+
+  return input.mid(b, e);
+}

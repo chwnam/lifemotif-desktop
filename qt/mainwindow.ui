@@ -6,27 +6,26 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>730</width>
-    <height>536</height>
+    <width>1024</width>
+    <height>780</height>
    </rect>
   </property>
+  <property name="minimumSize">
+   <size>
+    <width>1024</width>
+    <height>780</height>
+   </size>
+  </property>
+  <property name="maximumSize">
+   <size>
+    <width>1024</width>
+    <height>780</height>
+   </size>
+  </property>
   <property name="windowTitle">
-   <string>MainWindow</string>
+   <string>lifemotif-desktop</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QPlainTextEdit" name="diaryText">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>100</y>
-      <width>471</width>
-      <height>401</height>
-     </rect>
-    </property>
-    <property name="readOnly">
-     <bool>true</bool>
-    </property>
-   </widget>
    <widget class="QCalendarWidget" name="calendarWidget">
     <property name="geometry">
      <rect>
@@ -66,82 +65,13 @@
      <string>일기 목록</string>
     </property>
    </widget>
-   <widget class="QLabel" name="fromLabel">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>10</y>
-      <width>62</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>보낸 사람: </string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="toLabel">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>40</y>
-      <width>62</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>받는 사람: </string>
-    </property>
-   </widget>
-   <widget class="QLabel" name="subjectLabel">
-    <property name="geometry">
-     <rect>
-      <x>250</x>
-      <y>70</y>
-      <width>62</width>
-      <height>16</height>
-     </rect>
-    </property>
-    <property name="text">
-     <string>제목:</string>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="fromEdit">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>10</y>
-      <width>401</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="toEdit">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>40</y>
-      <width>401</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
-   <widget class="QLineEdit" name="subjectEdit">
-    <property name="geometry">
-     <rect>
-      <x>320</x>
-      <y>70</y>
-      <width>401</width>
-      <height>21</height>
-     </rect>
-    </property>
-   </widget>
    <widget class="QPushButton" name="propertyButton">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>370</y>
-      <width>231</width>
-      <height>32</height>
+      <x>60</x>
+      <y>390</y>
+      <width>136</width>
+      <height>23</height>
      </rect>
     </property>
     <property name="text">
@@ -151,51 +81,104 @@
    <widget class="QGroupBox" name="attatchmentGroupBox">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>399</y>
-      <width>231</width>
-      <height>101</height>
+      <x>20</x>
+      <y>650</y>
+      <width>221</width>
+      <height>93</height>
      </rect>
     </property>
     <property name="title">
      <string>첨부파일</string>
     </property>
-    <widget class="QLabel" name="attatchmentLabel">
-     <property name="geometry">
-      <rect>
-       <x>10</x>
-       <y>30</y>
-       <width>62</width>
-       <height>16</height>
-      </rect>
-     </property>
-     <property name="text">
-      <string>파일 선택:</string>
-     </property>
-    </widget>
-    <widget class="QComboBox" name="attatchmentComboBox">
-     <property name="geometry">
-      <rect>
-       <x>70</x>
-       <y>20</y>
-       <width>151</width>
-       <height>26</height>
-      </rect>
-     </property>
-    </widget>
-    <widget class="QPushButton" name="attatchmentSaveAsButton">
+    <widget class="QWidget" name="">
      <property name="geometry">
       <rect>
        <x>0</x>
-       <y>60</y>
-       <width>231</width>
-       <height>32</height>
+       <y>20</y>
+       <width>221</width>
+       <height>53</height>
       </rect>
      </property>
-     <property name="text">
-      <string>첨부파일 저장...</string>
-     </property>
+     <layout class="QVBoxLayout" name="verticalLayout">
+      <item>
+       <layout class="QHBoxLayout" name="horizontalLayout">
+        <item>
+         <widget class="QLabel" name="attatchmentLabel">
+          <property name="text">
+           <string>파일 선택:</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QComboBox" name="attatchmentComboBox">
+          <property name="sizePolicy">
+           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+            <horstretch>0</horstretch>
+            <verstretch>0</verstretch>
+           </sizepolicy>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </item>
+      <item>
+       <widget class="QPushButton" name="attatchmentSaveAsButton">
+        <property name="text">
+         <string>첨부파일 저장...</string>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </widget>
+   </widget>
+   <widget class="QWidget" name="">
+    <property name="geometry">
+     <rect>
+      <x>260</x>
+      <y>11</y>
+      <width>751</width>
+      <height>731</height>
+     </rect>
+    </property>
+    <layout class="QGridLayout" name="gridLayout">
+     <item row="0" column="0">
+      <widget class="QLabel" name="fromLabel">
+       <property name="text">
+        <string>보낸 사람: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="0" column="1">
+      <widget class="QLineEdit" name="fromEdit"/>
+     </item>
+     <item row="1" column="0">
+      <widget class="QLabel" name="toLabel">
+       <property name="text">
+        <string>받는 사람: </string>
+       </property>
+      </widget>
+     </item>
+     <item row="1" column="1">
+      <widget class="QLineEdit" name="toEdit"/>
+     </item>
+     <item row="2" column="0">
+      <widget class="QLabel" name="subjectLabel">
+       <property name="text">
+        <string>제목:        </string>
+       </property>
+      </widget>
+     </item>
+     <item row="2" column="1">
+      <widget class="QLineEdit" name="subjectEdit"/>
+     </item>
+     <item row="3" column="0" colspan="2">
+      <widget class="QPlainTextEdit" name="diaryText">
+       <property name="readOnly">
+        <bool>true</bool>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -203,20 +186,15 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>730</width>
-     <height>22</height>
+     <width>1024</width>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>File</string>
     </property>
-   </widget>
-   <widget class="QMenu" name="menuEdit">
-    <property name="title">
-     <string>Edit</string>
-    </property>
-    <addaction name="actionOptions"/>
+    <addaction name="actionExit"/>
    </widget>
    <widget class="QMenu" name="menuTestMenu">
     <property name="title">
@@ -228,9 +206,15 @@
     <addaction name="actionList_Mailboxes"/>
     <addaction name="actionBuild_Local_Structure"/>
    </widget>
+   <widget class="QMenu" name="menuEtc">
+    <property name="title">
+     <string>기타</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
    <addaction name="menuTestMenu"/>
+   <addaction name="menuEtc"/>
   </widget>
   <action name="actionOptions">
    <property name="text">
@@ -258,6 +242,16 @@
   <action name="actionBrowserAuthentication">
    <property name="text">
     <string>웹브라우저로 인증하기...</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>이 프로그램은...</string>
+   </property>
+  </action>
+  <action name="actionExit">
+   <property name="text">
+    <string>종료</string>
    </property>
   </action>
  </widget>

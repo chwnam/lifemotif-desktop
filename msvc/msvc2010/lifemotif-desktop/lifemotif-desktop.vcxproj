@@ -14,6 +14,7 @@
     <ClCompile Include="..\..\..\qt\email_cache.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_diary.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_exceptions.cpp" />
+    <ClCompile Include="..\..\..\qt\lifemotif_mimedata.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_settings.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_utils.cpp" />
     <ClCompile Include="..\..\..\qt\localstructure_extract.cpp" />
@@ -49,6 +50,7 @@
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\qt\email_cache.h" />
+    <ClInclude Include="..\..\..\qt\lifemotif_mimedata.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_config.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_diary.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_exceptions.h" />
@@ -137,11 +139,13 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
+    <None Include="..\..\..\LICENSE.LGPL" />
     <None Include="..\..\..\qt\TODO.txt" />
   </ItemGroup>
   <PropertyGroup Label="Globals">
     <ProjectGuid>{8B2CA658-8CE2-4BB5-A74C-9EB505F3819A}</ProjectGuid>
     <Keyword>Qt4VSv1.0</Keyword>
+    <ProjectName>lifemotif-desktop</ProjectName>
   </PropertyGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.Default.props" />
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'" Label="Configuration">
@@ -164,7 +168,7 @@
   <PropertyGroup Label="UserMacros" />
   <PropertyGroup>
     <_ProjectFileVersion>10.0.40219.1</_ProjectFileVersion>
-    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\bin\debug\</OutDir>
+    <OutDir Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(SolutionDir)\..\..\bin\$(Configuration)\</OutDir>
     <OutDir Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">$(SolutionDir)\..\..\bin\run\</OutDir>
   </PropertyGroup>
   <ItemDefinitionGroup Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">
@@ -178,8 +182,8 @@
       <DisableSpecificWarnings>4819</DisableSpecificWarnings>
     </ClCompile>
     <Link>
-      <SubSystem>Windows</SubSystem>
-      <OutputFile>$(OutDir)\lifemotif-desktop.exe</OutputFile>
+      <SubSystem>Console</SubSystem>
+      <OutputFile>$(OutDir)$(TargetName)$(TargetExt)</OutputFile>
       <AdditionalLibraryDirectories>$(QTDIR)\lib;$(BOOSTDIR)\lib32-msvc-10.0;$(LOCAL)\lib\vc100;$(PYTHON27)\libs;%(AdditionalLibraryDirectories)</AdditionalLibraryDirectories>
       <GenerateDebugInformation>true</GenerateDebugInformation>
       <AdditionalDependencies>qtmaind.lib;Qt5Cored.lib;Qt5Guid.lib;Qt5WebKitd.lib;Qt5WebkitWidgetsd.lib;Qt5Widgetsd.lib;libmimetic_d.lib;%(AdditionalDependencies)</AdditionalDependencies>
@@ -216,7 +220,7 @@
     <BOOSTDIR>D:\devel\boost\msvc2010\boost_1_55_0</BOOSTDIR>
     <LOCAL>D:\local</LOCAL>
     <PYTHON27>D:\devel\python-deploy\Python-2.7.6</PYTHON27>
-    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">lifemotif-desktop</TargetName>
+    <TargetName Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(ProjectName)</TargetName>
     <TargetName Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">lifemotif-desktop</TargetName>
   </PropertyGroup>
 </Project>

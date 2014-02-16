@@ -6,9 +6,8 @@
 #include <QStringList>
 #include <QVector>
 
-class LifeMotifAttachment
+struct LifeMotifAttachment
 {
-public:
   QString    name;
   QString    type;
   QString    subType;
@@ -23,22 +22,46 @@ public:
   inline const QString& From() const { return from; }
   inline const QString& To() const { return to; }
   inline const QString& Subject() const { return subject; }
-  inline const QString& TextPlainContent() const { return textPlainContent; }
-  inline const QString& TextHtmlContent() const { return textHtmlContent; }
+  
+  inline const QString&
+    TextPlainContent() const { return textPlainContent; }
+  
+  inline const QString&
+    TextHtmlContent() const { return textHtmlContent; }
 
-  int NumberOfAttach() const {
+  int NumberOfAttachments() const {
     return attachments.size();
   }
 
-  const LifeMotifAttachment& GetAttachment(const int n) const {
+  const LifeMotifAttachment&
+    GetAttachment(const int n) const {
     return attachments[n];
   }
 
 private:
   void ParseHeader(const mimetic::Header& header);
   void ParseBody(const mimetic::Body& body);
-  QString Base64DecodeBody(const mimetic::Body& body);
-  bool GetAttachment(const mimetic::Body& body, LifeMotifAttachment& attachment);
+  QString ParseMailBox(const mimetic::Mailbox& mailbox);
+
+  QString
+    Base64DecodeBody(
+      const mimetic::Body& body,
+      const std::string& charset = "");
+
+  bool
+    GetAttachment(
+      const mimetic::Body& body,
+      LifeMotifAttachment& attachment);
+  
+  QString
+    DecodeEncodedWords(const std::string& input);
+
+  void
+    LifeMotifDiary::Dew(
+    const char* input,
+    const std::size_t len,
+    std::string& charset,
+    std::string& text);
 
 private:
   QString from;

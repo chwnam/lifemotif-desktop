@@ -11,6 +11,7 @@
 
 typedef boost::shared_ptr<GoogleImapWrapper> GoogleImapWrapperPtr;
 typedef boost::shared_ptr<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
+typedef boost::shared_ptr<LocalStructureWrapper> LocalStructureWrapperPtr;
 
 class LifeMotifUtils
 {
@@ -35,6 +36,10 @@ public:
   /* create wrappers */
   static GoogleImapWrapperPtr CreateImapWrapper(GoogleOauth2WrapperPtr ptr);
   static GoogleOauth2WrapperPtr CreateOauth2Wrapper();
+  static LocalStructureWrapperPtr CreateLocalStructureWrapper();
+
+  /* text manipulation */
+  static QString Trim(const QString& input, const QChar& s);
 };
 
 QString LifeMotifUtils::JoinPath(const QString& pre, const QString& add)

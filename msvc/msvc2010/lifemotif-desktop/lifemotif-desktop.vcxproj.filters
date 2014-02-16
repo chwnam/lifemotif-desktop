@@ -113,6 +113,9 @@
     <ClCompile Include="GeneratedFiles\Release\moc_web_browser_dialog.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\qt\lifemotif_mimedata.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\qt\python_wrapper\basepythonwrapper.h">
@@ -169,6 +172,9 @@
     <ClInclude Include="..\..\..\qt\message_types.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\qt\lifemotif_mimedata.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\qt\mainwindow.ui">
@@ -192,6 +198,9 @@
   </ItemGroup>
   <ItemGroup>
     <None Include="..\..\..\qt\TODO.txt">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\LICENSE.LGPL">
       <Filter>Others</Filter>
     </None>
   </ItemGroup>

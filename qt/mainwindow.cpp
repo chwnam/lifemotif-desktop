@@ -32,7 +32,14 @@ void MainWindow::BuildLocalStructre()
   bp::object structureObject =
       imapWrapper()->FetchThreadStructure(label.toStdString());
 
+  // extract object
   LocalStructureExtract(structureObject, localStructure);
+
+  // save new object
+  LocalStructureWrapperPtr lsWrapper = LifeMotifUtils::CreateLocalStructureWrapper();
+  const QString lsPath = LifeMotifSettings::LocalStructure(true);
+
+  lsWrapper->Build(lsPath.toStdString(), structureObject);
 }
 
 void MainWindow::LoadLocalStructure()
@@ -40,11 +47,8 @@ void MainWindow::LoadLocalStructure()
   const QString lsPath = LifeMotifSettings::LocalStructure();
 
   if (LifeMotifUtils::IsFileReadable(lsPath)) {
-    LocalStructureWrapper lsWrapper(
-          LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-          LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
-
-    bp::object object = lsWrapper.Load(lsPath.toStdString());
+    LocalStructureWrapperPtr lsWrapper = LifeMotifUtils::CreateLocalStructureWrapper();
+    bp::object object = lsWrapper->Load(lsPath.toStdString());
     LocalStructureExtract(object, localStructure);
   }
 }
@@ -102,7 +106,7 @@ void MainWindow::on_actionOptions_triggered()
   }
 }
 
-void MainWindow::on_calendarWidget_clicked(const QDate &date)
+void MainWindow::OnCalendarWidgetClicked(const QDate &date)
 {
     DateType datestring = date.toString("yyyyMMdd").toStdString();
 
@@ -154,6 +158,14 @@ void MainWindow::UpdateDiaryInformationUI(void)
     }
 
     // attachment
+    const int nAttachments = diary->NumberOfAttachments();
+    ui->attatchmentComboBox->clear();
+    if (nAttachments > 0) {
+      for(int i = 0; i < nAttachments; ++i) {
+        const LifeMotifAttachment& att = diary->GetAttachment(i);
+        ui->attatchmentComboBox->insertItem(i, att.name);
+      }
+    }
 }
 
 void MainWindow::on_actionBuild_Local_Structure_triggered()
@@ -187,9 +199,9 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
   qDebug() << "Plain text:" << diary->TextPlainContent().mid(0, 20) << "...";
   qDebug() << "HTML text:" << diary->TextHtmlContent().mid(0, 20) << "...";
 
-  qDebug() << diary->NumberOfAttach() << "attachment(s)";
-  if (diary->NumberOfAttach() > 0) {
-      for(int i = 0; i < diary->NumberOfAttach(); ++i) {
+  qDebug() << diary->NumberOfAttachments() << "attachment(s)";
+  if (diary->NumberOfAttachments() > 0) {
+      for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
           qDebug() << "  " << diary->GetAttachment(i).name;
       }
   }

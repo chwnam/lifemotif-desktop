@@ -107,7 +107,7 @@ void SetBuffer(FILE* stream, char* buffer, const int bufferSize)
 
 void Fin()
 {
-  if (Py_IsInitialized() == true) {
+  if (Py_IsInitialized() != 0) {
     Py_Finalize();
     qDebug() << "python finalized.";
   }
