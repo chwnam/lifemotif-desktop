@@ -13,7 +13,7 @@ LifeMotifDiary::LifeMotifDiary(const std::string& content)
   const mimetic::Header& header = root.header();
   const mimetic::Body&   body   = root.body();
 
-  ParseHeader(header);
+  ParseTopHeader(header);
   ParseBody(body);
 }
 
@@ -37,7 +37,7 @@ QString LifeMotifDiary::ParseMailBox(const mimetic::Mailbox& mailbox)
   return result;
 }
 
-void LifeMotifDiary::ParseHeader(const mimetic::Header& header)
+void LifeMotifDiary::ParseTopHeader(const mimetic::Header& header)
 {
   // collect "from" information
   const mimetic::MailboxList &mbListFrom = header.from();
@@ -61,62 +61,47 @@ void LifeMotifDiary::ParseHeader(const mimetic::Header& header)
 
 void LifeMotifDiary::ParseBody(const mimetic::Body& body)
 {
-  // skip text/plain content.
-  // find text/html content and get the text
-  // find content-disposition attachment and get the attachment
-  QStack<
-      QPair<
-      mimetic::MimeEntityList::const_iterator,
-      mimetic::MimeEntityList::const_iterator
-      >
-      > stack;
+  const mimetic::ContentType &ct = body.owner()->header().contentType();
 
-
-  // TODO: when content-type is multipart/alternative, carefully choose.
-  mimetic::MimeEntityList::const_iterator beg = body.parts().begin();
-  mimetic::MimeEntityList::const_iterator end = body.parts().end();
-
-  do {
-
-    while (beg == end) {
-      beg = stack.top().first;
-      end = stack.top().second;
-      stack.pop();
-      //qDebug() << "stack pop()";
+  if (ct.type() == std::string("text")) {
+    if (ct.subtype() == std::string("plain")) {
+      // plain type text entity
+      CallbackForText(body, textPlainContent);
+    } else if (ct.subtype() == std::string("html")) {
+      // html type text entity
+      CallbackForText(body, textHtmlContent);
     }
-
-    const mimetic::ContentType &ct = (*beg)->header().contentType();
-    const mimetic::Body        &bd = (*beg)->body();
-
-    if (ct.isMultipart()) {
-      //qDebug() << "multipart:" << QString::fromStdString(ct.str());
-      stack.push(qMakePair(++beg, end));
-      //qDebug() << "stack push()";
-      beg = bd.parts().begin();
-      end = bd.parts().end();
-    } else {
-      //qDebug() << "*NOT* multipart:" << QString::fromStdString(ct.str());
-      // check content type
-      if (ct.type() == "text") {
-        QByteArray array = Base64DecodeBody(bd);
-        if (ct.subtype() == "plain") {
-          //qDebug() << "text/plain";
-          textPlainContent = DecodeByteArray(array, ct.param("charset"));
-        } else if (ct.subtype() == "html") {
-          //qDebug() << "text/html";
-          textHtmlContent = DecodeByteArray(array, ct.param("charset"));
-        }
-      } else {
-        // collect
-        qDebug() << "attachment";
-        LifeMotifAttachment att;
-        if (GetAttachment((*beg)->body(), att)) {
-          attachments.push_back(att);
-        }
-      }
-      ++beg;
+  } else if (ct.type() == std::string("image")) {
+    LifeMotifAttachment att;
+    CallbackForBinary(body, att);
+    attachments.push_back(att);
+  } else if (ct.type() == std::string("audio")) {
+    // audio. skip.
+  } else if (ct.type() == std::string("multipart")) {
+    mimetic::MimeEntityList::const_iterator it;
+    for (it = body.parts().begin(); it != body.parts().end(); ++it) {
+      ParseBody((*it)->body());
     }
-  } while(beg != end && stack.empty() == false);
+  } else {
+    // unknown content type.
+  }
+}
+
+void
+  LifeMotifDiary::CallbackForText(
+    const mimetic::Body &body,
+    QString &out)
+{
+  const mimetic::ContentTransferEncoding& cte;
+  const std::string charset;
+}
+
+void
+  LifeMotifDiary::CallbackForBinary(
+    const mimetic::Body &body,
+    LifeMotifAttachment &out)
+{
+
 }
 
 QByteArray

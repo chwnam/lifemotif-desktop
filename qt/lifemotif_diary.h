@@ -39,14 +39,13 @@ public:
   }
 
 private:
-  void ParseHeader(const mimetic::Header& header);
-
-  void ParseTextPalin(const mimetic::Body& body);
-  void ParseTextHtml(const mimetic::Body& body);
-
+  void ParseTopHeader(const mimetic::Header& header);
   void ParseBody(const mimetic::Body& body);
-  QString ParseMailBox(const mimetic::Mailbox& mailbox);
 
+  void CallbackForText(const mimetic::Body& body, QString& out);
+  void CallbackForBinary(const mimetic::Body& body, LifeMotifAttachment& out);
+
+  QString ParseMailBox(const mimetic::Mailbox& mailbox);
   QString DecodeByteArray(const QByteArray& array, const std::string& charset);
   QByteArray Base64DecodeBody(const mimetic::Body& body);
 
