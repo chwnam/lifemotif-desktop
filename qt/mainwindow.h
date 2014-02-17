@@ -10,8 +10,8 @@
 #include "lifemotif_settings.h"
 #include "lifemotif_utils.h"
 #include "message_types.h"
-#include "mime_dialog.h"
-
+#include "mime_raw_message_dialog.h"
+#include "mime_structure_dialog.h"
 
 namespace Ui {
 class MainWindow;
@@ -47,6 +47,8 @@ private slots:
      // show MIME raw message
      void on_mimeRawMessageButton_clicked();
 
+     void on_attatchmentSaveAsButton_clicked();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
@@ -72,8 +74,11 @@ private:
     EmailCachePtr _emailCache;
 
     // MIME raw message dialog
-    typedef boost::shared_ptr<MimeDialog> MimeDialogPtr;
-    MimeDialogPtr _mimeDialog;
+    typedef boost::shared_ptr<MimeRawMessageDialog> MimeRawMessageDialogPtr;
+    MimeRawMessageDialogPtr _mimeRawMessageDialog;
+
+    // MIME structure dialog
+    //typedef boost::shared_ptr<
 
     // late type binding.
     // GoogleOauth2Wrapper /////////////////////////////////////////////////
@@ -111,15 +116,15 @@ private:
     }
 
     // MimeDialog ////////////////////////////////////////////////////////
-    inline MimeDialogPtr& mimeDialog() {
-      if (_mimeDialog == NULL) {
-        _mimeDialog = MimeDialogPtr(new MimeDialog());
-        _mimeDialog->setWindowModality(Qt::NonModal);
+    inline MimeRawMessageDialogPtr& mimeRawMessageDialog() {
+      if (_mimeRawMessageDialog == NULL) {
+        _mimeRawMessageDialog = MimeRawMessageDialogPtr(new MimeRawMessageDialog());
+        _mimeRawMessageDialog->setWindowModality(Qt::NonModal);
       }
-      return _mimeDialog;
+      return _mimeRawMessageDialog;
     }
-    inline const MimeDialogPtr& mimeDialog() const {
-      return mimeDialog();
+    inline const MimeRawMessageDialogPtr& mimeRawMessageDialog() const {
+      return mimeRawMessageDialog();
     }
 
     // local structure

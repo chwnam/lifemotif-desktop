@@ -39,7 +39,8 @@ SOURCES += main.cpp\
     lifemotif_utils.cpp \
     web_browser_dialog.cpp \
     lifemotif_diary.cpp \
-    mime_dialog.cpp
+    mime_raw_message_dialog.cpp \
+    mime_structure_dialog.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -60,12 +61,14 @@ HEADERS  += mainwindow.h \
     lifemotif_utils.h \
     web_browser_dialog.h \
     lifemotif_diary.h \
-    mime_dialog.h
+    mime_raw_message_dialog.h \
+    mime_structure_dialog.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui \
     web_browser_dialog.ui \
-    mime_dialog.ui
+    mime_raw_message_dialog.ui \
+    mime_structure_dialog.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \

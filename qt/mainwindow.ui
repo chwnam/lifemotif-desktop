@@ -68,14 +68,14 @@
    <widget class="QPushButton" name="mimeRawMessageButton">
     <property name="geometry">
      <rect>
-      <x>60</x>
-      <y>390</y>
-      <width>136</width>
-      <height>23</height>
+      <x>20</x>
+      <y>370</y>
+      <width>201</width>
+      <height>22</height>
      </rect>
     </property>
     <property name="text">
-     <string>이메일 자세하게 보기...</string>
+     <string>선택된 일기 원본 MIME 메시지 보기...</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="attatchmentGroupBox">
@@ -224,6 +224,19 @@
     </property>
     <property name="text">
      <string>제목:        </string>
+    </property>
+   </widget>
+   <widget class="QPushButton" name="mimeStructureButton">
+    <property name="geometry">
+     <rect>
+      <x>20</x>
+      <y>400</y>
+      <width>201</width>
+      <height>22</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>선택된 일기 MIME 구조 보기...</string>
     </property>
    </widget>
   </widget>

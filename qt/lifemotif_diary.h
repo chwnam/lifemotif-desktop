@@ -43,10 +43,8 @@ private:
   void ParseBody(const mimetic::Body& body);
   QString ParseMailBox(const mimetic::Mailbox& mailbox);
 
-  QString
-    Base64DecodeBody(
-      const mimetic::Body& body,
-      const std::string& charset = "");
+  QString DecodeByteArray(const QByteArray& array, const std::string& charset);
+  QByteArray Base64DecodeBody(const mimetic::Body& body);
 
   bool
     GetAttachment(

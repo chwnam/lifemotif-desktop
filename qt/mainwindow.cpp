@@ -3,6 +3,7 @@
 #include "preferencewindow.h"
 
 #include <QDebug>
+#include <QFileDialog>
 #include <QMessageBox>
 #include <QUrl>
 #include <QVector>
@@ -193,8 +194,8 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
   qDebug() << "From:" << diary->From();
   qDebug() << "To:" << diary->To();
   qDebug() << "Subject:" << diary->Subject();
-  qDebug() << "Plain text:" << diary->TextPlainContent().mid(0, 20) << "...";
-  qDebug() << "HTML text:" << diary->TextHtmlContent().mid(0, 20) << "...";
+  qDebug() << "Plain text:" << diary->TextPlainContent();
+  qDebug() << "HTML text:" << diary->TextHtmlContent();
 
   qDebug() << diary->NumberOfAttachments() << "attachment(s)";
   if (diary->NumberOfAttachments() > 0) {
@@ -274,7 +275,28 @@ void MainWindow::on_mimeRawMessageButton_clicked()
   const QListWidgetItem* item = ui->diaryList->currentItem();
 
   if (item) {
-    mimeDialog()->SetEditText(FetchMessage(item->text().toULongLong()));
-    mimeDialog()->show();
+    mimeRawMessageDialog()->SetEditText(FetchMessage(item->text().toULongLong()));
+    mimeRawMessageDialog()->show();
+  }
+}
+
+void MainWindow::on_attatchmentSaveAsButton_clicked()
+{
+  const int index = ui->attatchmentComboBox->currentIndex();
+
+  if (index > -1) {
+    const LifeMotifAttachment& attachment = diary->GetAttachment(index);
+    QString fileName
+        = QFileDialog::getSaveFileName(
+            this,
+            QString("Save attchment as..."),
+            attachment.name);
+
+    QFile file;
+    file.setFileName(fileName);
+    if (file.open(QIODevice::WriteOnly)) {
+      qint64 writtenByte = file.write(attachment.data);
+      qDebug() << fileName << "saved:" << writtenByte << "bytes";
+    }
   }
 }

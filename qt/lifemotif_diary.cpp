@@ -98,14 +98,13 @@ void LifeMotifDiary::ParseBody(const mimetic::Body& body)
       //qDebug() << "*NOT* multipart:" << QString::fromStdString(ct.str());
       // check content type
       if (ct.type() == "text") {
+        QByteArray array = Base64DecodeBody(bd);
         if (ct.subtype() == "plain") {
           //qDebug() << "text/plain";
-          textPlainContent
-            = Base64DecodeBody((*beg)->body(), ct.param("charset"));
+          textPlainContent = DecodeByteArray(array, ct.param("charset"));
         } else if (ct.subtype() == "html") {
           //qDebug() << "text/html";
-          textHtmlContent
-            = Base64DecodeBody((*beg)->body(), ct.param("charset"));
+          textHtmlContent = DecodeByteArray(array, ct.param("charset"));
         }
       } else {
         // collect
@@ -117,33 +116,46 @@ void LifeMotifDiary::ParseBody(const mimetic::Body& body)
       }
       ++beg;
     }
-  } while(stack.empty() == false);
+  } while(beg != end && stack.empty() == false);
 }
 
-QString
+QByteArray
   LifeMotifDiary::Base64DecodeBody(
-    const mimetic::Body& body,
-    const std::string& charset)
+    const mimetic::Body& body)
 {
-  QString result;
+  QByteArray result;
 
   if (body.owner()->header().contentTransferEncoding().mechanism() ==
       mimetic::ContentTransferEncoding::base64) {
     std::stringstream        stream;
     mimetic::Base64::Decoder decoder;
-   
+
+    qDebug() << "Body message:";
+    qDebug() << body.c_str();
+
     mimetic::decode(
       body.begin(),
       body.end(),
       decoder,
       std::ostreambuf_iterator<char>(stream));
 
-    QTextCodec *codec = QTextCodec::codecForName(charset.c_str());
-    if (codec) {
-      result = codec->toUnicode(stream.str().c_str());
-    } else {
-      result = QString::fromStdString(stream.str());
-    }
+    std::string str = stream.str();
+    qDebug() << str.c_str();
+    qDebug() << "decoded size:" << str.size();
+
+    result = QByteArray(str.c_str(), str.size());
+  }
+  return result;
+}
+
+QString
+  LifeMotifDiary::DecodeByteArray(const QByteArray& array, const std::string& charset)
+{
+  QString result;
+
+  QTextCodec *codec = QTextCodec::codecForName(charset.c_str());
+  if (codec) {
+    result = codec->toUnicode(array);
   }
   return result;
 }
@@ -170,9 +182,7 @@ bool
     attachment.type = QString::fromStdString(ct.type());
     attachment.subType = QString::fromStdString(ct.subtype());
     attachment.name = QString::fromStdString(cd.param("filename"));
-
-    attachment.data
-      = QByteArray(Base64DecodeBody(body).toStdString().c_str());
+    attachment.data = Base64DecodeBody(body);
 
     return true;
   }
