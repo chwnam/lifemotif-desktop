@@ -1,6 +1,6 @@
 #include <boost/python.hpp>
 
-#include "mainwindow.h"
+#include "main_window.h"
 #include <QApplication>
 #include <QDebug>
 #include <QMessageBox>

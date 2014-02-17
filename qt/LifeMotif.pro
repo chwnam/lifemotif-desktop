@@ -23,14 +23,12 @@ TARGET = LifeMotif
 TEMPLATE = app
 
 SOURCES += main.cpp\
-    mainwindow.cpp \
     python_wrapper/basepythonwrapper.cpp \
     python_wrapper/googleoauth2wrapper.cpp \
     python_wrapper/googleimapwrapper.cpp \
     python_wrapper/imapwrapper.cpp \
     python_wrapper/oauth2wrapper.cpp \
     python_wrapper/localstructurewrapper.cpp \
-    preferencewindow.cpp \
     lifemotif_exceptions.cpp \
     localstructure_extract.cpp \
     message_types.cpp \
@@ -40,10 +38,12 @@ SOURCES += main.cpp\
     web_browser_dialog.cpp \
     lifemotif_diary.cpp \
     mime_raw_message_dialog.cpp \
-    mime_structure_dialog.cpp
+    mime_structure_dialog.cpp \
+    main_window.cpp \
+    preference_window.cpp
 
 
-HEADERS  += mainwindow.h \
+HEADERS  += \
     lifemotif_config.h \
     python_wrapper/basepythonwrapper.h \
     python_wrapper/googleoauth2wrapper.h \
@@ -51,7 +51,6 @@ HEADERS  += mainwindow.h \
     python_wrapper/imapwrapper.h \
     python_wrapper/oauth2wrapper.h \
     python_wrapper/localstructurewrapper.h \
-    preferencewindow.h \
     python_wrapper/python_wrapper.h \
     lifemotif_exceptions.h \
     lifemotif_settings.h \
@@ -62,13 +61,16 @@ HEADERS  += mainwindow.h \
     web_browser_dialog.h \
     lifemotif_diary.h \
     mime_raw_message_dialog.h \
-    mime_structure_dialog.h
+    mime_structure_dialog.h \
+    preference_window.h \
+    main_window.h
 
-FORMS    += mainwindow.ui \
-    preferencewindow.ui \
+FORMS    += \
     web_browser_dialog.ui \
     mime_raw_message_dialog.ui \
-    mime_structure_dialog.ui
+    mime_structure_dialog.ui \
+    main_window.ui \
+    preference_window.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \

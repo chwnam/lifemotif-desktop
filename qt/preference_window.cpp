@@ -1,4 +1,4 @@
-#include "preferencewindow.h"
+#include "preference_window.h"
 #include "ui_preferencewindow.h"
 #include "lifemotif_settings.h"
 

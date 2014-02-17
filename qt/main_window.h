@@ -1,5 +1,5 @@
-#ifndef MAINWINDOW_H
-#define MAINWINDOW_H
+#ifndef MAIN_WINDOW_H
+#define MAIN_WINDOW_H
 
 #include <QMainWindow>
 
@@ -49,6 +49,8 @@ private slots:
 
      void on_attatchmentSaveAsButton_clicked();
 
+     void on_mimeStructureButton_clicked();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
@@ -78,7 +80,8 @@ private:
     MimeRawMessageDialogPtr _mimeRawMessageDialog;
 
     // MIME structure dialog
-    //typedef boost::shared_ptr<
+    typedef boost::shared_ptr<MimeStructureDialog> MimeStructureDialogPtr;
+    MimeStructureDialogPtr _mimeStructureDialog;
 
     // late type binding.
     // GoogleOauth2Wrapper /////////////////////////////////////////////////
@@ -115,16 +118,30 @@ private:
       return emailCache();
     }
 
-    // MimeDialog ////////////////////////////////////////////////////////
+    // MimeRawMessageDialog ///////////////////////////////////////////////
     inline MimeRawMessageDialogPtr& mimeRawMessageDialog() {
       if (_mimeRawMessageDialog == NULL) {
-        _mimeRawMessageDialog = MimeRawMessageDialogPtr(new MimeRawMessageDialog());
+        _mimeRawMessageDialog
+            = MimeRawMessageDialogPtr(new MimeRawMessageDialog());
         _mimeRawMessageDialog->setWindowModality(Qt::NonModal);
       }
       return _mimeRawMessageDialog;
     }
     inline const MimeRawMessageDialogPtr& mimeRawMessageDialog() const {
       return mimeRawMessageDialog();
+    }
+
+    // MimeStructureDialog /////////////////////////////////////////////////////
+    inline MimeStructureDialogPtr& mimeStructureDialog() {
+      if (_mimeStructureDialog == NULL) {
+        _mimeStructureDialog
+            = MimeStructureDialogPtr(new MimeStructureDialog());
+        _mimeStructureDialog->setWindowModality(Qt::NonModal);
+      }
+      return _mimeStructureDialog;
+    }
+    inline const MimeStructureDialogPtr& mimeStructureDialog() const {
+      return mimeStructureDialog();
     }
 
     // local structure
@@ -135,4 +152,4 @@ private:
     LifeMotifDiaryPtr diary;
 };
 
-#endif // MAINWINDOW_H
+#endif // MAIN_WINDOW_H

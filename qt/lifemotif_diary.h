@@ -40,6 +40,10 @@ public:
 
 private:
   void ParseHeader(const mimetic::Header& header);
+
+  void ParseTextPalin(const mimetic::Body& body);
+  void ParseTextHtml(const mimetic::Body& body);
+
   void ParseBody(const mimetic::Body& body);
   QString ParseMailBox(const mimetic::Mailbox& mailbox);
 

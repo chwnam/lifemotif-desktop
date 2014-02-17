@@ -1,5 +1,5 @@
-#ifndef PREFERENCEWINDOW_H
-#define PREFERENCEWINDOW_H
+#ifndef PREFERENCE_WINDOW_H
+#define PREFERENCE_WINDOW_H
 
 #include <QDialog>
 

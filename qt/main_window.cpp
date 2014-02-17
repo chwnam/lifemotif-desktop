@@ -1,6 +1,6 @@
-#include "mainwindow.h"
-#include "ui_mainwindow.h"
-#include "preferencewindow.h"
+#include "main_window.h"
+#include "ui_main_window.h"
+#include "preference_window.h"
 
 #include <QDebug>
 #include <QFileDialog>
@@ -275,7 +275,9 @@ void MainWindow::on_mimeRawMessageButton_clicked()
   const QListWidgetItem* item = ui->diaryList->currentItem();
 
   if (item) {
-    mimeRawMessageDialog()->SetEditText(FetchMessage(item->text().toULongLong()));
+    mimeRawMessageDialog()->SetEditText(
+          FetchMessage(item->text().toULongLong()));
+    mimeRawMessageDialog()->setFocus();
     mimeRawMessageDialog()->show();
   }
 }
@@ -298,5 +300,18 @@ void MainWindow::on_attatchmentSaveAsButton_clicked()
       qint64 writtenByte = file.write(attachment.data);
       qDebug() << fileName << "saved:" << writtenByte << "bytes";
     }
+  }
+}
+
+void MainWindow::on_mimeStructureButton_clicked()
+{
+  const QListWidgetItem* item = ui->diaryList->currentItem();
+
+  if (item) {
+    QString rawMessage = FetchMessage(item->text().toULongLong());
+    mimeStructureDialog()->Parse(rawMessage.toStdString());
+    mimeStructureDialog()->show();
+    mimeStructureDialog()->raise();
+    mimeStructureDialog()->activateWindow();
   }
 }
