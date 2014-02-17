@@ -65,7 +65,7 @@
      <string>일기 목록</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="propertyButton">
+   <widget class="QPushButton" name="mimeRawMessageButton">
     <property name="geometry">
      <rect>
       <x>60</x>
@@ -90,13 +90,13 @@
     <property name="title">
      <string>첨부파일</string>
     </property>
-    <widget class="QWidget" name="">
+    <widget class="QWidget" name="layoutWidget">
      <property name="geometry">
       <rect>
        <x>0</x>
        <y>20</y>
        <width>221</width>
-       <height>53</height>
+       <height>54</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -131,54 +131,100 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QWidget" name="">
+   <widget class="QTextEdit" name="dirayHtmlText">
     <property name="geometry">
      <rect>
       <x>260</x>
-      <y>11</y>
+      <y>320</y>
       <width>751</width>
-      <height>731</height>
+      <height>191</height>
      </rect>
     </property>
-    <layout class="QGridLayout" name="gridLayout">
-     <item row="0" column="0">
-      <widget class="QLabel" name="fromLabel">
-       <property name="text">
-        <string>보낸 사람: </string>
-       </property>
-      </widget>
-     </item>
-     <item row="0" column="1">
-      <widget class="QLineEdit" name="fromEdit"/>
-     </item>
-     <item row="1" column="0">
-      <widget class="QLabel" name="toLabel">
-       <property name="text">
-        <string>받는 사람: </string>
-       </property>
-      </widget>
-     </item>
-     <item row="1" column="1">
-      <widget class="QLineEdit" name="toEdit"/>
-     </item>
-     <item row="2" column="0">
-      <widget class="QLabel" name="subjectLabel">
-       <property name="text">
-        <string>제목:        </string>
-       </property>
-      </widget>
-     </item>
-     <item row="2" column="1">
-      <widget class="QLineEdit" name="subjectEdit"/>
-     </item>
-     <item row="3" column="0" colspan="2">
-      <widget class="QPlainTextEdit" name="diaryText">
-       <property name="readOnly">
-        <bool>true</bool>
-       </property>
-      </widget>
-     </item>
-    </layout>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="toEdit">
+    <property name="geometry">
+     <rect>
+      <x>321</x>
+      <y>40</y>
+      <width>691</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="fromEdit">
+    <property name="geometry">
+     <rect>
+      <x>321</x>
+      <y>12</y>
+      <width>691</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QLineEdit" name="subjectEdit">
+    <property name="geometry">
+     <rect>
+      <x>321</x>
+      <y>70</y>
+      <width>691</width>
+      <height>22</height>
+     </rect>
+    </property>
+   </widget>
+   <widget class="QPlainTextEdit" name="diaryPlainText">
+    <property name="geometry">
+     <rect>
+      <x>261</x>
+      <y>110</y>
+      <width>751</width>
+      <height>192</height>
+     </rect>
+    </property>
+    <property name="readOnly">
+     <bool>true</bool>
+    </property>
+   </widget>
+   <widget class="QLabel" name="toLabel">
+    <property name="geometry">
+     <rect>
+      <x>261</x>
+      <y>40</y>
+      <width>54</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>받는 사람: </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="fromLabel">
+    <property name="geometry">
+     <rect>
+      <x>261</x>
+      <y>12</y>
+      <width>54</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>보낸 사람: </string>
+    </property>
+   </widget>
+   <widget class="QLabel" name="subjectLabel">
+    <property name="geometry">
+     <rect>
+      <x>261</x>
+      <y>70</y>
+      <width>50</width>
+      <height>16</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>제목:        </string>
+    </property>
    </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
@@ -187,12 +233,12 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
-     <string>File</string>
+     <string>파일</string>
     </property>
     <addaction name="actionExit"/>
    </widget>

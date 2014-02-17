@@ -17,7 +17,7 @@ bool EmailCache::HasCache(MsgIdType messageId) const
 QString EmailCache::GetCache(MsgIdType messageId) const
 {
   QString path = cacheDir.absoluteFilePath(QString::number(messageId));
-  qDebug() << "get file cache" << path;
+  //qDebug() << "get file cache" << path;
 
   QFile f(path);  
   f.open(QIODevice::ReadOnly|QIODevice::Text);
@@ -31,7 +31,7 @@ QString EmailCache::GetCache(MsgIdType messageId) const
 void EmailCache::SetCache(MsgIdType messageId, const QString& message)
 {
   QString path = cacheDir.absoluteFilePath(QString::number(messageId));
-  qDebug() << "set file cache" << path;
+  //qDebug() << "set file cache" << path;
 
   QFile f(path);
   f.open(QIODevice::WriteOnly|QIODevice::Text);

@@ -57,11 +57,11 @@ private:
     DecodeEncodedWords(const std::string& input);
 
   void
-    LifeMotifDiary::Dew(
-    const char* input,
-    const std::size_t len,
-    std::string& charset,
-    std::string& text);
+    Dew(
+      const char* input,
+      const std::size_t len,
+      std::string& charset,
+      std::string& text);
 
 private:
   QString from;

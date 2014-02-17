@@ -99,11 +99,11 @@ void LifeMotifDiary::ParseBody(const mimetic::Body& body)
       // check content type
       if (ct.type() == "text") {
         if (ct.subtype() == "plain") {
-          qDebug() << "text/plain";
+          //qDebug() << "text/plain";
           textPlainContent
             = Base64DecodeBody((*beg)->body(), ct.param("charset"));
         } else if (ct.subtype() == "html") {
-          qDebug() << "text/html";
+          //qDebug() << "text/html";
           textHtmlContent
             = Base64DecodeBody((*beg)->body(), ct.param("charset"));
         }

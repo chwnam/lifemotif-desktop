@@ -10,6 +10,7 @@
 #include "lifemotif_settings.h"
 #include "lifemotif_utils.h"
 #include "message_types.h"
+#include "mime_dialog.h"
 
 
 namespace Ui {
@@ -29,7 +30,7 @@ private slots:
      void on_actionOptions_triggered();
 
      // when the calendar widget is clicked
-     void OnCalendarWidgetClicked(const QDate &date);
+     void on_calendarWidget_clicked(const QDate &date);
 
      // when the diary list widget is clicked
      void on_diaryList_clicked(const QModelIndex &index);
@@ -43,6 +44,9 @@ private slots:
      // authentication by console (CLI)
      void on_actionConsoleAuthentication_triggered();
 
+     // show MIME raw message
+     void on_mimeRawMessageButton_clicked();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
@@ -52,8 +56,9 @@ private:
     void UpdateCalendar();
     void UpdateDiaryInformationUI();
 
-    QString FetchMessage(const MsgIdType& id);
-    bool HasCredentials();
+    QString  FetchMessage(const MsgIdType& id);
+    DateType GetDateFromCalendar() const;
+    bool     HasCredentials() const;
 
 private:
     Ui::MainWindow *ui;
@@ -66,7 +71,12 @@ private:
     typedef boost::shared_ptr<EmailCache> EmailCachePtr;
     EmailCachePtr _emailCache;
 
+    // MIME raw message dialog
+    typedef boost::shared_ptr<MimeDialog> MimeDialogPtr;
+    MimeDialogPtr _mimeDialog;
+
     // late type binding.
+    // GoogleOauth2Wrapper /////////////////////////////////////////////////
     inline GoogleOauth2WrapperPtr& oauth2Wrapper() {
       if (_oauth2Wrapper == NULL) {
         _oauth2Wrapper = LifeMotifUtils::CreateOauth2Wrapper();
@@ -77,6 +87,7 @@ private:
       return oauth2Wrapper();
     }
 
+    // GoogleImapWrapper ///////////////////////////////////////////////////
     inline GoogleImapWrapperPtr& imapWrapper() {
       if (_imapWrapper == NULL) {
         _imapWrapper = LifeMotifUtils::CreateImapWrapper(oauth2Wrapper());
@@ -87,6 +98,7 @@ private:
       return imapWrapper();
     }
 
+    // EmailChache ////////////////////////////////////////////////////////
     inline EmailCachePtr& emailCache() {
       if (_emailCache == NULL) {
         _emailCache
@@ -96,6 +108,18 @@ private:
     }
     inline const EmailCachePtr& emailCache() const {
       return emailCache();
+    }
+
+    // MimeDialog ////////////////////////////////////////////////////////
+    inline MimeDialogPtr& mimeDialog() {
+      if (_mimeDialog == NULL) {
+        _mimeDialog = MimeDialogPtr(new MimeDialog());
+        _mimeDialog->setWindowModality(Qt::NonModal);
+      }
+      return _mimeDialog;
+    }
+    inline const MimeDialogPtr& mimeDialog() const {
+      return mimeDialog();
     }
 
     // local structure

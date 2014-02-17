@@ -106,35 +106,30 @@ void MainWindow::on_actionOptions_triggered()
   }
 }
 
-void MainWindow::OnCalendarWidgetClicked(const QDate &date)
+void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
-    DateType datestring = date.toString("yyyyMMdd").toStdString();
+  DateType datestring = date.toString("yyyyMMdd").toStdString();
 
-    // yyyyMMdd date string is the key.
-    // find the email thread of the day and display in the list widget.
-    if (localStructure.find(datestring) != localStructure.end()) {
+  // yyyyMMdd date string is the key.
+  // find the email thread of the day and display in the list widget.
+  if (localStructure.find(datestring) != localStructure.end()) {
+    const MessageGroup& group = localStructure[datestring];
+    QListWidget& list = *ui->diaryList;
 
-      const MessageGroup& group = localStructure[datestring];
-      QListWidget& list = *ui->diaryList;
-
-      list.clear();
-      for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
-        list.addItem(QString::number(group.messageIds[i]));
-      }
-
+    list.clear();
+    for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
+      list.addItem(QString::number(group.messageIds[i]));
     }
+  }
 }
 
 void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 {
   // get message id
-  QCalendarWidget& cal = *ui->calendarWidget;
-  DateType ds = cal.selectedDate().toString("yyyyMMdd").toStdString();
+  DateType ds = GetDateFromCalendar();
 
   if (localStructure.find(ds) != localStructure.end()) {
-
     MsgIdType msgId = localStructure[ds].messageIds[index.row()];
-
     // fetch message by message id, and parse email message
     ParseMessage(FetchMessage(msgId).toStdString());
     // update ui
@@ -150,11 +145,13 @@ void MainWindow::UpdateDiaryInformationUI(void)
     ui->subjectEdit->setText(diary->Subject());
 
     // diary text
-    ui->diaryText->clear();
-    if (diary->TextHtmlContent().isEmpty()) {
-      ui->diaryText->setPlainText(diary->TextPlainContent());
-    } else {
-      ui->diaryText->setPlainText(diary->TextHtmlContent());
+    ui->diaryPlainText->clear();
+    ui->dirayHtmlText->clear();
+    if (diary->TextPlainContent().isEmpty() == false) {
+      ui->diaryPlainText->setPlainText(diary->TextPlainContent());
+    }
+    if (diary->TextHtmlContent().isEmpty() == false){
+      ui->dirayHtmlText->setHtml(diary->TextHtmlContent());
     }
 
     // attachment
@@ -262,7 +259,22 @@ void MainWindow::AuthenticateUsingWebBrowser()
   }
 }
 
-bool MainWindow::HasCredentials()
+bool MainWindow::HasCredentials() const
 {
   return LifeMotifUtils::IsFile(LifeMotifSettings::StorageName(true));
+}
+
+DateType MainWindow::GetDateFromCalendar() const
+{
+  return ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
+}
+
+void MainWindow::on_mimeRawMessageButton_clicked()
+{
+  const QListWidgetItem* item = ui->diaryList->currentItem();
+
+  if (item) {
+    mimeDialog()->SetEditText(FetchMessage(item->text().toULongLong()));
+    mimeDialog()->show();
+  }
 }

@@ -10,6 +10,10 @@ greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
 QMAKE_CXXFLAGS += -Wno-deprecated-writable-strings -DBOOST_ALL_DYN_LINK
 
+unix {
+  DEFINES += HAVE_STDINT_H
+}
+
 macx {
   QMAKE_MACOSX_DEPLOYMENT_TARGET = 10.9
   CONFIG -= app_bundle
@@ -34,7 +38,8 @@ SOURCES += main.cpp\
     lifemotif_settings.cpp \
     lifemotif_utils.cpp \
     web_browser_dialog.cpp \
-    lifemotif_diary.cpp
+    lifemotif_diary.cpp \
+    mime_dialog.cpp
 
 
 HEADERS  += mainwindow.h \
@@ -54,11 +59,13 @@ HEADERS  += mainwindow.h \
     email_cache.h \
     lifemotif_utils.h \
     web_browser_dialog.h \
-    lifemotif_diary.h
+    lifemotif_diary.h \
+    mime_dialog.h
 
 FORMS    += mainwindow.ui \
     preferencewindow.ui \
-    web_browser_dialog.ui
+    web_browser_dialog.ui \
+    mime_dialog.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \
