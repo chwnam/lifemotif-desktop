@@ -82,7 +82,7 @@
     <property name="geometry">
      <rect>
       <x>20</x>
-      <y>650</y>
+      <y>640</y>
       <width>221</width>
       <height>93</height>
      </rect>
@@ -90,45 +90,34 @@
     <property name="title">
      <string>첨부파일</string>
     </property>
-    <widget class="QWidget" name="layoutWidget">
+    <widget class="QPushButton" name="attatchmentSaveAsButton">
      <property name="geometry">
       <rect>
        <x>10</x>
-       <y>30</y>
+       <y>60</y>
        <width>201</width>
-       <height>69</height>
+       <height>32</height>
       </rect>
      </property>
-     <layout class="QVBoxLayout" name="verticalLayout">
-      <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
-        <item>
-         <widget class="QLabel" name="attatchmentLabel">
-          <property name="text">
-           <string>파일 선택:</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QComboBox" name="attatchmentComboBox">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </item>
-      <item>
-       <widget class="QPushButton" name="attatchmentSaveAsButton">
-        <property name="text">
-         <string>첨부파일 저장...</string>
-        </property>
-       </widget>
-      </item>
-     </layout>
+     <property name="text">
+      <string>첨부파일 저장...</string>
+     </property>
+    </widget>
+    <widget class="QComboBox" name="attatchmentComboBox">
+     <property name="geometry">
+      <rect>
+       <x>16</x>
+       <y>30</y>
+       <width>191</width>
+       <height>26</height>
+      </rect>
+     </property>
+     <property name="sizePolicy">
+      <sizepolicy hsizetype="Expanding" vsizetype="Fixed">
+       <horstretch>0</horstretch>
+       <verstretch>0</verstretch>
+      </sizepolicy>
+     </property>
     </widget>
    </widget>
    <widget class="QTextEdit" name="diaryHtmlText">
@@ -294,6 +283,25 @@
      <string>HTML 태그를 보이도록</string>
     </property>
    </widget>
+   <zorder>calendarWidget</zorder>
+   <zorder>diaryList</zorder>
+   <zorder>diaryListLabel</zorder>
+   <zorder>mimeRawMessageButton</zorder>
+   <zorder>attatchmentGroupBox</zorder>
+   <zorder>diaryHtmlText</zorder>
+   <zorder>toEdit</zorder>
+   <zorder>fromEdit</zorder>
+   <zorder>subjectEdit</zorder>
+   <zorder>diaryPlainText</zorder>
+   <zorder>toLabel</zorder>
+   <zorder>fromLabel</zorder>
+   <zorder>subjectLabel</zorder>
+   <zorder>mimeStructureButton</zorder>
+   <zorder>clearTextButton</zorder>
+   <zorder>plainTextLabel</zorder>
+   <zorder>htmlTextLabel</zorder>
+   <zorder>showHtmlCodeCheckBox</zorder>
+   <zorder>attatchmentComboBox</zorder>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -319,7 +327,14 @@
     <addaction name="separator"/>
     <addaction name="actionExit"/>
    </widget>
+   <widget class="QMenu" name="menuOption">
+    <property name="title">
+     <string>Option</string>
+    </property>
+    <addaction name="actionPreference"/>
+   </widget>
    <addaction name="menuTestMenu"/>
+   <addaction name="menuOption"/>
   </widget>
   <action name="actionConsoleAuthentication">
    <property name="text">
@@ -338,7 +353,7 @@
   </action>
   <action name="actionBrowserAuthentication">
    <property name="text">
-    <string>웹브라우저로 인증하기...</string>
+    <string>인증하기...</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -354,6 +369,11 @@
   <action name="revokeAuthentication">
    <property name="text">
     <string>인증 취소하기...</string>
+   </property>
+  </action>
+  <action name="actionPreference">
+   <property name="text">
+    <string>Preference...</string>
    </property>
   </action>
  </widget>

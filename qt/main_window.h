@@ -26,8 +26,8 @@ public:
     ~MainWindow();
 
 private slots:
-    // when the option menu is clicked
-     void on_actionOptions_triggered();
+     // when the preference menu is clicked
+     void on_actionPreference_triggered();
 
      // when the calendar widget is clicked
      void on_calendarWidget_clicked(const QDate &date);

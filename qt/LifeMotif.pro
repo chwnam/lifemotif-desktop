@@ -83,7 +83,7 @@ OTHER_FILES += \
     ../python/imapUTF7.py \
     ../python/local_structure_control.py \
     TODO.txt \
-    ../python/config_checker.py
+    resource/lifemotif.ico
 
 unix:!macx {
 INCLUDEPATH += \

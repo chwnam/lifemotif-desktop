@@ -291,20 +291,6 @@ void MainWindow::on_actionBuildLocalStructure_triggered()
   UpdateCalendar();
 }
 
-void MainWindow::on_actionOptions_triggered()
-{
-  // show preference modal dialog
-  PreferenceWindow pref(this);
-
-  // some tuning can be here ... center of the main window...
-  int result = pref.exec();
-  if (result == QDialog::Accepted) {
-    std::cout << "User Accepted\n";
-  } else if (result == QDialog::Rejected) {
-    std::cout << "User canceled\n";
-  }
-}
-
 void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
   DateType datestring = date.toString("yyyyMMdd").toStdString();
@@ -346,4 +332,18 @@ void MainWindow::on_revokeAuthentication_triggered()
       return;
   }
   RevokeAuthentication();
+}
+
+void MainWindow::on_actionPreference_triggered()
+{
+  // show preference modal dialog
+  PreferenceWindow pref(this);
+
+  // some tuning can be here ... center of the main window...
+  int result = pref.exec();
+  if (result == QDialog::Accepted) {
+    std::cout << "User Accepted\n";
+  } else if (result == QDialog::Rejected) {
+    std::cout << "User canceled\n";
+  }
 }
