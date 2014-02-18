@@ -26,11 +26,11 @@
    <string>lifemotif-desktop</string>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="QCalendarWidget" name="calendarWidget">
+   <widget class="LifeMotifCalendarWidget" name="calendarWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
-      <y>10</y>
+      <y>20</y>
       <width>231</width>
       <height>231</height>
      </rect>
@@ -68,14 +68,14 @@
    <widget class="QPushButton" name="mimeRawMessageButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
+      <x>10</x>
       <y>370</y>
-      <width>201</width>
-      <height>22</height>
+      <width>231</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>선택된 일기 원본 MIME 메시지 보기...</string>
+     <string>일기 원본 MIME 메시지 보기...</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="attatchmentGroupBox">
@@ -96,7 +96,7 @@
        <x>10</x>
        <y>30</y>
        <width>201</width>
-       <height>54</height>
+       <height>69</height>
       </rect>
      </property>
      <layout class="QVBoxLayout" name="verticalLayout">
@@ -229,23 +229,23 @@
    <widget class="QPushButton" name="mimeStructureButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>400</y>
-      <width>201</width>
-      <height>22</height>
+      <x>10</x>
+      <y>410</y>
+      <width>231</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
-     <string>선택된 일기 MIME 구조 보기...</string>
+     <string>일기 MIME 구조 보기...</string>
     </property>
    </widget>
    <widget class="QPushButton" name="clearTextButton">
     <property name="geometry">
      <rect>
-      <x>20</x>
-      <y>430</y>
-      <width>201</width>
-      <height>22</height>
+      <x>10</x>
+      <y>450</y>
+      <width>231</width>
+      <height>41</height>
      </rect>
     </property>
     <property name="text">
@@ -285,7 +285,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>19</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -354,6 +354,13 @@
   </action>
  </widget>
  <layoutdefault spacing="6" margin="11"/>
+ <customwidgets>
+  <customwidget>
+   <class>LifeMotifCalendarWidget</class>
+   <extends>QCalendarWidget</extends>
+   <header>lifemotif_calendar_widget.h</header>
+  </customwidget>
+ </customwidgets>
  <resources/>
  <connections/>
 </ui>

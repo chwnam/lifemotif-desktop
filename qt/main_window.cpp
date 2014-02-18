@@ -62,41 +62,8 @@ void MainWindow::LoadLocalStructure()
 
 void MainWindow::UpdateCalendar()
 {
-  if (localStructure.empty()) {
-    ui->calendarWidget->setEnabled(false);
-    return;
-  }
-
-  // sorted list of date
-  QVector<QString> dateVector;
-  dateVector.reserve(localStructure.size());
-  for(LocalStructureType::iterator it = localStructure.begin();
-      it != localStructure.end(); ++it) {
-    dateVector.push_back(QString::fromStdString(it->first));
-  }
-  qSort(dateVector);
-
-  // calendar min/max date
-  QDate minDate, maxDate;
-
-  minDate = QDate::fromString(*(dateVector.begin()), "yyyyMMdd");
-  maxDate = QDate::fromString(*(dateVector.end()-1), "yyyyMMdd");
-
-  ui->calendarWidget->setMinimumDate(minDate);
-  ui->calendarWidget->setMaximumDate(maxDate);
-  ui->calendarWidget->setEnabled(true);
-
-  // calendar formatting.
-  for(QVector<QString>::iterator it = dateVector.begin(); it != dateVector.end(); ++it) {
-    QDate d = QDate::fromString(*it, "yyyyMMdd");
-    QTextCharFormat charFormat = ui->calendarWidget->dateTextFormat(d);
-
-    // currently underline, bold
-    charFormat.setUnderlineStyle(QTextCharFormat::SingleUnderline);
-    charFormat.setFontWeight(QFont::Bold);
-
-    ui->calendarWidget->setDateTextFormat(d, charFormat);
-  }
+  ui->calendarWidget->SetDate(localStructure);
+  ui->calendarWidget->UpdateUI();
 }
 
 void MainWindow::on_actionOptions_triggered()
