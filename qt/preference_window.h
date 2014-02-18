@@ -3,6 +3,8 @@
 
 #include <QDialog>
 
+QT_BEGIN_NAMESPACE
+
 namespace Ui {
 class PreferenceWindow;
 }
@@ -26,5 +28,7 @@ private slots:
 private:
   Ui::PreferenceWindow *ui;
 };
+
+QT_END_NAMESPACE
 
 #endif // PREFERENCEWINDOW_H

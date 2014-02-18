@@ -16,8 +16,9 @@ class WebBrowserDialog : public QDialog
 
 public:
   explicit WebBrowserDialog(
-      QWidget *parent,
-      GoogleOauth2WrapperPtr& _oauth2Wrapper);
+      GoogleOauth2WrapperPtr& _oauth2Wrapper,
+      QWidget *parent = 0);
+      ;
   ~WebBrowserDialog();
 
 private slots:

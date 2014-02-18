@@ -1,5 +1,5 @@
 #include "preference_window.h"
-#include "ui_preferencewindow.h"
+#include "ui_preference_window.h"
 #include "lifemotif_settings.h"
 
 PreferenceWindow::PreferenceWindow(
@@ -22,12 +22,8 @@ void PreferenceWindow::UpdateUI()
 void PreferenceWindow::ReadFromSettings()
 {
   QString pythonConfig = LifeMotifSettings::PythonConfig();
-
-  // python_config
-  ui->scriptPathEdit->setText(pythonConfig);
 }
 
 void PreferenceWindow::on_refreshSettingButton_clicked()
 {
-    ReadFromSettings();
 }

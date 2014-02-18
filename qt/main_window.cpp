@@ -55,7 +55,7 @@ void MainWindow::AuthenticateOnConsole()
 
 void MainWindow::AuthenticateUsingWebBrowser()
 {
-  WebBrowserDialog wbDlg(this, oauth2Wrapper());
+  WebBrowserDialog wbDlg(oauth2Wrapper(), this);
 
   wbDlg.setWindowModality(Qt::ApplicationModal);
   int result = wbDlg.exec();

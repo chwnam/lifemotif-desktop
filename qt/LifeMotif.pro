@@ -29,19 +29,19 @@ SOURCES += main.cpp\
     python_wrapper/imapwrapper.cpp \
     python_wrapper/oauth2wrapper.cpp \
     python_wrapper/localstructurewrapper.cpp \
-    lifemotif_exceptions.cpp \
-    localstructure_extract.cpp \
-    message_types.cpp \
     email_cache.cpp \
+    lifemotif_calendar_widget.cpp \
+    lifemotif_diary.cpp \
+    lifemotif_exceptions.cpp \
     lifemotif_settings.cpp \
     lifemotif_utils.cpp \
-    web_browser_dialog.cpp \
-    lifemotif_diary.cpp \
+    localstructure_extract.cpp \
+    main_window.cpp \
+    message_types.cpp \
     mime_raw_message_dialog.cpp \
     mime_structure_dialog.cpp \
-    main_window.cpp \
     preference_window.cpp \
-    lifemotif_calendar_widget.cpp
+    web_browser_dialog.cpp
 
 
 HEADERS  += \
@@ -53,19 +53,19 @@ HEADERS  += \
     python_wrapper/oauth2wrapper.h \
     python_wrapper/localstructurewrapper.h \
     python_wrapper/python_wrapper.h \
+    email_cache.h \
+    lifemotif_calendar_widget.h \
+    lifemotif_diary.h \
     lifemotif_exceptions.h \
     lifemotif_settings.h \
-    localstructure_extract.h \
-    message_types.h \
-    email_cache.h \
     lifemotif_utils.h \
-    web_browser_dialog.h \
-    lifemotif_diary.h \
+    localstructure_extract.h \
+    main_window.h \
+    message_types.h \
     mime_raw_message_dialog.h \
     mime_structure_dialog.h \
     preference_window.h \
-    main_window.h \
-    lifemotif_calendar_widget.h
+    web_browser_dialog.h
 
 FORMS    += \
     web_browser_dialog.ui \
