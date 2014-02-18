@@ -49,3 +49,11 @@ class google_oauth2_control(base_oauth2_control):
         imap.debug = debug_level
         imap.authenticate('XOAUTH2', lambda x: auth_string)
         return imap
+
+    def revoke(self, storage_name):
+        storage = Storage(storage_name)
+        credentials = storage.get()
+        http = httplib2.Http()
+        credentials.revoke(http)
+
+

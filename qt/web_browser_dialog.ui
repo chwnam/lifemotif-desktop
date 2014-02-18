@@ -11,7 +11,7 @@
    </rect>
   </property>
   <property name="windowTitle">
-   <string>Dialog</string>
+   <string>GMail Authentication Dialog</string>
   </property>
   <widget class="QWebView" name="webView">
    <property name="geometry">

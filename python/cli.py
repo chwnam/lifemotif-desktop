@@ -15,6 +15,9 @@ def parse_args():
 
     parser.add_argument('--authorize', action='store_true',
                         help='Get authorization from Google')
+                        
+    parser.add_argument('--revoke', action='store_true',
+                        help='Revoke authorization')
 
     parser.add_argument('--build-database', action='store_true',
                         help='Build database of diary date')
@@ -33,8 +36,11 @@ def parse_args():
                         help='View diary written at yymmdd n')
 
     args = parser.parse_args()
-    if args.authorize is False and args.build_database is False and \
-       args.list_database is False and args.list_mailbox is False and \
+    if args.authorize is False and \
+       args.revoke is False and    \
+       args.build_database is False and \
+       args.list_database is False and  \
+       args.list_mailbox is False and \
        args.view is None:
         return None
     return args
@@ -74,7 +80,7 @@ def list_database(config):
 
 
 def view_diary(config, diary_date, diary_index):
-    db = locdb()
+    db = loc()
     structure = db.load(config['local_structure'])
 
     print 'Date:', diary_date
@@ -116,6 +122,14 @@ def list_mailbox(config):
     imap = google_imap_control(imap_obj)
     imap.list_mailbox()
 
+def revoke(config):
+    confirm = raw_input('Are you sure? (y/n): ')
+    if confirm == 'y':
+        oauth = google_oauth2_control()
+        oauth.revoke(config['storage_name'])
+        print 'Revoked'
+    else:
+        print 'Canceled'
 
 def main():
     args = parse_args()
@@ -142,6 +156,9 @@ def main():
     # list database
     if args.list_database is True:
         list_database(config)
+    
+    if args.revoke is True:
+        revoke(config)
 
     # view diary
     if args.view is not None:

@@ -1,4 +1,5 @@
 #include "lifemotif_calendar_widget.h"
+#include "lifemotif_utils.h"
 
 // when linker error about 'vtable' occurs, 'run qmake' and build again.
 LifeMotifCalendarWidget::LifeMotifCalendarWidget(QWidget *parent)
@@ -54,7 +55,8 @@ void LifeMotifCalendarWidget::SetDate(const LocalStructureType& structure)
 
 void LifeMotifCalendarWidget::UpdateUI()
 {
-  if (datesToPaint.isEmpty()) { setDisabled(true); }
+  if (LifeMotifUtils::HasCredentials(true) == false ||
+      datesToPaint.isEmpty() == true) { setDisabled(true); }
 
   else {
 

@@ -28,169 +28,6 @@ MainWindow::~MainWindow()
     delete ui;
 }
 
-void MainWindow::BuildLocalStructre()
-{
-  QString label = LifeMotifSettings::Label();
-  bp::object structureObject =
-      imapWrapper()->FetchThreadStructure(label.toStdString());
-
-  // extract object
-  LocalStructureExtract(structureObject, localStructure);
-
-  // save new object
-  LocalStructureWrapperPtr lsWrapper
-      = LifeMotifUtils::CreateLocalStructureWrapper();
-
-  const QString lsPath
-      = LifeMotifSettings::LocalStructure(true);
-
-  lsWrapper->Build(lsPath.toStdString(), structureObject);
-}
-
-void MainWindow::LoadLocalStructure()
-{
-  const QString lsPath = LifeMotifSettings::LocalStructure();
-
-  if (LifeMotifUtils::IsFileReadable(lsPath)) {
-    LocalStructureWrapperPtr lsWrapper
-        = LifeMotifUtils::CreateLocalStructureWrapper();
-
-    bp::object object = lsWrapper->Load(lsPath.toStdString());
-    LocalStructureExtract(object, localStructure);
-  }
-}
-
-void MainWindow::UpdateCalendar()
-{
-  ui->calendarWidget->SetDate(localStructure);
-  ui->calendarWidget->UpdateUI();
-}
-
-void MainWindow::on_actionOptions_triggered()
-{
-  // show preference modal dialog
-  PreferenceWindow pref(this);
-
-  // some tuning can be here ... center of the main window...
-  int result = pref.exec();
-  if (result == QDialog::Accepted) {
-    std::cout << "User Accepted\n";
-  } else if (result == QDialog::Rejected) {
-    std::cout << "User canceled\n";
-  }
-}
-
-void MainWindow::on_calendarWidget_clicked(const QDate &date)
-{
-  DateType datestring = date.toString("yyyyMMdd").toStdString();
-
-  // yyyyMMdd date string is the key.
-  // find the email thread of the day and display in the list widget.
-  if (localStructure.find(datestring) != localStructure.end()) {
-    const MessageGroup& group = localStructure[datestring];
-    QListWidget& list = *ui->diaryList;
-
-    list.clear();
-    for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
-      list.addItem(QString::number(group.messageIds[i]));
-    }
-  }
-}
-
-void MainWindow::on_diaryList_clicked(const QModelIndex &index)
-{
-  // get message id
-  DateType ds = GetDateFromCalendar();
-
-  if (localStructure.find(ds) != localStructure.end()) {
-    MsgIdType msgId = localStructure[ds].messageIds[index.row()];
-    // fetch message by message id, and parse email message
-    ParseMessage(FetchMessage(msgId).toStdString());
-    // update ui
-    UpdateDiaryInformationUI();
-  }
-}
-
-void MainWindow::UpdateDiaryInformationUI(void)
-{
-    // from, to, subject
-    ui->fromEdit->setText(diary->From());
-    ui->toEdit->setText(diary->To());
-    ui->subjectEdit->setText(diary->Subject());
-
-    // diary text
-    ui->diaryPlainText->clear();
-    ui->dirayHtmlText->clear();
-    if (diary->TextPlainContent().isEmpty() == false) {
-      ui->diaryPlainText->setPlainText(diary->TextPlainContent());
-    }
-    if (diary->TextHtmlContent().isEmpty() == false){
-      ui->dirayHtmlText->setHtml(diary->TextHtmlContent());
-    }
-
-    // attachment
-    const int nAttachments = diary->NumberOfAttachments();
-    ui->attatchmentComboBox->clear();
-    if (nAttachments > 0) {
-      for(int i = 0; i < nAttachments; ++i) {
-        const LifeMotifAttachment& att = diary->GetAttachment(i);
-        ui->attatchmentComboBox->insertItem(i, att.name);
-      }
-    }
-}
-
-void MainWindow::on_actionBuild_Local_Structure_triggered()
-{
-  BuildLocalStructre();
-  UpdateCalendar();
-}
-
-QString MainWindow::FetchMessage(const MsgIdType& id)
-{
-  QString rawMessage;
-  if (emailCache()->HasCache(id)) {
-    qDebug() << id << "is cached. Load from local disk.";
-    rawMessage = emailCache()->GetCache(id);
-  } else {
-    qDebug() << id << "is uncached. Fetch from the server.";
-    std::string label = LifeMotifSettings::Label().toStdString();
-    rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
-    emailCache()->SetCache(id, rawMessage);
-  }
-  return rawMessage;
-}
-
-void MainWindow::ParseMessage(const std::string& rawMessage)
-{
-  diary = LifeMotifDiaryPtr(new LifeMotifDiary(rawMessage));
-
-  qDebug() << diary->NumberOfAttachments() << "attachment(s)";
-  if (diary->NumberOfAttachments() > 0) {
-      for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
-          qDebug() << "  " << diary->GetAttachment(i).name;
-      }
-  }
-}
-
-void MainWindow::on_actionBrowserAuthentication_triggered()
-{
-  if (HasCredentials() &&
-      QMessageBox::No == QMessageBox::question(
-          this,
-          QString("Double Authentication"),
-          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"))) {
-      return;
-  }
-
-  AuthenticateUsingWebBrowser();
-}
-
-void MainWindow::on_actionConsoleAuthentication_triggered()
-{
-  // TODO: if the program already has been authenticated?
-  AuthenticateOnConsole();
-}
-
 void MainWindow::AuthenticateOnConsole()
 {
   QString secretPath = LifeMotifSettings::SecretPath(true);
@@ -231,14 +68,139 @@ void MainWindow::AuthenticateUsingWebBrowser()
   UpdateMenu();
 }
 
-bool MainWindow::HasCredentials() const
+void MainWindow::BuildLocalStructre()
 {
-  return LifeMotifUtils::IsFile(LifeMotifSettings::StorageName(true));
+  QString label = LifeMotifSettings::Label();
+  bp::object structureObject =
+      imapWrapper()->FetchThreadStructure(label.toStdString());
+
+  // extract object
+  LocalStructureExtract(structureObject, localStructure);
+
+  // save new object
+  LocalStructureWrapperPtr lsWrapper
+      = LifeMotifUtils::CreateLocalStructureWrapper();
+
+  const QString lsPath
+      = LifeMotifSettings::LocalStructure(true);
+
+  lsWrapper->Build(lsPath.toStdString(), structureObject);
+}
+
+void MainWindow::LoadLocalStructure()
+{
+  const QString lsPath = LifeMotifSettings::LocalStructure();
+
+  if (LifeMotifUtils::IsFileReadable(lsPath)) {
+    LocalStructureWrapperPtr lsWrapper
+        = LifeMotifUtils::CreateLocalStructureWrapper();
+
+    bp::object object = lsWrapper->Load(lsPath.toStdString());
+    LocalStructureExtract(object, localStructure);
+  }
+}
+
+void MainWindow::ParseMessage(const std::string& rawMessage)
+{
+  diary = LifeMotifDiaryPtr(new LifeMotifDiary(rawMessage));
+
+  qDebug() << diary->NumberOfAttachments() << "attachment(s)";
+  if (diary->NumberOfAttachments() > 0) {
+      for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
+          qDebug() << "  " << diary->GetAttachment(i).name;
+      }
+  }
+}
+
+void MainWindow::RevokeAuthentication()
+{
+  oauth2Wrapper()->Revoke(LifeMotifSettings::StorageName(true).toStdString());
+}
+
+void MainWindow::UpdateCalendar()
+{
+  ui->calendarWidget->SetDate(localStructure);
+  ui->calendarWidget->UpdateUI();
+}
+
+void MainWindow::UpdateDiaryInformationUI(void)
+{
+    // from, to, subject
+    ui->fromEdit->setText(diary->From());
+    ui->toEdit->setText(diary->To());
+    ui->subjectEdit->setText(diary->Subject());
+
+    // diary text
+    ui->diaryPlainText->clear();
+    ui->diaryHtmlText->clear();
+    if (diary->TextPlainContent().isEmpty() == false) {
+      ui->diaryPlainText->setPlainText(diary->TextPlainContent());
+    }
+    if (diary->TextHtmlContent().isEmpty() == false){
+      if (ui->showHtmlCodeCheckBox->checkState() == Qt::Checked) {
+        // show html code
+        ui->diaryHtmlText->setPlainText(diary->TextHtmlContent());
+      } else if (ui->showHtmlCodeCheckBox->checkState() == Qt::Unchecked) {
+        // render as html code
+        ui->diaryHtmlText->setHtml(diary->TextHtmlContent());
+      }
+    }
+
+    // attachment
+    const int nAttachments = diary->NumberOfAttachments();
+    ui->attatchmentComboBox->clear();
+    if (nAttachments > 0) {
+      for(int i = 0; i < nAttachments; ++i) {
+        const LifeMotifAttachment& att = diary->GetAttachment(i);
+        ui->attatchmentComboBox->insertItem(i, att.name);
+      }
+    }
+}
+
+QString MainWindow::FetchMessage(const MsgIdType& id)
+{
+  QString rawMessage;
+  if (emailCache()->HasCache(id)) {
+    qDebug() << id << "is cached. Load from local disk.";
+    rawMessage = emailCache()->GetCache(id);
+  } else {
+    qDebug() << id << "is uncached. Fetch from the server.";
+    std::string label = LifeMotifSettings::Label().toStdString();
+    rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
+    emailCache()->SetCache(id, rawMessage);
+  }
+  return rawMessage;
 }
 
 DateType MainWindow::GetDateFromCalendar() const
 {
   return ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
+}
+
+void MainWindow::UpdateMenu()
+{
+  // Cannot do those actions if not authenticated.
+  //  - build local structre
+  //  - revoke
+  const bool enable = LifeMotifUtils::HasCredentials(true);
+
+  ui->actionBuildLocalStructure->setEnabled(enable);
+  ui->revokeAuthentication->setEnabled(enable);
+}
+
+void MainWindow::ClearDiaryInformationUI()
+{
+  // from, to, subject
+  ui->fromEdit->clear();
+  ui->toEdit->clear();
+  ui->subjectEdit->clear();
+
+  // diary text
+  ui->diaryPlainText->clear();
+  ui->diaryHtmlText->clear();
+
+  // attachment
+  ui->attatchmentComboBox->clear();
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()
@@ -294,29 +256,94 @@ void MainWindow::on_actionExit_triggered()
     close();
 }
 
-void MainWindow::UpdateMenu()
+void MainWindow::on_clearTextButton_clicked()
 {
-  // Cannot do those actions if not authenticated.
-  //  - build local structre
+  ClearDiaryInformationUI();
+}
 
-  if (HasCredentials()) {
-    ui->actionBuild_Local_Structure->setEnabled(true);
-  } else {
-    ui->actionBuild_Local_Structure->setEnabled(false);
+void MainWindow::on_actionBrowserAuthentication_triggered()
+{
+  if (LifeMotifUtils::HasCredentials() &&
+      QMessageBox::No == QMessageBox::question(
+          this,
+          QString("Double Authentication"),
+          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"))) {
+      return;
+  }
+
+  AuthenticateUsingWebBrowser();
+}
+
+void MainWindow::on_actionConsoleAuthentication_triggered()
+{
+  // TODO: if the program already has been authenticated?
+  AuthenticateOnConsole();
+}
+
+void MainWindow::on_showHtmlCodeCheckBox_clicked()
+{
+  UpdateDiaryInformationUI();
+}
+
+void MainWindow::on_actionBuildLocalStructure_triggered()
+{
+  BuildLocalStructre();
+  UpdateCalendar();
+}
+
+void MainWindow::on_actionOptions_triggered()
+{
+  // show preference modal dialog
+  PreferenceWindow pref(this);
+
+  // some tuning can be here ... center of the main window...
+  int result = pref.exec();
+  if (result == QDialog::Accepted) {
+    std::cout << "User Accepted\n";
+  } else if (result == QDialog::Rejected) {
+    std::cout << "User canceled\n";
   }
 }
 
-void MainWindow::on_clearTextButton_clicked()
+void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
-  // from, to, subject
-  ui->fromEdit->clear();
-  ui->toEdit->clear();
-  ui->subjectEdit->clear();
+  DateType datestring = date.toString("yyyyMMdd").toStdString();
 
-  // diary text
-  ui->diaryPlainText->clear();
-  ui->dirayHtmlText->clear();
+  // yyyyMMdd date string is the key.
+  // find the email thread of the day and display in the list widget.
+  if (localStructure.find(datestring) != localStructure.end()) {
+    const MessageGroup& group = localStructure[datestring];
+    QListWidget& list = *ui->diaryList;
 
-  // attachment
-  ui->attatchmentComboBox->clear();
+    list.clear();
+    for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
+      list.addItem(QString::number(group.messageIds[i]));
+    }
+  }
+}
+
+void MainWindow::on_diaryList_clicked(const QModelIndex &index)
+{
+  // get message id
+  DateType ds = GetDateFromCalendar();
+
+  if (localStructure.find(ds) != localStructure.end()) {
+    MsgIdType msgId = localStructure[ds].messageIds[index.row()];
+    // fetch message by message id, and parse email message
+    ParseMessage(FetchMessage(msgId).toStdString());
+    // update ui
+    UpdateDiaryInformationUI();
+  }
+}
+
+void MainWindow::on_revokeAuthentication_triggered()
+{
+  if (LifeMotifUtils::HasCredentials() &&
+      QMessageBox::No == QMessageBox::question(
+          this,
+          QString("Revoke Authentication"),
+          QString("Revoke authentication from Google. Are you sure?"))) {
+      return;
+  }
+  RevokeAuthentication();
 }

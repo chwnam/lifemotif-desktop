@@ -131,7 +131,7 @@
      </layout>
     </widget>
    </widget>
-   <widget class="QTextEdit" name="dirayHtmlText">
+   <widget class="QTextEdit" name="diaryHtmlText">
     <property name="geometry">
      <rect>
       <x>260</x>
@@ -278,6 +278,22 @@
      <string>HTML Text</string>
     </property>
    </widget>
+   <widget class="QCheckBox" name="showHtmlCodeCheckBox">
+    <property name="geometry">
+     <rect>
+      <x>850</x>
+      <y>410</y>
+      <width>161</width>
+      <height>20</height>
+     </rect>
+    </property>
+    <property name="layoutDirection">
+     <enum>Qt::LeftToRight</enum>
+    </property>
+    <property name="text">
+     <string>HTML 태그를 보이도록</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">
@@ -288,53 +304,36 @@
      <height>22</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
-    <property name="title">
-     <string>파일</string>
-    </property>
-    <addaction name="actionExit"/>
-   </widget>
    <widget class="QMenu" name="menuTestMenu">
     <property name="title">
-     <string>테스트</string>
-    </property>
-    <addaction name="actionConsoleAuthentication"/>
-    <addaction name="actionBrowserAuthentication"/>
-    <addaction name="separator"/>
-    <addaction name="actionList_Mailboxes"/>
-    <addaction name="actionBuild_Local_Structure"/>
-   </widget>
-   <widget class="QMenu" name="menuEtc">
-    <property name="title">
-     <string>기타</string>
+     <string>LifeMotif</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionBrowserAuthentication"/>
+    <addaction name="separator"/>
+    <addaction name="revokeAuthentication"/>
+    <addaction name="separator"/>
+    <addaction name="actionListPreference"/>
+    <addaction name="actionBuildLocalStructure"/>
+    <addaction name="separator"/>
+    <addaction name="actionExit"/>
    </widget>
-   <addaction name="menuFile"/>
    <addaction name="menuTestMenu"/>
-   <addaction name="menuEtc"/>
   </widget>
-  <action name="actionOptions">
-   <property name="text">
-    <string>Preferences</string>
-   </property>
-   <property name="toolTip">
-    <string>Preferences</string>
-   </property>
-  </action>
   <action name="actionConsoleAuthentication">
    <property name="text">
     <string>콘솔에서 인증하기...</string>
    </property>
   </action>
-  <action name="actionList_Mailboxes">
+  <action name="actionListPreference">
    <property name="text">
-    <string>List Mailboxes</string>
+    <string>Preference</string>
    </property>
   </action>
-  <action name="actionBuild_Local_Structure">
+  <action name="actionBuildLocalStructure">
    <property name="text">
-    <string>Build Local Structure</string>
+    <string>이메일 구조 가져오기</string>
    </property>
   </action>
   <action name="actionBrowserAuthentication">
@@ -350,6 +349,11 @@
   <action name="actionExit">
    <property name="text">
     <string>종료</string>
+   </property>
+  </action>
+  <action name="revokeAuthentication">
+   <property name="text">
+    <string>인증 취소하기...</string>
    </property>
   </action>
  </widget>

@@ -9,6 +9,7 @@
 
 #include "python_wrapper/python_wrapper.h"
 
+
 typedef boost::shared_ptr<GoogleImapWrapper> GoogleImapWrapperPtr;
 typedef boost::shared_ptr<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
 typedef boost::shared_ptr<LocalStructureWrapper> LocalStructureWrapperPtr;
@@ -32,6 +33,9 @@ public:
   inline static bool IsDirectory(const QString& path);
   inline static bool IsDirectoryAccessible(const QString& path);
   inline static bool IsDirectoryAccessibleWritable(const QString& path);
+
+  /* credential helper */
+  static bool HasCredentials(bool combineWithPythonScriptPath = true);
 
   /* create wrappers */
   static GoogleImapWrapperPtr CreateImapWrapper(GoogleOauth2WrapperPtr ptr);

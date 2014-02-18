@@ -88,3 +88,11 @@ GoogleOauth2Wrapper::ImapAuthenticate(
 
   return imapObject;
 }
+
+void
+GoogleOauth2Wrapper::Revoke(const std::string& storageName)
+{
+  bp::object revokeFunc = instance.attr("revoke");
+
+  revokeFunc(storageName);
+}

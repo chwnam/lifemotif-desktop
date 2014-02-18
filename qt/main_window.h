@@ -36,7 +36,7 @@ private slots:
      void on_diaryList_clicked(const QModelIndex &index);
 
      // build local structure menu
-     void on_actionBuild_Local_Structure_triggered();
+     void on_actionBuildLocalStructure_triggered();
 
      // authentication by webbrowser (GUI)
      void on_actionBrowserAuthentication_triggered();
@@ -55,19 +55,25 @@ private slots:
 
      void on_clearTextButton_clicked();
 
+     void on_showHtmlCodeCheckBox_clicked();
+
+     void on_revokeAuthentication_triggered();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
     void BuildLocalStructre();
+    void ClearDiaryInformationUI();
     void LoadLocalStructure();
     void ParseMessage(const std::string& rawMessage);
+    void RevokeAuthentication();
     void UpdateCalendar();
     void UpdateDiaryInformationUI();
     void UpdateMenu();
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;
-    bool     HasCredentials() const;
+
 
 private:
     Ui::MainWindow *ui;

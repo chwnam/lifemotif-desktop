@@ -22,10 +22,15 @@ public:
     bp::object
     GetCredentials(const std::string& storageName);
 
-    bp::object ImapAuthenticate(
+    bp::object
+      ImapAuthenticate(
             const std::string& storageName,
             const std::string& emailAddress,
             const int debugLevel = 0);
+
+    void
+      Revoke(const std::string& storageName);
+
 };
 
 #endif // GOOGLEOAUTH2CONTROLLER_H

@@ -86,3 +86,9 @@ QString LifeMotifUtils::Strip(const QString& input, const QChar& s)
 
   return input.mid(b, e - b);
 }
+
+bool LifeMotifUtils::HasCredentials(bool combineWithPythonScriptPath)
+{
+  return IsFileReadableWritable(
+          LifeMotifSettings::StorageName(combineWithPythonScriptPath));
+}
