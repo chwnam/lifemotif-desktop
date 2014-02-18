@@ -51,6 +51,10 @@ private slots:
 
      void on_mimeStructureButton_clicked();
 
+     void on_actionExit_triggered();
+
+     void on_clearTextButton_clicked();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
@@ -59,6 +63,7 @@ private:
     void ParseMessage(const std::string& rawMessage);
     void UpdateCalendar();
     void UpdateDiaryInformationUI();
+    void UpdateMenu();
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;

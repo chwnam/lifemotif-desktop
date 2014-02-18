@@ -20,6 +20,7 @@ MainWindow::MainWindow(QWidget *parent) :
 
     LoadLocalStructure();
     UpdateCalendar();
+    UpdateMenu();
 }
 
 MainWindow::~MainWindow()
@@ -37,8 +38,11 @@ void MainWindow::BuildLocalStructre()
   LocalStructureExtract(structureObject, localStructure);
 
   // save new object
-  LocalStructureWrapperPtr lsWrapper = LifeMotifUtils::CreateLocalStructureWrapper();
-  const QString lsPath = LifeMotifSettings::LocalStructure(true);
+  LocalStructureWrapperPtr lsWrapper
+      = LifeMotifUtils::CreateLocalStructureWrapper();
+
+  const QString lsPath
+      = LifeMotifSettings::LocalStructure(true);
 
   lsWrapper->Build(lsPath.toStdString(), structureObject);
 }
@@ -48,7 +52,9 @@ void MainWindow::LoadLocalStructure()
   const QString lsPath = LifeMotifSettings::LocalStructure();
 
   if (LifeMotifUtils::IsFileReadable(lsPath)) {
-    LocalStructureWrapperPtr lsWrapper = LifeMotifUtils::CreateLocalStructureWrapper();
+    LocalStructureWrapperPtr lsWrapper
+        = LifeMotifUtils::CreateLocalStructureWrapper();
+
     bp::object object = lsWrapper->Load(lsPath.toStdString());
     LocalStructureExtract(object, localStructure);
   }
@@ -191,12 +197,6 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 {
   diary = LifeMotifDiaryPtr(new LifeMotifDiary(rawMessage));
 
-  qDebug() << "From:" << diary->From();
-  qDebug() << "To:" << diary->To();
-  qDebug() << "Subject:" << diary->Subject();
-  qDebug() << "Plain text:" << diary->TextPlainContent();
-  qDebug() << "HTML text:" << diary->TextHtmlContent();
-
   qDebug() << diary->NumberOfAttachments() << "attachment(s)";
   if (diary->NumberOfAttachments() > 0) {
       for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
@@ -245,6 +245,8 @@ void MainWindow::AuthenticateOnConsole()
   oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
 
   qDebug() << "Successfully authorized.";
+
+  UpdateMenu();
 }
 
 void MainWindow::AuthenticateUsingWebBrowser()
@@ -258,6 +260,8 @@ void MainWindow::AuthenticateUsingWebBrowser()
   } else {
     QMessageBox::warning(this, "Authentication failed", "인증에 실패했어요.");
   }
+
+  UpdateMenu();
 }
 
 bool MainWindow::HasCredentials() const
@@ -279,6 +283,8 @@ void MainWindow::on_mimeRawMessageButton_clicked()
           FetchMessage(item->text().toULongLong()));
     mimeRawMessageDialog()->setFocus();
     mimeRawMessageDialog()->show();
+    mimeRawMessageDialog()->raise();
+    mimeRawMessageDialog()->activateWindow();
   }
 }
 
@@ -314,4 +320,36 @@ void MainWindow::on_mimeStructureButton_clicked()
     mimeStructureDialog()->raise();
     mimeStructureDialog()->activateWindow();
   }
+}
+
+void MainWindow::on_actionExit_triggered()
+{
+    close();
+}
+
+void MainWindow::UpdateMenu()
+{
+  // Cannot do those actions if not authenticated.
+  //  - build local structre
+
+  if (HasCredentials()) {
+    ui->actionBuild_Local_Structure->setEnabled(true);
+  } else {
+    ui->actionBuild_Local_Structure->setEnabled(false);
+  }
+}
+
+void MainWindow::on_clearTextButton_clicked()
+{
+  // from, to, subject
+  ui->fromEdit->clear();
+  ui->toEdit->clear();
+  ui->subjectEdit->clear();
+
+  // diary text
+  ui->diaryPlainText->clear();
+  ui->dirayHtmlText->clear();
+
+  // attachment
+  ui->attatchmentComboBox->clear();
 }

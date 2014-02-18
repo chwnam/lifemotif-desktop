@@ -77,12 +77,12 @@ LocalStructureWrapperPtr LifeMotifUtils::CreateLocalStructureWrapper()
   return ptr;
 }
 
-QString LifeMotifUtils::Trim(const QString& input, const QChar& s)
+QString LifeMotifUtils::Strip(const QString& input, const QChar& s)
 {
   int b, e;
 
-  b = (*input.begin() == s) ? 1 : 0;
-  e = (*(input.end()-1) == s) ? input.size() - 2 : input.size() - 1;
+  b = input.startsWith(s) ? 1 : 0;
+  e = input.endsWith(s)   ? input.size()-1 : input.size();
 
-  return input.mid(b, e);
+  return input.mid(b, e - b);
 }

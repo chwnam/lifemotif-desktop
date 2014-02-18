@@ -40,7 +40,8 @@ SOURCES += main.cpp\
     mime_raw_message_dialog.cpp \
     mime_structure_dialog.cpp \
     main_window.cpp \
-    preference_window.cpp
+    preference_window.cpp \
+    lifemotif_calendar_widget.cpp
 
 
 HEADERS  += \
@@ -63,7 +64,8 @@ HEADERS  += \
     mime_raw_message_dialog.h \
     mime_structure_dialog.h \
     preference_window.h \
-    main_window.h
+    main_window.h \
+    lifemotif_calendar_widget.h
 
 FORMS    += \
     web_browser_dialog.ui \

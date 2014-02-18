@@ -39,7 +39,7 @@ public:
   static LocalStructureWrapperPtr CreateLocalStructureWrapper();
 
   /* text manipulation */
-  static QString Trim(const QString& input, const QChar& s);
+  static QString Strip(const QString& input, const QChar& s);
 };
 
 QString LifeMotifUtils::JoinPath(const QString& pre, const QString& add)

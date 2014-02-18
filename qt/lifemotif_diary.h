@@ -42,17 +42,12 @@ private:
   void ParseTopHeader(const mimetic::Header& header);
   void ParseBody(const mimetic::Body& body);
 
-  void CallbackForText(const mimetic::Body& body, QString& out);
-  void CallbackForBinary(const mimetic::Body& body, LifeMotifAttachment& out);
+  QString             CallbackForText(const mimetic::Body &body);
+  LifeMotifAttachment CallbackForBinary(const mimetic::Body &body);
 
   QString ParseMailBox(const mimetic::Mailbox& mailbox);
   QString DecodeByteArray(const QByteArray& array, const std::string& charset);
   QByteArray Base64DecodeBody(const mimetic::Body& body);
-
-  bool
-    GetAttachment(
-      const mimetic::Body& body,
-      LifeMotifAttachment& attachment);
   
   QString
     DecodeEncodedWords(const std::string& input);

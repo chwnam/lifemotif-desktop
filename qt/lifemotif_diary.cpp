@@ -24,11 +24,11 @@ QString LifeMotifDiary::ParseMailBox(const mimetic::Mailbox& mailbox)
   QString result;
 
   if (mailbox.label() != "") { // email address with label
-    QString label = DecodeEncodedWords(mailbox.label());  
-    // trim double quote
-    if (label.left(1) == QString("\"")) {
-      label = LifeMotifUtils::Trim(label, QChar('\"'));    
-    }
+    QString label
+        = DecodeEncodedWords(
+            LifeMotifUtils::Strip(
+              QString::fromStdString(mailbox.label()),
+              QChar('\"')).toStdString());
     result = QString("\"%1\" <%2@%3>").arg(label, mbstr, domain);
   } else { // without label
     result = QString("%1@%2").arg(mbstr, domain);
@@ -66,42 +66,99 @@ void LifeMotifDiary::ParseBody(const mimetic::Body& body)
   if (ct.type() == std::string("text")) {
     if (ct.subtype() == std::string("plain")) {
       // plain type text entity
-      CallbackForText(body, textPlainContent);
+      textPlainContent = CallbackForText(body);
     } else if (ct.subtype() == std::string("html")) {
       // html type text entity
-      CallbackForText(body, textHtmlContent);
+      textHtmlContent = CallbackForText(body);
     }
-  } else if (ct.type() == std::string("image")) {
-    LifeMotifAttachment att;
-    CallbackForBinary(body, att);
+  }
+
+  else if (ct.type() == std::string("image")) {
+    LifeMotifAttachment att = CallbackForBinary(body);
     attachments.push_back(att);
-  } else if (ct.type() == std::string("audio")) {
+  }
+
+  else if (ct.type() == std::string("audio")) {
     // audio. skip.
-  } else if (ct.type() == std::string("multipart")) {
+  }
+
+  else if (ct.type() == std::string("multipart")) {
     mimetic::MimeEntityList::const_iterator it;
     for (it = body.parts().begin(); it != body.parts().end(); ++it) {
       ParseBody((*it)->body());
     }
-  } else {
+  }
+
+  else {
     // unknown content type.
   }
 }
 
-void
-  LifeMotifDiary::CallbackForText(
-    const mimetic::Body &body,
-    QString &out)
+QString LifeMotifDiary::CallbackForText(const mimetic::Body &body)
 {
-  const mimetic::ContentTransferEncoding& cte;
-  const std::string charset;
+  typedef mimetic::ContentTransferEncoding CTE;
+  const mimetic::Header&      header = body.owner()->header();
+  const CTE&                  cte    = header.contentTransferEncoding();
+  const mimetic::ContentType& cty    = header.contentType();
+
+  const std::string charset = cty.param("charset");
+  const std::string ctem    = cte.mechanism();
+
+  QString result;
+
+  if (ctem == mimetic::ContentTransferEncoding::base64) {
+    result = DecodeByteArray(Base64DecodeBody(body), charset);
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::sevenbit) {
+    qDebug() << "7bit decoding!";
+    result = DecodeByteArray(QByteArray(body.c_str(), body.size()), charset);
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::eightbit) {
+    qDebug() << "8bit decoding!";
+    result = DecodeByteArray(QByteArray(body.c_str(), body.size()), charset);
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::binary) {
+    qDebug() << "binary decoding!";
+  }
+
+  return result;
 }
 
-void
-  LifeMotifDiary::CallbackForBinary(
-    const mimetic::Body &body,
-    LifeMotifAttachment &out)
+LifeMotifAttachment LifeMotifDiary::CallbackForBinary(const mimetic::Body &body)
 {
+  typedef mimetic::ContentTransferEncoding CTE;
+  const mimetic::Header&      header = body.owner()->header();
+  const CTE&                  cte    = header.contentTransferEncoding();
+  const mimetic::ContentType& cty    = header.contentType();
 
+  const std::string&          ctem   = cte.mechanism();
+
+  LifeMotifAttachment result;
+
+  result.type    = QString::fromStdString(cty.type());
+  result.subType = QString::fromStdString(cty.subtype());
+  result.name    = DecodeEncodedWords(cty.param("name"));
+
+  if (ctem == mimetic::ContentTransferEncoding::base64) {
+    result.data = Base64DecodeBody(body);
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::sevenbit) {
+    qDebug() << "7bit decoding!";
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::eightbit) {
+    qDebug() << "8bit decoding!";
+  }
+
+  else if (ctem == mimetic::ContentTransferEncoding::binary) {
+    qDebug() << "binary decoding!";
+  }
+
+  return result;
 }
 
 QByteArray
@@ -115,9 +172,6 @@ QByteArray
     std::stringstream        stream;
     mimetic::Base64::Decoder decoder;
 
-    qDebug() << "Body message:";
-    qDebug() << body.c_str();
-
     mimetic::decode(
       body.begin(),
       body.end(),
@@ -125,8 +179,8 @@ QByteArray
       std::ostreambuf_iterator<char>(stream));
 
     std::string str = stream.str();
-    qDebug() << str.c_str();
-    qDebug() << "decoded size:" << str.size();
+    //qDebug() << str.c_str();
+    //qDebug() << "decoded size:" << str.size();
 
     result = QByteArray(str.c_str(), str.size());
   }
@@ -143,36 +197,6 @@ QString
     result = codec->toUnicode(array);
   }
   return result;
-}
-
-bool
-  LifeMotifDiary::GetAttachment(
-    const mimetic::Body& body,
-    LifeMotifAttachment& attachment)
-{
-  const mimetic::Header&
-    header = body.owner()->header();
-
-  const mimetic::ContentDisposition&
-    cd = header.contentDisposition();
-
-  const mimetic::ContentType&
-    ct = header.contentType();
-
-  const mimetic::ContentTransferEncoding& cte
-    = header.contentTransferEncoding();
-
-  if (cd.type() == "attachment" &&
-      cte.mechanism() == mimetic::ContentTransferEncoding::base64) {
-    attachment.type = QString::fromStdString(ct.type());
-    attachment.subType = QString::fromStdString(ct.subtype());
-    attachment.name = QString::fromStdString(cd.param("filename"));
-    attachment.data = Base64DecodeBody(body);
-
-    return true;
-  }
-
-  return false;
 }
 
 QString LifeMotifDiary::DecodeEncodedWords(const std::string& input)
