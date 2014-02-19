@@ -347,3 +347,13 @@ void MainWindow::on_actionPreference_triggered()
     std::cout << "User canceled\n";
   }
 }
+
+void MainWindow::on_actionAbout_triggered()
+{
+  QMessageBox::about(this, "About LifeMotif-Desktop", "LifeMotif-Desktop");
+}
+
+void MainWindow::on_actionQt_triggered()
+{
+  QMessageBox::aboutQt(this, "About LifeMotif-Desktop");
+}

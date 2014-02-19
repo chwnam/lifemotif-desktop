@@ -59,6 +59,10 @@ private slots:
 
      void on_revokeAuthentication_triggered();
 
+     void on_actionAbout_triggered();
+
+     void on_actionQt_triggered();
+
 private:
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();

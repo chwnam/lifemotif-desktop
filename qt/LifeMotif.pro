@@ -112,3 +112,6 @@ LIBS += \
 LIBS += \
     -lmimetic \
     -lpython2.7
+
+RESOURCES += \
+    LifeMotif.qrc
