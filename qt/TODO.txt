@@ -25,6 +25,38 @@ Milestone Version
   - 버전, 저작권, 만든 이.
   - 의존 라이브러리.
 
+Win32를 위해 반드시 필요한 DLL
+boost
+  boost_python-vc100-mt-1_55.dll
+
+python
+  python27.dll
+
+Qt5
+  icudt51.dll
+  icuin51.dll
+  icuuc51.dll
+  Qt5Core.dll
+  Qt5Gui.dll
+  Qt5Multimedia.dll
+  Qt5MultimediaWidgets.dll
+  Qt5Network.dll
+  Qt5OpenGL.dll
+  Qt5Positioning.dll
+  Qt5PrintSupport.dll
+  Qt5Qml.dll
+  Qt5Quick.dll
+  Qt5Sensors.dll
+  Qt5Sql.dll
+  Qt5Webkit.dll
+  Qt5WebKitWidgets.dll
+  Qt5Widgets.dll
+ 
+  plugins/platforms/qwindows.dll -> platforms/qwindows.dll
+
+MS VS2010 Runtime.
+
+
 Version 0.1.0021 (Feb. 15th, 2014)
 ==================================
 2014년 1월 26일을 기준으로 1일. 가장 마지막은 이 1월 26일을 기준으로 네번째 자리수 결정.
