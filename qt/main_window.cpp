@@ -7,6 +7,8 @@
 #include <QMessageBox>
 #include <QUrl>
 #include <QVector>
+#include <QThread>
+#include <QThreadPool>
 
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
@@ -21,6 +23,8 @@ MainWindow::MainWindow(QWidget *parent) :
     LoadLocalStructure();
     UpdateCalendar();
     UpdateMenu();
+
+    loadingDialog = 0;
 }
 
 MainWindow::~MainWindow()
@@ -160,6 +164,7 @@ void MainWindow::UpdateDiaryInformationUI(void)
 QString MainWindow::FetchMessage(const MsgIdType& id)
 {
   QString rawMessage;
+
   if (emailCache()->HasCache(id)) {
     qDebug() << id << "is cached. Load from local disk.";
     rawMessage = emailCache()->GetCache(id);
@@ -169,6 +174,7 @@ QString MainWindow::FetchMessage(const MsgIdType& id)
     rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
     emailCache()->SetCache(id, rawMessage);
   }
+
   return rawMessage;
 }
 
@@ -201,6 +207,22 @@ void MainWindow::ClearDiaryInformationUI()
 
   // attachment
   ui->attatchmentComboBox->clear();
+}
+
+void MainWindow::ShowLoadingDialog()
+{
+  if (loadingDialog == NULL) {
+    loadingDialog = new LoadingDialog(this);
+  }
+
+  qDebug() << "show loading dialog";
+  loadingDialog->show();
+}
+
+void MainWindow::CloseLoadingDialog()
+{
+  qDebug() << "closing loading dialog";
+  loadingDialog->close();
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()
@@ -308,18 +330,23 @@ void MainWindow::on_calendarWidget_clicked(const QDate &date)
   }
 }
 
-void MainWindow::on_diaryList_clicked(const QModelIndex &index)
+void MainWindow::ShowDiary(const int entry)
 {
   // get message id
   DateType ds = GetDateFromCalendar();
 
   if (localStructure.find(ds) != localStructure.end()) {
-    MsgIdType msgId = localStructure[ds].messageIds[index.row()];
+    MsgIdType msgId = localStructure[ds].messageIds[entry];
     // fetch message by message id, and parse email message
     ParseMessage(FetchMessage(msgId).toStdString());
     // update ui
     UpdateDiaryInformationUI();
   }
+}
+
+void MainWindow::on_diaryList_clicked(const QModelIndex &index)
+{
+  ShowDiary(index.row());
 }
 
 void MainWindow::on_revokeAuthentication_triggered()

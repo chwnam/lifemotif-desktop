@@ -9,6 +9,7 @@
 #include "lifemotif_diary.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_utils.h"
+#include "loading_dialog.h"
 #include "message_types.h"
 #include "mime_raw_message_dialog.h"
 #include "mime_structure_dialog.h"
@@ -74,6 +75,9 @@ private:
     void UpdateCalendar();
     void UpdateDiaryInformationUI();
     void UpdateMenu();
+    void ShowLoadingDialog();
+    void CloseLoadingDialog();
+    void ShowDiary(const int entry);
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;
@@ -165,6 +169,8 @@ private:
     // parsed email becomes diary
     typedef boost::shared_ptr<LifeMotifDiary> LifeMotifDiaryPtr;
     LifeMotifDiaryPtr diary;
+
+    LoadingDialog *loadingDialog;
 };
 
 #endif // MAIN_WINDOW_H

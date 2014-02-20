@@ -41,7 +41,9 @@ SOURCES += main.cpp\
     mime_raw_message_dialog.cpp \
     mime_structure_dialog.cpp \
     preference_window.cpp \
-    web_browser_dialog.cpp
+    web_browser_dialog.cpp \
+    loading_dialog.cpp \
+    runnable_helper.cpp
 
 
 HEADERS  += \
@@ -65,14 +67,17 @@ HEADERS  += \
     mime_raw_message_dialog.h \
     mime_structure_dialog.h \
     preference_window.h \
-    web_browser_dialog.h
+    web_browser_dialog.h \
+    loading_dialog.h \
+    runnable_helper.h
 
 FORMS    += \
     web_browser_dialog.ui \
     mime_raw_message_dialog.ui \
     mime_structure_dialog.ui \
     main_window.ui \
-    preference_window.ui
+    preference_window.ui \
+    loading_dialog.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \
