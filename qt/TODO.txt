@@ -15,8 +15,6 @@ TODOS
 
 Version 0.1.0026 (Feb. 20th, 2014)
 ==================================
-Milestone Version
-
 - 캐시 삭제 기능 추가
 - 이메일 선택 기능 추가
 - 비동기 작업은 비동기 작업이 가능해지도록
@@ -28,9 +26,6 @@ Milestone Version
 Win32를 위해 반드시 필요한 DLL
 boost
   boost_python-vc100-mt-1_55.dll
-
-python
-  python27.dll
 
 Qt5
   icudt51.dll
@@ -50,12 +45,19 @@ Qt5
   Qt5Sql.dll
   Qt5Webkit.dll
   Qt5WebKitWidgets.dll
-  Qt5Widgets.dll
- 
+  Qt5Widgets.dll 
   plugins/platforms/qwindows.dll -> platforms/qwindows.dll
 
 MS VS2010 Runtime.
 
+Python
+  Python Version 2.7.6
+
+OpenSSL
+	http://slproweb.com/products/Win32OpenSSL.html
+	libssl32.dll
+	ssleay32.dll
+	libeay32.dll
 
 Version 0.1.0021 (Feb. 15th, 2014)
 ==================================
