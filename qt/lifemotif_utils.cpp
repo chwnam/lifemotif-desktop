@@ -25,15 +25,15 @@ std::string LifeMotifUtils::JoinPath(int n, ...)
   return out;
 }
 
-GoogleImapWrapperPtr
-LifeMotifUtils::CreateImapWrapper(GoogleOauth2WrapperPtr ptr)
+GoogleImapWrapper*
+LifeMotifUtils::CreateImapWrapper(GoogleOauth2Wrapper* ptr)
 {
-  GoogleImapWrapperPtr imapWrapper;
+  GoogleImapWrapper* imapWrapper = NULL;
 
   if (ptr) {
-    const QString storage = LifeMotifSettings::StorageName();
+    const QString storage      = LifeMotifSettings::StorageName();
     const QString emailAddress = LifeMotifSettings::EmailAddress();
-    const int debugLevel = LifeMotifSettings::DebugLevel();
+    const int     debugLevel   = LifeMotifSettings::DebugLevel();
 
     bp::object imapObject =
         ptr->ImapAuthenticate(
@@ -41,39 +41,31 @@ LifeMotifUtils::CreateImapWrapper(GoogleOauth2WrapperPtr ptr)
           emailAddress.toStdString(),
           debugLevel);
 
-    imapWrapper = GoogleImapWrapperPtr(new GoogleImapWrapper(
+    imapWrapper
+        = new GoogleImapWrapper(
             LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
             LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
-            imapObject));
-
-    if (imapWrapper == NULL) throw std::bad_alloc();
-    qDebug() << "imapwrapper assigned";
+            imapObject);
   }
 
   return imapWrapper;
 }
 
-GoogleOauth2WrapperPtr LifeMotifUtils::CreateOauth2Wrapper()
+GoogleOauth2Wrapper* LifeMotifUtils::CreateOauth2Wrapper()
 {
-  GoogleOauth2WrapperPtr ptr
-      = GoogleOauth2WrapperPtr(new GoogleOauth2Wrapper(
+  GoogleOauth2Wrapper* ptr
+      = new GoogleOauth2Wrapper(
         LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
-        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS));
-
-  if (ptr == NULL) throw std::bad_alloc();
-  qDebug() << "oauth2wrapper assigned";
+        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS);
   return ptr;
 }
 
-LocalStructureWrapperPtr LifeMotifUtils::CreateLocalStructureWrapper()
+LocalStructureWrapper* LifeMotifUtils::CreateLocalStructureWrapper()
 {
-  LocalStructureWrapperPtr ptr
-    = LocalStructureWrapperPtr(new LocalStructureWrapper(
+  LocalStructureWrapper* ptr
+    = new LocalStructureWrapper(
         LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS));
-
-  if (ptr == NULL) throw std::bad_alloc();
-  qDebug() << "localstructurewrapper assigned";
+        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
   return ptr;
 }
 

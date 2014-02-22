@@ -1,7 +1,6 @@
 #ifndef LIFEMOTIF_UTILS_H
 #define LIFEMOTIF_UTILS_H
 
-#include <boost/shared_ptr.hpp>
 #include <stdarg.h>
 #include <string>
 #include <QDir>
@@ -9,10 +8,6 @@
 
 #include "python_wrapper/python_wrapper.h"
 
-
-typedef boost::shared_ptr<GoogleImapWrapper> GoogleImapWrapperPtr;
-typedef boost::shared_ptr<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
-typedef boost::shared_ptr<LocalStructureWrapper> LocalStructureWrapperPtr;
 
 class LifeMotifUtils
 {
@@ -38,9 +33,9 @@ public:
   static bool HasCredentials(bool combineWithPythonScriptPath = true);
 
   /* create wrappers */
-  static GoogleImapWrapperPtr CreateImapWrapper(GoogleOauth2WrapperPtr ptr);
-  static GoogleOauth2WrapperPtr CreateOauth2Wrapper();
-  static LocalStructureWrapperPtr CreateLocalStructureWrapper();
+  static GoogleImapWrapper*     CreateImapWrapper(GoogleOauth2Wrapper* ptr);
+  static GoogleOauth2Wrapper*   CreateOauth2Wrapper();
+  static LocalStructureWrapper* CreateLocalStructureWrapper();
 
   /* text manipulation */
   static QString Strip(const QString& input, const QChar& s);

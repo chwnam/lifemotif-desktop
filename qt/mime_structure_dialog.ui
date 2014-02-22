@@ -29,8 +29,8 @@
    <property name="geometry">
     <rect>
      <x>730</x>
-     <y>570</y>
-     <width>65</width>
+     <y>560</y>
+     <width>61</width>
      <height>32</height>
     </rect>
    </property>
@@ -44,7 +44,7 @@
      <x>10</x>
      <y>20</y>
      <width>781</width>
-     <height>541</height>
+     <height>531</height>
     </rect>
    </property>
    <property name="editTriggers">

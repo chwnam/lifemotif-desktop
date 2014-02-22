@@ -6,7 +6,7 @@
 #include "ui_web_browser_dialog.h"
 
 WebBrowserDialog::WebBrowserDialog(
-    GoogleOauth2WrapperPtr& _oauth2Wrapper,
+    GoogleOauth2Wrapper* _oauth2Wrapper,
     QWidget *parent) :
   QDialog(parent),
   oauth2Wrapper(_oauth2Wrapper),

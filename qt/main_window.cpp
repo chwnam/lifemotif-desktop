@@ -5,7 +5,7 @@
 #include <QDebug>
 #include <QFileDialog>
 #include <QMessageBox>
-#include <QUrl>
+#include <QScopedPointer>
 #include <QVector>
 #include <QThread>
 #include <QThreadPool>
@@ -23,8 +23,6 @@ MainWindow::MainWindow(QWidget *parent) :
     LoadLocalStructure();
     UpdateCalendar();
     UpdateMenu();
-
-    loadingDialog = 0;
 }
 
 MainWindow::~MainWindow()
@@ -59,7 +57,7 @@ void MainWindow::AuthenticateOnConsole()
 
 void MainWindow::AuthenticateUsingWebBrowser()
 {
-  WebBrowserDialog wbDlg(oauth2Wrapper(), this);
+  WebBrowserDialog wbDlg(oauth2Wrapper().data(), this);
 
   wbDlg.setWindowModality(Qt::ApplicationModal);
   int result = wbDlg.exec();
@@ -82,8 +80,8 @@ void MainWindow::BuildLocalStructre()
   LocalStructureExtract(structureObject, localStructure);
 
   // save new object
-  LocalStructureWrapperPtr lsWrapper
-      = LifeMotifUtils::CreateLocalStructureWrapper();
+  QScopedPointer<LocalStructureWrapper>
+      lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
 
   const QString lsPath
       = LifeMotifSettings::LocalStructure(true);
@@ -96,11 +94,12 @@ void MainWindow::LoadLocalStructure()
   const QString lsPath = LifeMotifSettings::LocalStructure();
 
   if (LifeMotifUtils::IsFileReadable(lsPath)) {
-    LocalStructureWrapperPtr lsWrapper
-        = LifeMotifUtils::CreateLocalStructureWrapper();
+    bp::object structurePythonObject;
+    QScopedPointer<LocalStructureWrapper>
+        lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
 
-    bp::object object = lsWrapper->Load(lsPath.toStdString());
-    LocalStructureExtract(object, localStructure);
+    structurePythonObject = lsWrapper->Load(lsPath.toStdString());
+    LocalStructureExtract(structurePythonObject, localStructure);
   }
 }
 
@@ -207,22 +206,6 @@ void MainWindow::ClearDiaryInformationUI()
 
   // attachment
   ui->attatchmentComboBox->clear();
-}
-
-void MainWindow::ShowLoadingDialog()
-{
-  if (loadingDialog == NULL) {
-    loadingDialog = new LoadingDialog(this);
-  }
-
-  qDebug() << "show loading dialog";
-  loadingDialog->show();
-}
-
-void MainWindow::CloseLoadingDialog()
-{
-  qDebug() << "closing loading dialog";
-  loadingDialog->close();
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()

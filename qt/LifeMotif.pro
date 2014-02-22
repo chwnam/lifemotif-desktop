@@ -109,7 +109,7 @@ INCLUDEPATH += \
 
 LIBS += \
     -L/opt/local/lib \
-    -lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
+    #-lboost_system-mt -lboost_filesystem-mt -lboost_python-mt  \
     -L/opt/local/Library/Frameworks/Python.framework/Versions/2.7/lib/python2.7/config \
     -ldl -framework CoreFoundation
 }

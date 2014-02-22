@@ -2,6 +2,7 @@
 #define MAIN_WINDOW_H
 
 #include <QMainWindow>
+#include <QSharedPointer>
 
 #include "./python_wrapper/python_wrapper.h"
 
@@ -75,38 +76,39 @@ private:
     void UpdateCalendar();
     void UpdateDiaryInformationUI();
     void UpdateMenu();
-    void ShowLoadingDialog();
-    void CloseLoadingDialog();
     void ShowDiary(const int entry);
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;
 
-
 private:
     Ui::MainWindow *ui;
 
     // wrappers
+    typedef QSharedPointer<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
+    typedef QSharedPointer<GoogleImapWrapper>   GoogleImapWrapperPtr;
+
     GoogleOauth2WrapperPtr _oauth2Wrapper;
-    GoogleImapWrapperPtr _imapWrapper;
+    GoogleImapWrapperPtr   _imapWrapper;
 
     // email cache
-    typedef boost::shared_ptr<EmailCache> EmailCachePtr;
+    typedef QSharedPointer<EmailCache> EmailCachePtr;
     EmailCachePtr _emailCache;
 
     // MIME raw message dialog
-    typedef boost::shared_ptr<MimeRawMessageDialog> MimeRawMessageDialogPtr;
+    typedef QSharedPointer<MimeRawMessageDialog> MimeRawMessageDialogPtr;
     MimeRawMessageDialogPtr _mimeRawMessageDialog;
 
     // MIME structure dialog
-    typedef boost::shared_ptr<MimeStructureDialog> MimeStructureDialogPtr;
+    typedef QSharedPointer<MimeStructureDialog> MimeStructureDialogPtr;
     MimeStructureDialogPtr _mimeStructureDialog;
 
     // late type binding.
     // GoogleOauth2Wrapper /////////////////////////////////////////////////
     inline GoogleOauth2WrapperPtr& oauth2Wrapper() {
       if (_oauth2Wrapper == NULL) {
-        _oauth2Wrapper = LifeMotifUtils::CreateOauth2Wrapper();
+        _oauth2Wrapper
+            = GoogleOauth2WrapperPtr(LifeMotifUtils::CreateOauth2Wrapper());
       }
       return _oauth2Wrapper;
     }
@@ -117,7 +119,9 @@ private:
     // GoogleImapWrapper ///////////////////////////////////////////////////
     inline GoogleImapWrapperPtr& imapWrapper() {
       if (_imapWrapper == NULL) {
-        _imapWrapper = LifeMotifUtils::CreateImapWrapper(oauth2Wrapper());
+        _imapWrapper
+            = GoogleImapWrapperPtr(
+              LifeMotifUtils::CreateImapWrapper(oauth2Wrapper().data()));
       }
       return _imapWrapper;
     }
@@ -167,10 +171,8 @@ private:
     LocalStructureType localStructure;
 
     // parsed email becomes diary
-    typedef boost::shared_ptr<LifeMotifDiary> LifeMotifDiaryPtr;
+    typedef QSharedPointer<LifeMotifDiary> LifeMotifDiaryPtr;
     LifeMotifDiaryPtr diary;
-
-    LoadingDialog *loadingDialog;
 };
 
 #endif // MAIN_WINDOW_H

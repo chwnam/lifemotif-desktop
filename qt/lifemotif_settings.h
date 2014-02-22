@@ -1,14 +1,14 @@
 #ifndef LIFEMOTIF_SETTINGS_H
 #define LIFEMOTIF_SETTINGS_H
 
-#include <boost/shared_ptr.hpp>
+#include <QSharedPointer>
 #include <QSettings>
 #include <QVariant>
 
 #include "lifemotif_utils.h"
 
-typedef boost::shared_ptr<QSettings> QSettingsPtr;
-typedef boost::shared_ptr<QVariantMap> QVariantMapPtr;
+typedef QSharedPointer<QSettings> QSettingsPtr;
+typedef QSharedPointer<QVariantMap> QVariantMapPtr;
 
 class LifeMotifSettings
 {

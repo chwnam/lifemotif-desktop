@@ -4,7 +4,7 @@
 #include <QDialog>
 
 #include "lifemotif_settings.h"
-#include "lifemotif_utils.h"
+#include "python_wrapper/python_wrapper.h"
 
 namespace Ui {
 class WebBrowserDialog;
@@ -16,9 +16,8 @@ class WebBrowserDialog : public QDialog
 
 public:
   explicit WebBrowserDialog(
-      GoogleOauth2WrapperPtr& _oauth2Wrapper,
+      GoogleOauth2Wrapper* _oauth2Wrapper,
       QWidget *parent = 0);
-      ;
   ~WebBrowserDialog();
 
 private slots:
@@ -29,7 +28,7 @@ private:
 
 private:
   Ui::WebBrowserDialog *ui;
-  GoogleOauth2WrapperPtr& oauth2Wrapper;
+  GoogleOauth2Wrapper* oauth2Wrapper;
 };
 
 #endif // WEB_BROWSER_DIALOG_H
