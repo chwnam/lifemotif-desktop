@@ -25,6 +25,11 @@ public:
 private slots:
   void on_refreshSettingButton_clicked();
 
+  void on_cleanDiskCacheButton_clicked();
+
+private:
+  void WipeCacheEntries();
+
 private:
   Ui::PreferenceWindow *ui;
 };
