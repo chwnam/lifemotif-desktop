@@ -8,11 +8,16 @@
 #include <QDebug>
 
 PreferenceWindow::PreferenceWindow(
+    GoogleImapWrapper *_imap,
     QWidget *parent) :
+  imap(_imap),
   QDialog(parent),
   ui(new Ui::PreferenceWindow)
 {
   ui->setupUi(this);
+
+  GetMailboxList();
+  UpdateMailboxComboBox();
 }
 
 PreferenceWindow::~PreferenceWindow()
@@ -61,4 +66,21 @@ void PreferenceWindow::WipeCacheEntries()
       qDebug() << "[!!]" << pathToRemove << "failed to remove!";
     }
   }
+}
+
+void PreferenceWindow::GetMailboxList()
+{
+  if (imap) {
+    bp::object pythonMailboxList = imap->GetGoogleMailboxSimpleList();
+    MailboxListExtract(pythonMailboxList, mailboxList);
+  }
+}
+
+void PreferenceWindow::UpdateMailboxComboBox()
+{
+  ui->mailboxComboBox->clear();
+  ui->mailboxComboBox->addItems(mailboxList);
+  //for(std::size_t i = 0; i < mailboxList.size(); ++i) {
+  //  ui->mailboxComboBox->addItem(mailboxList[i]);
+  //}
 }

@@ -8,9 +8,17 @@ ImapWrapper::ImapWrapper(
 }
 
 void
-ImapWrapper::ListMailBox()
+ImapWrapper::ListMailbox()
 {
   PyObject_CallMethod(
         instance.ptr(),
         "list_mailbox", NULL);
+}
+
+bp::object
+ImapWrapper::GetMailboxList()
+{
+  return
+      CreateObject(
+        PyObject_CallMethod(instance.ptr(), "get_mailbox_list", NULL));
 }

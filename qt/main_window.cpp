@@ -347,7 +347,7 @@ void MainWindow::on_revokeAuthentication_triggered()
 void MainWindow::on_actionPreference_triggered()
 {
   // show preference modal dialog
-  PreferenceWindow pref(this);
+  PreferenceWindow pref(imapWrapper().data(), this);
 
   // some tuning can be here ... center of the main window...
   int result = pref.exec();

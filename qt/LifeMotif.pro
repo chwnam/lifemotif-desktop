@@ -43,7 +43,8 @@ SOURCES += main.cpp\
     preference_window.cpp \
     web_browser_dialog.cpp \
     loading_dialog.cpp \
-    runnable_helper.cpp
+    runnable_helper.cpp \
+    mailbox_list_extract.cpp
 
 
 HEADERS  += \
@@ -69,7 +70,8 @@ HEADERS  += \
     preference_window.h \
     web_browser_dialog.h \
     loading_dialog.h \
-    runnable_helper.h
+    runnable_helper.h \
+    mailbox_list_extract.h
 
 FORMS    += \
     web_browser_dialog.ui \

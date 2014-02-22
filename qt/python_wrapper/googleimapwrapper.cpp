@@ -28,6 +28,15 @@ GoogleImapWrapper::FetchThreadStructure(const std::string& label)
 
   return structure;
 }
+bp::object
+GoogleImapWrapper::GetGoogleMailboxSimpleList()
+{
+  return
+      CreateObject(
+        PyObject_CallMethod(instance.ptr(),
+                            "get_googe_mailbox_simple_list",
+                            NULL));
+}
 
 std::string
 GoogleImapWrapper::FetchMail(

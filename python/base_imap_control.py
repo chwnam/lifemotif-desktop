@@ -13,10 +13,13 @@ class base_imap_control(object):
         if result != 'OK':
             raise Exception(result)
         return data
-    
-    def list_mailbox(self):
-        result, data = self.imap.list()
+
+    def get_mailbox_list(self):
+        result, data = self.imap.list();
         if result != 'OK':
             raise Exception(result)
-        for x in data:
+        return data
+
+    def list_mailbox(self):
+        for x in self.get_mailbox_list():
             print '%s ---> %s' % (x, decode(x))

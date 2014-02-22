@@ -120,7 +120,7 @@ def list_mailbox(config):
                            debug_level=4)
     
     imap = google_imap_control(imap_obj)
-    imap.list_mailbox()
+    imap.list_google_mailbox()
 
 def revoke(config):
     confirm = raw_input('Are you sure? (y/n): ')

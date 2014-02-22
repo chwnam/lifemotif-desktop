@@ -15,6 +15,10 @@ public:
   bp::object
   FetchThreadStructure(const std::string& label);
 
+  // get mailbox list. Decoded, and very simply, only a list of unicode-string.
+  bp::object
+  GetGoogleMailboxSimpleList();
+
   std::string
   FetchMail(const std::string& label, unsigned long long messageId);
 

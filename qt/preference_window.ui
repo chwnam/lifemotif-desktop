@@ -51,7 +51,7 @@
     </rect>
    </property>
    <property name="currentIndex">
-    <number>0</number>
+    <number>1</number>
    </property>
    <widget class="QWidget" name="generalTab">
     <attribute name="title">
@@ -420,9 +420,6 @@
     </widget>
    </widget>
   </widget>
-  <zorder>buttonBox</zorder>
-  <zorder>tabWidget</zorder>
-  <zorder>pythonScriptWarningLabel</zorder>
  </widget>
  <resources/>
  <connections>

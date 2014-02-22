@@ -54,4 +54,27 @@ class google_imap_control(base_imap_control):
         parsed = email.utils.parsedate(datetimetext[colonpos + 1:].strip())
         return '%04d%02d%02d' % (parsed[0], parsed[1], parsed[2])
         
+    def get_google_mailbox_list(self):
+        ''' get mailbox and decode ''' 
+        exp = re.compile(r'\((.+)\) "(.+)" "(.+)"')
+        encoded = self.get_mailbox_list();
+        decoded = []
+        
+        for line in encoded:
+            m = exp.match(line)
+            if m:
+                groups = m.groups()
+                flags = groups[0].split()
+                root  = groups[1]
+                name  = decode(groups[2])
+                decoded.append((flags, root, name))
+        
+        return decoded
+    
+    def get_googe_mailbox_simple_list(self):
+        return [x[2].encode('utf-8') for x in self.get_google_mailbox_list()]
+        
+    def list_google_mailbox(self):
+        for x in self.get_googe_mailbox_simple_list():
+            print x
         

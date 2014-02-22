@@ -2,6 +2,10 @@
 #define PREFERENCE_WINDOW_H
 
 #include <QDialog>
+#include <QStringList>
+#include <mailbox_list_extract.h>
+
+#include "python_wrapper/googleimapwrapper.h"
 
 QT_BEGIN_NAMESPACE
 
@@ -15,6 +19,7 @@ class PreferenceWindow : public QDialog
 
 public:
   explicit PreferenceWindow(
+      GoogleImapWrapper *_imap,
       QWidget *parent = 0);
 
   ~PreferenceWindow();
@@ -29,9 +34,13 @@ private slots:
 
 private:
   void WipeCacheEntries();
+  void GetMailboxList();
+  void UpdateMailboxComboBox();
 
 private:
   Ui::PreferenceWindow *ui;
+  GoogleImapWrapper    *imap;
+  QStringList          mailboxList;
 };
 
 QT_END_NAMESPACE

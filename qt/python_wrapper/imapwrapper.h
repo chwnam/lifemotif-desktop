@@ -10,8 +10,13 @@ public:
       const std::string& _moduleName,
       const std::string& _className);
 
+  // very simple listing. print to stdout
   void
-  ListMailBox();
+  ListMailbox();
+
+  // very simple listing. Unparsed, undecoded list of string.
+  bp::object
+  GetMailboxList();
 };
 
 #endif // IMAPWRAPPER_H
