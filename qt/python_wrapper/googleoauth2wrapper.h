@@ -11,7 +11,7 @@ public:
             const std::string& _className);
 
     std::string
-    GetAuthorizationURL(const std::string& secret_path);
+    GetAuthorizationURL(const std::string& secretPath);
 
     bp::object
     MakeCredentials(const std::string& code);

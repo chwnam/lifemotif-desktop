@@ -10,7 +10,7 @@ GoogleOauth2Wrapper::GoogleOauth2Wrapper(
 }
 
 std::string
-GoogleOauth2Wrapper::GetAuthorizationURL(const std::string& secret_path)
+GoogleOauth2Wrapper::GetAuthorizationURL(const std::string& secretPath)
 {
   bp::object urlObject;
 

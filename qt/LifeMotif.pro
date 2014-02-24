@@ -4,7 +4,7 @@
 #
 #-------------------------------------------------
 
-QT       += core gui webkit webkitwidgets
+QT       += core gui webkit webkitwidgets network
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -44,7 +44,8 @@ SOURCES += main.cpp\
     web_browser_dialog.cpp \
     loading_dialog.cpp \
     runnable_helper.cpp \
-    mailbox_list_extract.cpp
+    mailbox_list_extract.cpp \
+    lifemotif_oauth2.cpp
 
 
 HEADERS  += \
@@ -71,7 +72,8 @@ HEADERS  += \
     web_browser_dialog.h \
     loading_dialog.h \
     runnable_helper.h \
-    mailbox_list_extract.h
+    mailbox_list_extract.h \
+    lifemotif_oauth2.h
 
 FORMS    += \
     web_browser_dialog.ui \

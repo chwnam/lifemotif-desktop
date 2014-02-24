@@ -158,6 +158,9 @@
     <ClCompile Include="..\..\..\qt\mailbox_list_extract.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\qt\lifemotif_oauth2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\qt\python_wrapper\basepythonwrapper.h">
@@ -227,6 +230,9 @@
       <Filter>Header Files</Filter>
     </ClInclude>
     <ClInclude Include="..\..\..\qt\mailbox_list_extract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\qt\lifemotif_oauth2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
   </ItemGroup>
