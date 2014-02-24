@@ -14,6 +14,7 @@
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
 #include "web_browser_dialog.h"
+#include "lifemotif_oauth2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -34,12 +35,12 @@ MainWindow::~MainWindow()
     QWebSettings::clearMemoryCaches();
 }
 
-void MainWindow::AuthenticateOnConsole()
+void MainWindow::AuthenticateOnConsoleByPython()
 {
   QString secretPath = LifeMotifSettings::SecretPath(true);
   QString storageName = LifeMotifSettings::StorageName(true);
 
-  qDebug() << "Authentication by console."
+  qDebug() << "Authentication by console (Python mode)."
            << "Client secret path:" << secretPath;
 
   const std::string
@@ -57,6 +58,17 @@ void MainWindow::AuthenticateOnConsole()
   qDebug() << "Successfully authorized.";
 
   UpdateMenu();
+}
+
+void MainWindow::AuthenticateOnConsole()
+{
+  LifeMotifOauth2 oauth2;
+  QString secretPath = LifeMotifSettings::SecretPath(true);
+
+  qDebug() << "Authentication by console (Qt mode)."
+            << "Client secret path:" << secretPath;
+
+  qDebug() << "url:" << oauth2.GetAuthorizationUrl(secretPath);
 }
 
 void MainWindow::AuthenticateUsingWebBrowser()
@@ -275,6 +287,7 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_clearTextButton_clicked()
 {
   ClearDiaryInformationUI();
+  AuthenticateOnConsole();
 }
 
 void MainWindow::on_actionBrowserAuthentication_triggered()

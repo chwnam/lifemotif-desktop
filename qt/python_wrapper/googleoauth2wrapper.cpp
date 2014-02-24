@@ -18,7 +18,7 @@ GoogleOauth2Wrapper::GetAuthorizationURL(const std::string& secretPath)
                 PyObject_CallMethod(
                   instance.ptr(),
                   "get_authorization_url",
-                  "s", secret_path.c_str()));
+                  "s", secretPath.c_str()));
 
   return std::string(
             bp::extract<const char*>(

@@ -2,13 +2,15 @@
 #define LIFEMOTIF_OAUTH2_H
 
 #include <QString>
+#include <QUrl>
+
 
 class LifeMotifOauth2
 {
 public:
   LifeMotifOauth2();
 
-  QString
+  QUrl
     GetAuthorizationUrl(const QString& secretPath);
 
   void
@@ -25,6 +27,9 @@ public:
       const QString& storageName,
       const QString& emailAddress,
       const int debugLevel = 0);
+
+private:
+  static const QString endpoint;
 };
 
 #endif // LIFEMOTIF_OAUTH2_H

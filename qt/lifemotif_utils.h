@@ -8,6 +8,7 @@
 
 #include "python_wrapper/python_wrapper.h"
 
+#include "lifemotif_oauth2.h"
 
 class LifeMotifUtils
 {

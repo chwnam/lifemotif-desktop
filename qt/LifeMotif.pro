@@ -45,7 +45,8 @@ SOURCES += main.cpp\
     loading_dialog.cpp \
     runnable_helper.cpp \
     mailbox_list_extract.cpp \
-    lifemotif_oauth2.cpp
+    lifemotif_oauth2.cpp \
+    lifemotif_client_info.cpp
 
 
 HEADERS  += \
@@ -73,7 +74,8 @@ HEADERS  += \
     loading_dialog.h \
     runnable_helper.h \
     mailbox_list_extract.h \
-    lifemotif_oauth2.h
+    lifemotif_oauth2.h \
+    lifemotif_client_info.h
 
 FORMS    += \
     web_browser_dialog.ui \
@@ -91,8 +93,10 @@ OTHER_FILES += \
     ../python/google_oauth2_control.py \
     ../python/imapUTF7.py \
     ../python/local_structure_control.py \
-    TODO.txt \
-    resource/lifemotif.ico
+    resource/lifemotif.ico \
+    NOTE \
+    TODO
+
 
 unix:!macx {
 INCLUDEPATH += \

@@ -66,6 +66,7 @@ private slots:
      void on_actionQt_triggered();
 
 private:
+    void AuthenticateOnConsoleByPython();
     void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
     void BuildLocalStructre();

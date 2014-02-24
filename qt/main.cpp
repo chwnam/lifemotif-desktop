@@ -10,6 +10,8 @@
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_exceptions.h"
+#include "lifemotif_client_info.h"
+
 
 void Init();
 void PythonWorkAround();
@@ -24,6 +26,11 @@ int main(int argc, char *argv[])
   try {
     Init();
     qDebug() << "Initialization complete. Ready to show main window...";
+
+    // client info test
+    //const QString& secretPath = LifeMotifSettings::SecretPath(true);
+    //LifeMotifClientInfo ci;
+    //ci.LoadClientInfo(secretPath);
 
     MainWindow w;
     w.show();
