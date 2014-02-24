@@ -161,6 +161,12 @@
     <ClCompile Include="..\..\..\qt\lifemotif_oauth2.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\qt\lifemotif_google_oauth2_credential.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\qt\lifemotif_client_info.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\qt\python_wrapper\basepythonwrapper.h">
@@ -235,6 +241,12 @@
     <ClInclude Include="..\..\..\qt\lifemotif_oauth2.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\qt\lifemotif_google_oauth2_credential.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\qt\lifemotif_client_info.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\qt\loading_dialog.ui">
@@ -281,9 +293,6 @@
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\qt\TODO.txt">
-      <Filter>Others</Filter>
-    </None>
     <None Include="..\..\..\LICENSE.LGPL">
       <Filter>Others</Filter>
     </None>
@@ -296,7 +305,10 @@
     <None Include="..\..\..\README">
       <Filter>Others</Filter>
     </None>
-    <None Include="..\..\..\qt\NOTE.txt">
+    <None Include="..\..\..\qt\NOTE">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\qt\TODO">
       <Filter>Others</Filter>
     </None>
   </ItemGroup>

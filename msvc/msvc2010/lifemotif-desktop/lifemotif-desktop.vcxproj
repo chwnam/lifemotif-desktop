@@ -13,8 +13,10 @@
   <ItemGroup>
     <ClCompile Include="..\..\..\qt\email_cache.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_calendar_widget.cpp" />
+    <ClCompile Include="..\..\..\qt\lifemotif_client_info.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_diary.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_exceptions.cpp" />
+    <ClCompile Include="..\..\..\qt\lifemotif_google_oauth2_credential.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_oauth2.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_settings.cpp" />
     <ClCompile Include="..\..\..\qt\lifemotif_utils.cpp" />
@@ -96,9 +98,11 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS_LIB -DQT_NETWORK_LIB -D_UNICODE  "-I.\GeneratedFiles" "-I." "-I$(BOOSTDIR)\." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include\QtWebkitWidgets" "-I$(QTDIR)\include\QtWidgets" "-I$(LOCAL)\include" "-I$(PYTHON27)\include" "-I$(QTDIR)\include\QtNetwork"</Command>
     </CustomBuild>
+    <ClInclude Include="..\..\..\qt\lifemotif_client_info.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_config.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_diary.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_exceptions.h" />
+    <ClInclude Include="..\..\..\qt\lifemotif_google_oauth2_credential.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_oauth2.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_settings.h" />
     <ClInclude Include="..\..\..\qt\lifemotif_utils.h" />
@@ -249,12 +253,11 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
     <None Include="..\..\..\LICENSE.MIT" />
-    <None Include="..\..\..\qt\NOTE.txt" />
+    <None Include="..\..\..\qt\NOTE" />
     <None Include="..\..\..\qt\resource\lifemotif.ico">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>
     </None>
-    <None Include="..\..\..\qt\TODO.txt" />
     <CustomBuild Include="..\..\..\qt\web_browser_dialog.ui">
       <FileType>Document</FileType>
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\uic.exe;%(AdditionalInputs)</AdditionalInputs>
@@ -266,6 +269,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\ui_%(Filename).h;%(Outputs)</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\uic.exe" -o ".\GeneratedFiles\ui_%(Filename).h" "%(FullPath)"</Command>
     </CustomBuild>
+    <None Include="..\..\..\qt\TODO" />
     <None Include="..\..\..\README" />
   </ItemGroup>
   <PropertyGroup Label="Globals">

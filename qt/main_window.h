@@ -65,6 +65,9 @@ private slots:
 
      void on_actionQt_triggered();
 
+     // authenticate button: for testing LifeMotifOauth2
+     void on_AuthenticateButton_clicked();
+
 private:
     void AuthenticateOnConsoleByPython();
     void AuthenticateOnConsole();

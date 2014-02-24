@@ -297,6 +297,20 @@
      <string>Display HTML Tags</string>
     </property>
    </widget>
+   <widget class="QPushButton" name="AuthenticateButton">
+    <property name="geometry">
+     <rect>
+      <x>10</x>
+      <y>520</y>
+      <width>231</width>
+      <height>41</height>
+     </rect>
+    </property>
+    <property name="text">
+     <string>Authenticate
+Using LifeMotifOAuth2</string>
+    </property>
+   </widget>
   </widget>
   <widget class="QMenuBar" name="menuBar">
    <property name="geometry">

@@ -4,6 +4,7 @@
 #include <QString>
 #include <QUrl>
 
+#include "lifemotif_google_oauth2_credential.h"
 
 class LifeMotifOauth2
 {
@@ -13,8 +14,9 @@ public:
   QUrl
     GetAuthorizationUrl(const QString& secretPath);
 
-  void
-    MakeCredentials(const QString& code);
+  LifeMotifGoogleOAuth2Credential
+    MakeCredentials(
+      const QString& secretPath, const QString& code);
 
   void
     SetCredentials(const QString& storageName);

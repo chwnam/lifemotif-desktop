@@ -11,6 +11,8 @@
 #include <QThreadPool>
 #include <QWebSettings>
 
+#include <QTextStream>
+
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
 #include "web_browser_dialog.h"
@@ -63,12 +65,27 @@ void MainWindow::AuthenticateOnConsoleByPython()
 void MainWindow::AuthenticateOnConsole()
 {
   LifeMotifOauth2 oauth2;
-  QString secretPath = LifeMotifSettings::SecretPath(true);
+  QString storageName = LifeMotifSettings::StorageName(true);
+  QString secretPath  = LifeMotifSettings::SecretPath(true);
 
   qDebug() << "Authentication by console (Qt mode)."
             << "Client secret path:" << secretPath;
 
-  qDebug() << "url:" << oauth2.GetAuthorizationUrl(secretPath);
+  // this is static text
+  // https://accounts.google.com/o/oauth2/auth?client_id=557620163613.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fmail.google.com%2F
+  QString code;
+  LifeMotifGoogleOAuth2Credential credential;
+
+  QTextStream sin(stdin);
+  QTextStream sout(stdout);
+
+  sout << "Input code: ";
+  sout.flush();
+  sin >> code;
+
+  credential = oauth2.MakeCredentials(secretPath, code);
+
+  //oauth2.SetCredentials(storageName, credential);
 }
 
 void MainWindow::AuthenticateUsingWebBrowser()
@@ -287,7 +304,6 @@ void MainWindow::on_actionExit_triggered()
 void MainWindow::on_clearTextButton_clicked()
 {
   ClearDiaryInformationUI();
-  AuthenticateOnConsole();
 }
 
 void MainWindow::on_actionBrowserAuthentication_triggered()
@@ -391,4 +407,9 @@ void MainWindow::on_actionAbout_triggered()
 void MainWindow::on_actionQt_triggered()
 {
   QMessageBox::aboutQt(this, "About LifeMotif-Desktop");
+}
+
+void MainWindow::on_AuthenticateButton_clicked()
+{
+  AuthenticateOnConsole();
 }
