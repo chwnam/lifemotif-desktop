@@ -9,6 +9,7 @@
 #include <QVector>
 #include <QThread>
 #include <QThreadPool>
+#include <QWebSettings>
 
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
@@ -28,6 +29,9 @@ MainWindow::MainWindow(QWidget *parent) :
 MainWindow::~MainWindow()
 {
     delete ui;
+
+    // removes memory leak of QWebkit...
+    QWebSettings::clearMemoryCaches();
 }
 
 void MainWindow::AuthenticateOnConsole()
@@ -63,10 +67,10 @@ void MainWindow::AuthenticateUsingWebBrowser()
   int result = wbDlg.exec();
   if (result == QDialog::Accepted) {
     QMessageBox::information(
-          this, "Authentication Success", "Authentication failed.");
+          this, "Success", "Authentication success.");
   } else {
     QMessageBox::warning(
-          this, "Authentication failed", "Authentication success.");
+          this, "Failure", "Authentication failed.");
   }
 
   UpdateMenu();
@@ -119,7 +123,8 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 
 void MainWindow::RevokeAuthentication()
 {
-  oauth2Wrapper()->Revoke(LifeMotifSettings::StorageName(true).toStdString());
+  oauth2Wrapper()->Revoke(
+    LifeMotifSettings::StorageName(true).toStdString());
 }
 
 void MainWindow::UpdateCalendar()
@@ -186,11 +191,15 @@ DateType MainWindow::GetDateFromCalendar() const
 
 void MainWindow::UpdateMenu()
 {
+  const bool enable = LifeMotifUtils::HasCredentials(true);
+
+  // Cannot do those actions if authenticated:
+  //  - authentication 
+  ui->actionBrowserAuthentication->setEnabled(!enable);
+
   // Cannot do those actions if not authenticated.
   //  - build local structre
   //  - revoke
-  const bool enable = LifeMotifUtils::HasCredentials(true);
-
   ui->actionBuildLocalStructure->setEnabled(enable);
   ui->revokeAuthentication->setEnabled(enable);
 }
@@ -344,6 +353,7 @@ void MainWindow::on_revokeAuthentication_triggered()
       return;
   }
   RevokeAuthentication();
+  UpdateMenu();
 }
 
 void MainWindow::on_actionPreference_triggered()

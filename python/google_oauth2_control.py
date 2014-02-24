@@ -36,18 +36,21 @@ class google_oauth2_control(base_oauth2_control):
         storage = Storage(storage_name)
         credentials = storage.get()
         http = httplib2.Http()
-        if credentials.access_token_expired:
-            credentials.refresh(http)
-        credentials.authorize(http)
+        if credentials:
+            if credentials.access_token_expired:
+                credentials.refresh(http)
+            credentials.authorize(http)
         return credentials    
 
     def imap_authenticate(self, storage_name, email_address, debug_level=0):
         credentials = self.get_credentials(storage_name)
-        auth_string = 'user=%s\1auth=Bearer %s\1\1' % \
-                        (email_address, credentials.access_token)
-        imap = imaplib.IMAP4_SSL(self.imap)
-        imap.debug = debug_level
-        imap.authenticate('XOAUTH2', lambda x: auth_string)
+        imap = None
+        if credentials:
+            auth_string = 'user=%s\1auth=Bearer %s\1\1' % \
+                            (email_address, credentials.access_token)
+            imap = imaplib.IMAP4_SSL(self.imap)
+            imap.debug = debug_level
+            imap.authenticate('XOAUTH2', lambda x: auth_string)
         return imap
 
     def revoke(self, storage_name):

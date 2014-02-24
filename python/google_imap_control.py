@@ -59,7 +59,7 @@ class google_imap_control(base_imap_control):
         exp = re.compile(r'\((.+)\) "(.+)" "(.+)"')
         encoded = self.get_mailbox_list();
         decoded = []
-        
+
         for line in encoded:
             m = exp.match(line)
             if m:

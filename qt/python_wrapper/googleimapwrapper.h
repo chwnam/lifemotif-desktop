@@ -23,7 +23,7 @@ public:
   FetchMail(const std::string& label, unsigned long long messageId);
 
 private:
-    bp::object imapTuple;
+  bp::object imapTuple;
 };
 
 #endif // GOOGLEIMAPWRAPPER_H

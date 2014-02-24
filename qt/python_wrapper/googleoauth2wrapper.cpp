@@ -85,8 +85,10 @@ GoogleOauth2Wrapper::ImapAuthenticate(
                     storageName.c_str(),
                     emailAddress.c_str(),
                     debugLevel));
-
-  return imapObject;
+  
+  // imap_authenticate may fail
+  // if 'storage_name' which holds tokens does not exist.
+  return imapObject.ptr() == Py_None ? bp::object() : imapObject;
 }
 
 void

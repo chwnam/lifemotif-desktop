@@ -19,6 +19,7 @@
     <ClCompile Include="..\..\..\qt\lifemotif_utils.cpp" />
     <ClCompile Include="..\..\..\qt\loading_dialog.cpp" />
     <ClCompile Include="..\..\..\qt\localstructure_extract.cpp" />
+    <ClCompile Include="..\..\..\qt\mailbox_list_extract.cpp" />
     <ClCompile Include="..\..\..\qt\main.cpp" />
     <ClCompile Include="..\..\..\qt\main_window.cpp" />
     <ClCompile Include="..\..\..\qt\message_types.cpp" />
@@ -120,6 +121,7 @@
       <Outputs Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">.\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp</Outputs>
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\moc.exe"  "%(FullPath)" -o ".\GeneratedFiles\$(ConfigurationName)\moc_%(Filename).cpp"  -DUNICODE -DWIN32 -DWIN64 -DQT_DLL -DQT_NO_DEBUG -DNDEBUG -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WEBKITWIDGETS_LIB -DQT_WIDGETS_LIB -D_UNICODE "-I.\GeneratedFiles" "-I." "-I$(BOOSTDIR)\." "-I$(QTDIR)\include" "-I.\GeneratedFiles\$(ConfigurationName)\." "-I$(QTDIR)\include\QtCore" "-I$(QTDIR)\include\QtGui" "-I$(QTDIR)\include\QtWebKit" "-I$(QTDIR)\include\QtWebkitWidgets" "-I$(QTDIR)\include\QtWidgets" "-I$(LOCAL)\include" "-I$(PYTHON27)\include"</Command>
     </CustomBuild>
+    <ClInclude Include="..\..\..\qt\mailbox_list_extract.h" />
     <ClInclude Include="..\..\..\qt\message_types.h" />
     <CustomBuild Include="..\..\..\qt\mime_raw_message_dialog.h">
       <AdditionalInputs Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">$(QTDIR)\bin\moc.exe;%(FullPath)</AdditionalInputs>
@@ -245,6 +247,7 @@
       <Command Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">"$(QTDIR)\bin\rcc.exe" -name "%(Filename)" -no-compress "%(FullPath)" -o .\GeneratedFiles\qrc_%(Filename).cpp</Command>
     </CustomBuild>
     <None Include="..\..\..\LICENSE.MIT" />
+    <None Include="..\..\..\qt\NOTE.txt" />
     <None Include="..\..\..\qt\resource\lifemotif.ico">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">true</ExcludedFromBuild>

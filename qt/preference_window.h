@@ -3,8 +3,8 @@
 
 #include <QDialog>
 #include <QStringList>
-#include <mailbox_list_extract.h>
 
+#include "mailbox_list_extract.h"
 #include "python_wrapper/googleimapwrapper.h"
 
 QT_BEGIN_NAMESPACE

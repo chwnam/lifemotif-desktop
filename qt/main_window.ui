@@ -304,7 +304,7 @@
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>19</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLifeMotif">
@@ -370,7 +370,7 @@
   </action>
   <action name="revokeAuthentication">
    <property name="text">
-    <string>Rekoe authentication </string>
+    <string>Revoke authentication </string>
    </property>
    <property name="toolTip">
     <string>Revoke authentication on this machine.</string>

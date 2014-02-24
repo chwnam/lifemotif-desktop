@@ -41,11 +41,14 @@ LifeMotifUtils::CreateImapWrapper(GoogleOauth2Wrapper* ptr)
           emailAddress.toStdString(),
           debugLevel);
 
-    imapWrapper
+    // ImapAuthenticate may fail if 'strage_name' does not exist.
+    if (imapObject.ptr() != Py_None) {
+      imapWrapper
         = new GoogleImapWrapper(
             LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
             LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
             imapObject);
+    }
   }
 
   return imapWrapper;

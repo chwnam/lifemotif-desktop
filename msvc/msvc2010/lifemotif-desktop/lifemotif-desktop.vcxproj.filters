@@ -155,6 +155,9 @@
     <ClCompile Include="..\..\..\qt\web_browser_dialog.cpp">
       <Filter>Source Files</Filter>
     </ClCompile>
+    <ClCompile Include="..\..\..\qt\mailbox_list_extract.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\qt\python_wrapper\basepythonwrapper.h">
@@ -223,6 +226,9 @@
     <ClInclude Include="..\..\..\qt\runnable_helper.h">
       <Filter>Header Files</Filter>
     </ClInclude>
+    <ClInclude Include="..\..\..\qt\mailbox_list_extract.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <CustomBuild Include="..\..\..\qt\loading_dialog.ui">
@@ -282,6 +288,9 @@
       <Filter>Others</Filter>
     </None>
     <None Include="..\..\..\README">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\qt\NOTE.txt">
       <Filter>Others</Filter>
     </None>
   </ItemGroup>

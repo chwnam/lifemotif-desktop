@@ -40,7 +40,8 @@ void WebBrowserDialog::on_webView_loadFinished(bool /*arg1*/)
   QStringList splitted = ui->webView->title().split(QChar(' '));
   int result = QDialog::Rejected;
 
-  if (ui->webView->url().path() == QString(LIFEMOTIF_GOOGLE_OAUTH_SUCCESS_PATH) &&
+  if (ui->webView->url().path()
+        == QString(LIFEMOTIF_GOOGLE_OAUTH_SUCCESS_PATH) &&
       splitted.size() == 2) {
 
       QString status = splitted[0];
