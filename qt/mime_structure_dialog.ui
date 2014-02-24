@@ -25,6 +25,9 @@
   <property name="windowTitle">
    <string>MIME Message Structure</string>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <widget class="QPushButton" name="closeButton">
    <property name="geometry">
     <rect>
@@ -35,7 +38,7 @@
     </rect>
    </property>
    <property name="text">
-    <string>닫기</string>
+    <string>Close</string>
    </property>
   </widget>
   <widget class="QTreeWidget" name="mimeStructureTree">

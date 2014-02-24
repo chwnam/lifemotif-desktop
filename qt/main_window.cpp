@@ -62,9 +62,11 @@ void MainWindow::AuthenticateUsingWebBrowser()
   wbDlg.setWindowModality(Qt::ApplicationModal);
   int result = wbDlg.exec();
   if (result == QDialog::Accepted) {
-    QMessageBox::information(this, "Authentication Success", "인증에 성공했어요.");
+    QMessageBox::information(
+          this, "Authentication Success", "Authentication failed.");
   } else {
-    QMessageBox::warning(this, "Authentication failed", "인증에 실패했어요.");
+    QMessageBox::warning(
+          this, "Authentication failed", "Authentication success.");
   }
 
   UpdateMenu();
@@ -272,7 +274,7 @@ void MainWindow::on_actionBrowserAuthentication_triggered()
       QMessageBox::No == QMessageBox::question(
           this,
           QString("Double Authentication"),
-          QString("인증은 이미 받았어요! 또 인증 절차를 진행할까요?"))) {
+          QString("Already authenticated! Proceed again?"))) {
       return;
   }
 

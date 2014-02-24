@@ -30,6 +30,9 @@
     <normalon>:/Users/changwoo/Developer/lifemotif-desktop/qt/resource/lifemotif-desktop-icon</normalon>
    </iconset>
   </property>
+  <property name="locale">
+   <locale language="English" country="UnitedStates"/>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="LifeMotifCalendarWidget" name="calendarWidget">
     <property name="geometry">
@@ -39,6 +42,9 @@
       <width>231</width>
       <height>231</height>
      </rect>
+    </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
     </property>
     <property name="gridVisible">
      <bool>true</bool>
@@ -66,8 +72,11 @@
       <height>16</height>
      </rect>
     </property>
+    <property name="locale">
+     <locale language="English" country="UnitedStates"/>
+    </property>
     <property name="text">
-     <string>일기 목록</string>
+     <string>Article List</string>
     </property>
    </widget>
    <widget class="QPushButton" name="mimeRawMessageButton">
@@ -80,7 +89,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>일기 원본 MIME 메시지 보기...</string>
+     <string>MIME raw message ...</string>
     </property>
    </widget>
    <widget class="QGroupBox" name="attatchmentGroupBox">
@@ -93,7 +102,7 @@
      </rect>
     </property>
     <property name="title">
-     <string>첨부파일</string>
+     <string>Attachment</string>
     </property>
     <widget class="QPushButton" name="attatchmentSaveAsButton">
      <property name="geometry">
@@ -105,7 +114,7 @@
       </rect>
      </property>
      <property name="text">
-      <string>첨부파일 저장...</string>
+      <string>Save as...</string>
      </property>
     </widget>
     <widget class="QComboBox" name="attatchmentComboBox">
@@ -191,7 +200,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>받는 사람: </string>
+     <string>To:</string>
     </property>
    </widget>
    <widget class="QLabel" name="fromLabel">
@@ -204,7 +213,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>보낸 사람: </string>
+     <string>From: </string>
     </property>
    </widget>
    <widget class="QLabel" name="subjectLabel">
@@ -217,7 +226,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>제목:        </string>
+     <string>Subject:</string>
     </property>
    </widget>
    <widget class="QPushButton" name="mimeStructureButton">
@@ -230,7 +239,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>일기 MIME 구조 보기...</string>
+     <string>MIME message structure...</string>
     </property>
    </widget>
    <widget class="QPushButton" name="clearTextButton">
@@ -243,7 +252,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>화면 지우기</string>
+     <string>Clear screen</string>
     </property>
    </widget>
    <widget class="QLabel" name="plainTextLabel">
@@ -285,7 +294,7 @@
      <enum>Qt::LeftToRight</enum>
     </property>
     <property name="text">
-     <string>HTML 태그를 보이도록</string>
+     <string>Display HTML Tags</string>
     </property>
    </widget>
   </widget>
@@ -324,17 +333,26 @@
   </widget>
   <action name="actionConsoleAuthentication">
    <property name="text">
-    <string>콘솔에서 인증하기...</string>
+    <string>Authenticate using CLI...</string>
+   </property>
+   <property name="toolTip">
+    <string>Authenticate using CLI...</string>
    </property>
   </action>
   <action name="actionBuildLocalStructure">
    <property name="text">
-    <string>이메일 구조 가져오기</string>
+    <string>Build local structure</string>
+   </property>
+   <property name="toolTip">
+    <string>Build local structure</string>
    </property>
   </action>
   <action name="actionBrowserAuthentication">
    <property name="text">
-    <string>인증하기...</string>
+    <string>Authenticate...</string>
+   </property>
+   <property name="toolTip">
+    <string>Authenticate...</string>
    </property>
   </action>
   <action name="actionAbout">
@@ -344,12 +362,18 @@
   </action>
   <action name="actionExit">
    <property name="text">
-    <string>종료</string>
+    <string>Exit</string>
+   </property>
+   <property name="toolTip">
+    <string>Exit</string>
    </property>
   </action>
   <action name="revokeAuthentication">
    <property name="text">
-    <string>인증 취소하기...</string>
+    <string>Rekoe authentication </string>
+   </property>
+   <property name="toolTip">
+    <string>Revoke authentication on this machine.</string>
    </property>
   </action>
   <action name="actionPreference">
