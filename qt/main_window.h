@@ -88,6 +88,7 @@ private:
     Ui::MainWindow *ui;
 
     LifeMotifGoogleOauth2* oauth2;
+    // LifeMotifGoogleImap* imap;
 
     // wrappers
     typedef QSharedPointer<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
