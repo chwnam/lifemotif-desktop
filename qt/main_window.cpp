@@ -79,13 +79,13 @@ void MainWindow::AuthenticateUsingWebBrowser()
   }
 
   oauth2.MakeCredentials(
-        LifeMotifSettings::SecretPath(true),
+        LifeMotifSettings::SecretPath(),
         wbDlg.AuthorizationCode());
 
-  // save credentials
+  oauth2.SetCredentials(
+    LifeMotifSettings::StorageName());
 
-  // when successfully done, update menu
-  //UpdateMenu();
+  UpdateMenu();
 }
 
 void MainWindow::BuildLocalStructre()
@@ -135,6 +135,8 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 
 void MainWindow::RevokeAuthentication()
 {
+  // https://developers.google.com/accounts/docs/OAuth2WebServer#tokenrevoke
+
   oauth2Wrapper()->Revoke(
     LifeMotifSettings::StorageName(true).toStdString());
 }

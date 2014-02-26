@@ -2,6 +2,7 @@
 
 #include <QDateTime>
 #include <QJsonDocument>
+#include <QDebug>
 
 QVariantMap
   LifeMotifGoogleOAuth2Credential::ToMap()
@@ -37,7 +38,7 @@ LifeMotifGoogleOAuth2Credential
   LifeMotifGoogleOAuth2Credential credential;
 
   const QJsonDocument replyJson = QJsonDocument::fromJson(json);
-
+  
   if (replyJson.isObject()) {
 
     const QVariantMap replyMap = replyJson.toVariant().toMap();
@@ -45,14 +46,21 @@ LifeMotifGoogleOAuth2Credential
 
     // calculate expiry
     QDateTime expiry = QDateTime::currentDateTimeUtc();
-    const int expiresIn = replyMap[QString("expires_in")].toInt();
-    expiry.addSecs(expiresIn);
+    const int expiresIn = replyMap[QString("expires_in")].toInt();   
 
-    credMap["access_token"]  = replyMap[QString("access_token")].toByteArray();
-    credMap["token_type"]    = replyMap[QString("token_type")].toByteArray();
-    credMap["expires_in"]    = expiresIn;
-    credMap["refresh_token"] = replyMap[QString("refresh_token")].toByteArray();
-    credMap["expiry"]        = expiry.toString(Qt::ISODate).toUtf8();
+    expiry = expiry.addSecs(expiresIn);
+
+    const QString at("access_token");
+    const QString tt("token_type");
+    const QString ei("expires_in");
+    const QString rt("refresh_token");
+    const QString ex("expiry");
+
+    credMap[at] = replyMap[at].toByteArray();
+    credMap[tt] = replyMap[tt].toByteArray();
+    credMap[ei] = expiresIn;
+    credMap[rt] = replyMap[rt].toByteArray();
+    credMap[ex] = expiry.toString(Qt::ISODate).toUtf8();
 
     credential = FromMap(credMap);
   }

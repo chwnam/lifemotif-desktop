@@ -152,15 +152,19 @@ void LifeMotifGoogleOauth2::ReplyFinished()
 void
   LifeMotifGoogleOauth2::SetCredentials(const QString& storageName)
 {
-  QVariantMap map = credential.ToMap();
-
-  LifeMotifUtils::SaveJson(storageName, map);
+  LifeMotifUtils::SaveJson(storageName, credential.ToMap());
 }
 
 void
   LifeMotifGoogleOauth2::GetCredentials(const QString& storageName)
 {
-  QVariantMap map = LifeMotifUtils::LoadJson(storageName);
+  bool isQVariantMap;
+  QVariant map;
+  
+  map = LifeMotifUtils::LoadJson(storageName, &isQVariantMap);
 
-  credential = LifeMotifGoogleOAuth2Credential::FromMap(map);
+  if (isQVariantMap) {
+    credential
+      = LifeMotifGoogleOAuth2Credential::FromMap(map.toMap());
+  }
 }

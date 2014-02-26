@@ -12,8 +12,8 @@ public:
   inline QByteArray& TokenExpiry()  { return _tokenExpiry;  }
   inline QByteArray& AccessToken()  { return _accessToken;  }
   inline QByteArray& RefreshToken() { return _refreshToken; }
-  inline QByteArray& TokenType() { return _refreshToken; }
-  inline int&     ExpiresIn()    { return _expiresIn;    }
+  inline QByteArray& TokenType()    { return _tokenType;    }
+  inline int&        ExpiresIn()    { return _expiresIn;    }
 
   inline const QByteArray& TokenExpiry()  const { return TokenExpiry();  }
   inline const QByteArray& AccessToken()  const { return AccessToken();  }
@@ -36,7 +36,7 @@ private:
   QByteArray _accessToken;
   QByteArray _refreshToken;
   QByteArray _tokenType;
-  int     _expiresIn;
+  int        _expiresIn;
 };
 
 #endif //  LIFEMOTIF_GOOGLE_OAUTH2_CREDENTIAL_H
