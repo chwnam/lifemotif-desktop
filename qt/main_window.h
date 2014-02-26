@@ -70,7 +70,6 @@ private slots:
 
 private:
     void AuthenticateOnConsoleByPython();
-    void AuthenticateOnConsole();
     void AuthenticateUsingWebBrowser();
     void BuildLocalStructre();
     void ClearDiaryInformationUI();

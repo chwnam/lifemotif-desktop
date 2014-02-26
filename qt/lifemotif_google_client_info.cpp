@@ -1,4 +1,4 @@
-#include "lifemotif_client_info.h"
+#include "lifemotif_google_client_info.h"
 #include "lifemotif_exceptions.h"
 #include <QJsonDocument>
 #include <QArrayData>
@@ -6,13 +6,14 @@
 #include <QVariantList>
 #include <QDebug>
 
-LifeMotifClientInfo::LifeMotifClientInfo(const QString& clientInfoPath)
+LifeMotifGoogleClientInfo::LifeMotifGoogleClientInfo(
+    const QString& clientInfoPath)
 {
   LoadClientInfo(clientInfoPath);
 }
 
 void
-LifeMotifClientInfo::LoadClientInfo(
+LifeMotifGoogleClientInfo::LoadClientInfo(
     const QString& clientInfoPath)
 {
   QFile file;
@@ -21,10 +22,8 @@ LifeMotifClientInfo::LoadClientInfo(
   file.open(QIODevice::ReadOnly|QIODevice::Text);
 
   if (file.isReadable()) {
-    QVariantMap   map;
-    QJsonDocument info;
 
-    info = QJsonDocument::fromJson(file.readAll());
+    QJsonDocument info = QJsonDocument::fromJson(file.readAll());
 
     if (info.isEmpty() || info.isNull()) {
       throw LifeMotifInvalidSetting(std::string("JSON file parsing error!"));
@@ -39,7 +38,7 @@ LifeMotifClientInfo::LoadClientInfo(
 }
 
 void
-LifeMotifClientInfo::SetInfo(const QVariantMap& map)
+LifeMotifGoogleClientInfo::SetInfo(const QVariantMap& map)
 {
   //for(QVariantMap::const_iterator it = map.cbegin(); it != map.end(); ++it) {
   //  qDebug() << "key:" << *it; //-> << "\tvalue:" << it->second;

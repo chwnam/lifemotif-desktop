@@ -2,9 +2,7 @@
 #define WEB_BROWSER_DIALOG_H
 
 #include <QDialog>
-
-#include "lifemotif_settings.h"
-#include "python_wrapper/python_wrapper.h"
+#include <QUrl>
 
 namespace Ui {
 class WebBrowserDialog;
@@ -15,20 +13,25 @@ class WebBrowserDialog : public QDialog
   Q_OBJECT
 
 public:
-  explicit WebBrowserDialog(
-      GoogleOauth2Wrapper* _oauth2Wrapper,
-      QWidget *parent = 0);
+  explicit WebBrowserDialog(QWidget *parent = 0);
   ~WebBrowserDialog();
+
+  const QString& AuthorizationStatus() const { return authorizationStatus; }
+  const QString& AuthorizationCode() const   { return authorizationCode; }
+  void SetAuthorizationUrl(const QUrl& url)  { authorizationUrl = url; }
+  int  exec();
 
 private slots:
   void on_webView_loadFinished(bool arg1);
 
 private:
-  void Init();
+  void ExtractAuthorizationCodeFromTitleTag();
 
 private:
-  Ui::WebBrowserDialog *ui;
-  GoogleOauth2Wrapper* oauth2Wrapper;
+  Ui::WebBrowserDialog *ui;  
+  QString               authorizationStatus;
+  QString               authorizationCode;
+  QUrl                  authorizationUrl;
 };
 
 #endif // WEB_BROWSER_DIALOG_H

@@ -10,8 +10,7 @@
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_exceptions.h"
-#include "lifemotif_client_info.h"
-
+#include "lifemotif_google_client_info.h"
 
 void Init();
 void PythonWorkAround();

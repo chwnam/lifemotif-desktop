@@ -1,19 +1,13 @@
 #include <QDebug>
-#include <QUrl>
 
-#include "lifemotif_config.h"
 #include "web_browser_dialog.h"
 #include "ui_web_browser_dialog.h"
 
-WebBrowserDialog::WebBrowserDialog(
-    GoogleOauth2Wrapper* _oauth2Wrapper,
-    QWidget *parent) :
+WebBrowserDialog::WebBrowserDialog(QWidget *parent) :
   QDialog(parent),
-  oauth2Wrapper(_oauth2Wrapper),
   ui(new Ui::WebBrowserDialog)
 {
   ui->setupUi(this);
-  Init();
 }
 
 WebBrowserDialog::~WebBrowserDialog()
@@ -21,14 +15,25 @@ WebBrowserDialog::~WebBrowserDialog()
   delete ui;
 }
 
-void WebBrowserDialog::Init()
+int WebBrowserDialog::exec()
 {
-  QString secretPath = LifeMotifSettings::SecretPath(true);
-  QString url
-      = QString::fromStdString(
-        oauth2Wrapper->GetAuthorizationURL(secretPath.toStdString()));
+  ui->webView->load(authorizationUrl);
+  return QDialog::exec();
+}
 
-  ui->webView->load(QUrl(url));
+void WebBrowserDialog::ExtractAuthorizationCodeFromTitleTag()
+{
+  const QStringList titleSplitted = ui->webView->title().split(QChar(' '));
+
+  if (titleSplitted.size() == 2) {
+
+    const QString status = titleSplitted[0];
+    const int     pos    = titleSplitted[1].indexOf(QChar('=')) + 1;
+    const QString code   = titleSplitted[1].mid(pos);
+
+    authorizationStatus = status;
+    authorizationCode   = code;
+  }
 }
 
 void WebBrowserDialog::on_webView_loadFinished(bool /*arg1*/)
@@ -37,31 +42,10 @@ void WebBrowserDialog::on_webView_loadFinished(bool /*arg1*/)
   //  - path: /o/oauth2/approval
   //  - title: Success code=<code>
 
-  QStringList splitted = ui->webView->title().split(QChar(' '));
-  int result = QDialog::Rejected;
+  const QString  successPath = QString("/o/oauth2/approval");
 
-  if (ui->webView->url().path()
-        == QString(LIFEMOTIF_GOOGLE_OAUTH2_SUCCESS_PATH) &&
-      splitted.size() == 2) {
-
-      QString status = splitted[0];
-      int     pos    = splitted[1].indexOf(QChar('=')) + 1;
-      QString code   = splitted[1].mid(pos);
-
-      qDebug() << "Status:" << status << "\tCode:" << code;
-
-      bp::object
-          credentials = oauth2Wrapper->MakeCredentials(code.toStdString());
-
-      // keep this credentials
-      QString storageName = LifeMotifSettings::StorageName(true);
-      oauth2Wrapper->SetCredentials(storageName.toStdString(), credentials);
-
-      qDebug() << "Successfully authorized.";
-
-      result = QDialog::Accepted;
-
-      // set returnCode and close the window
-      done(result);
+  if (ui->webView->url().path() == successPath) {
+    ExtractAuthorizationCodeFromTitleTag();
+    done(QDialog::Accepted);
   }
 }

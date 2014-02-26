@@ -5,10 +5,10 @@
 #include <QVariantMap>
 
 
-class LifeMotifClientInfo
+class LifeMotifGoogleClientInfo
 {
 public:
-  LifeMotifClientInfo(const QString& clientInfoPath);
+  LifeMotifGoogleClientInfo(const QString& clientInfoPath);
 
 // read-only
 //  inline       QString& AuthUri()       { return _authUri;      }

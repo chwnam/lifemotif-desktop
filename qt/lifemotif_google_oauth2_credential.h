@@ -1,29 +1,41 @@
 #ifndef LIFEMOTIF_GOOGLE_OAUTH2_CREDENTIAL_H
 #define LIFEMOTIF_GOOGLE_OAUTH2_CREDENTIAL_H
 
-#include <QString>
+#include <QByteArray>
+#include <QVariantMap>
 
 class LifeMotifGoogleOAuth2Credential
 {
 public:
   LifeMotifGoogleOAuth2Credential() {}
 
-  inline QString& TokenExpiry()  { return _tokenExpiry;  }
-  inline QString& AccessToken()  { return _accessToken;  }
-  inline QString& RefreshToken() { return _refreshToken; }
+  inline QByteArray& TokenExpiry()  { return _tokenExpiry;  }
+  inline QByteArray& AccessToken()  { return _accessToken;  }
+  inline QByteArray& RefreshToken() { return _refreshToken; }
+  inline QByteArray& TokenType() { return _refreshToken; }
   inline int&     ExpiresIn()    { return _expiresIn;    }
 
-  inline const QString& TokenExpiry()  const { return TokenExpiry();  }
-  inline const QString& AccessToken()  const { return AccessToken();  }
-  inline const QString& RefreshToken() const { return RefreshToken(); }
-  inline const QString& ExpiresIn()    const { return ExpiresIn();    }
+  inline const QByteArray& TokenExpiry()  const { return TokenExpiry();  }
+  inline const QByteArray& AccessToken()  const { return AccessToken();  }
+  inline const QByteArray& RefreshToken() const { return RefreshToken(); }
+  inline const QByteArray& TokenType()    const { return TokenType();    }
+  inline const QByteArray& ExpiresIn()    const { return ExpiresIn();    }
 
   bool IsExpired() const { return  false; }
 
+  QVariantMap ToMap();
+
+  static LifeMotifGoogleOAuth2Credential
+    FromMap(const QVariantMap& map);
+
+  static LifeMotifGoogleOAuth2Credential
+    FromGoogleReplyJson(const QByteArray& json);
+
 private:
-  QString _tokenExpiry;
-  QString _accessToken;
-  QString _refreshToken;
+  QByteArray _tokenExpiry;
+  QByteArray _accessToken;
+  QByteArray _refreshToken;
+  QByteArray _tokenType;
   int     _expiresIn;
 };
 

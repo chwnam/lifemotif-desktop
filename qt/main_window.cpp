@@ -16,7 +16,7 @@
 #include "lifemotif_config.h"
 #include "localstructure_extract.h"
 #include "web_browser_dialog.h"
-#include "lifemotif_oauth2.h"
+#include "lifemotif_google_oauth2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
@@ -62,47 +62,30 @@ void MainWindow::AuthenticateOnConsoleByPython()
   UpdateMenu();
 }
 
-void MainWindow::AuthenticateOnConsole()
-{
-  LifeMotifOauth2 oauth2;
-  QString storageName = LifeMotifSettings::StorageName(true);
-  QString secretPath  = LifeMotifSettings::SecretPath(true);
-
-  qDebug() << "Authentication by console (Qt mode)."
-            << "Client secret path:" << secretPath;
-
-  // this is static text
-  // https://accounts.google.com/o/oauth2/auth?client_id=557620163613.apps.googleusercontent.com&redirect_uri=urn%3Aietf%3Awg%3Aoauth%3A2.0%3Aoob&response_type=code&scope=https%3A%2F%2Fmail.google.com%2F
-  QString code;
-  LifeMotifGoogleOAuth2Credential credential;
-
-  QTextStream sin(stdin);
-  QTextStream sout(stdout);
-
-  sout << "Input code: ";
-  sout.flush();
-  sin >> code;
-
-  credential = oauth2.MakeCredentials(secretPath, code);
-
-  //oauth2.SetCredentials(storageName, credential);
-}
-
 void MainWindow::AuthenticateUsingWebBrowser()
 {
-  WebBrowserDialog wbDlg(oauth2Wrapper().data(), this);
+  WebBrowserDialog wbDlg(this);
+  LifeMotifGoogleOauth2  oauth2(this);
 
+  wbDlg.SetAuthorizationUrl(
+        oauth2.GetAuthorizationUrl(
+          LifeMotifSettings::SecretPath(true)));
   wbDlg.setWindowModality(Qt::ApplicationModal);
-  int result = wbDlg.exec();
-  if (result == QDialog::Accepted) {
-    QMessageBox::information(
-          this, "Success", "Authentication success.");
-  } else {
+
+  if (wbDlg.exec() != QDialog::Accepted) {
     QMessageBox::warning(
           this, "Failure", "Authentication failed.");
+    return;
   }
 
-  UpdateMenu();
+  oauth2.MakeCredentials(
+        LifeMotifSettings::SecretPath(true),
+        wbDlg.AuthorizationCode());
+
+  // save credentials
+
+  // when successfully done, update menu
+  //UpdateMenu();
 }
 
 void MainWindow::BuildLocalStructre()
@@ -322,7 +305,7 @@ void MainWindow::on_actionBrowserAuthentication_triggered()
 void MainWindow::on_actionConsoleAuthentication_triggered()
 {
   // TODO: if the program already has been authenticated?
-  AuthenticateOnConsole();
+  AuthenticateOnConsoleByPython();
 }
 
 void MainWindow::on_showHtmlCodeCheckBox_clicked()
@@ -411,5 +394,5 @@ void MainWindow::on_actionQt_triggered()
 
 void MainWindow::on_AuthenticateButton_clicked()
 {
-  AuthenticateOnConsole();
+  AuthenticateUsingWebBrowser();
 }

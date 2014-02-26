@@ -19,7 +19,7 @@ macx {
   CONFIG -= app_bundle
 }
 
-TARGET = LifeMotif
+TARGET = lifemotif-desktop
 TEMPLATE = app
 
 SOURCES += main.cpp\
@@ -33,6 +33,7 @@ SOURCES += main.cpp\
     lifemotif_calendar_widget.cpp \
     lifemotif_diary.cpp \
     lifemotif_exceptions.cpp \
+    lifemotif_google_oauth2_credential.cpp \
     lifemotif_settings.cpp \
     lifemotif_utils.cpp \
     localstructure_extract.cpp \
@@ -45,12 +46,11 @@ SOURCES += main.cpp\
     loading_dialog.cpp \
     runnable_helper.cpp \
     mailbox_list_extract.cpp \
-    lifemotif_oauth2.cpp \
-    lifemotif_client_info.cpp
+    lifemotif_google_oauth2.cpp \
+    lifemotif_google_client_info.cpp
 
 
 HEADERS  += \
-    lifemotif_config.h \
     python_wrapper/basepythonwrapper.h \
     python_wrapper/googleoauth2wrapper.h \
     python_wrapper/googleimapwrapper.h \
@@ -60,8 +60,10 @@ HEADERS  += \
     python_wrapper/python_wrapper.h \
     email_cache.h \
     lifemotif_calendar_widget.h \
+    lifemotif_config.h \
     lifemotif_diary.h \
     lifemotif_exceptions.h \
+    lifemotif_google_oauth2_credential.h \
     lifemotif_settings.h \
     lifemotif_utils.h \
     localstructure_extract.h \
@@ -74,8 +76,8 @@ HEADERS  += \
     loading_dialog.h \
     runnable_helper.h \
     mailbox_list_extract.h \
-    lifemotif_oauth2.h \
-    lifemotif_client_info.h
+    lifemotif_google_oauth2.h \
+    lifemotif_google_client_info.h
 
 FORMS    += \
     web_browser_dialog.ui \
