@@ -23,6 +23,7 @@ MainWindow::MainWindow(QWidget *parent) :
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    oauth2 = new LifeMotifGoogleOauth2(this); // QObject
 
     LoadLocalStructure();
     UpdateCalendar();
@@ -43,16 +44,16 @@ void MainWindow::AuthenticateOnConsoleByPython()
   QString storageName = LifeMotifSettings::StorageName(true);
 
   qDebug() << "Authentication by console (Python mode)."
-           << "Client secret path:" << secretPath;
+    << "Client secret path:" << secretPath;
 
   const std::string
-      url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
+    url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
 
   const std::string
-      code = oauth2Wrapper()->GrantUserPermission(url);
+    code = oauth2Wrapper()->GrantUserPermission(url);
 
   bp::object
-      credentials = oauth2Wrapper()->MakeCredentials(code);
+    credentials = oauth2Wrapper()->MakeCredentials(code);
 
   // keep this credentials
   oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
@@ -65,10 +66,9 @@ void MainWindow::AuthenticateOnConsoleByPython()
 void MainWindow::AuthenticateUsingWebBrowser()
 {
   WebBrowserDialog wbDlg(this);
-  LifeMotifGoogleOauth2  oauth2(this);
 
   wbDlg.SetAuthorizationUrl(
-        oauth2.GetAuthorizationUrl(
+        oauth2->GetAuthorizationUrl(
           LifeMotifSettings::SecretPath(true)));
   wbDlg.setWindowModality(Qt::ApplicationModal);
 
@@ -78,11 +78,11 @@ void MainWindow::AuthenticateUsingWebBrowser()
     return;
   }
 
-  oauth2.MakeCredentials(
+  oauth2->MakeCredentials(
         LifeMotifSettings::SecretPath(),
         wbDlg.AuthorizationCode());
 
-  oauth2.SetCredentials(
+  oauth2->SetCredentials(
     LifeMotifSettings::StorageName());
 
   UpdateMenu();
@@ -135,10 +135,8 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 
 void MainWindow::RevokeAuthentication()
 {
-  // https://developers.google.com/accounts/docs/OAuth2WebServer#tokenrevoke
-
-  oauth2Wrapper()->Revoke(
-    LifeMotifSettings::StorageName(true).toStdString());
+  // revoke authentication and remove file
+  oauth2->Revoke(LifeMotifSettings::StorageName(true));
 }
 
 void MainWindow::UpdateCalendar()
@@ -200,7 +198,8 @@ QString MainWindow::FetchMessage(const MsgIdType& id)
 
 DateType MainWindow::GetDateFromCalendar() const
 {
-  return ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
+  return
+    ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
 }
 
 void MainWindow::UpdateMenu()

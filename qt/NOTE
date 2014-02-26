@@ -1,4 +1,15 @@
-Win32를 위해 반드시 필요한 DLL
+===== Qt Reference URL =====
+  QT Network programming: http://qt-project.org/doc/qt-5.0/qtnetwork/qtnetwork-programming.html
+  QNetworkRequest: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkrequest.html
+  QNetworkAccessManager: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkaccessmanager.html
+  QNetworkReply: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkreply.html
+
+===== Google OAuth2 Reference =====
+
+  Token revoke:
+   https://developers.google.com/accounts/docs/OAuth2WebServer#tokenrevoke
+
+===== Win32를 위해 반드시 필요한 DLL =====
 boost
   boost_python-vc100-mt-1_55.dll
 

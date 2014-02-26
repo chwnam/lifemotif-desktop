@@ -3,6 +3,7 @@
 
 #include <QDateTime>
 #include <QJsonDocument>
+#include <QFile>
 
 #include "lifemotif_utils.h"
 
@@ -137,16 +138,11 @@ void LifeMotifGoogleOauth2::ReplyFinished()
 //  }
 
   credential
-      = LifeMotifGoogleOAuth2Credential::FromGoogleReplyJson(reply->readAll());
+      = LifeMotifGoogleOAuth2Credential::FromGoogleReplyJson(
+          reply->readAll());
 
   // cleanup
-  reply->close();
-  disconnect(reply, SIGNAL(finished()), this, SLOT(ReplyFinished()));
-  disconnect(
-    reply, SIGNAL(error(QNetworkReply::NetworkError)),
-    this, SLOT(ReplyError(QNetworkReply::NetworkError)));
-  reply->deleteLater();
-  reply = NULL;
+  ReplyCleanUp(SLOT(ReplyFinished()));
 }
 
 void
@@ -166,5 +162,63 @@ void
   if (isQVariantMap) {
     credential
       = LifeMotifGoogleOAuth2Credential::FromMap(map.toMap());
+  }
+}
+
+void LifeMotifGoogleOauth2::Revoke(const QString& storageName)
+{
+  // https://accounts.google.com/o/oauth2/revoke?token=(token)
+  // token can be an access token or a refresh token.
+  // success: 200 repsonse, failure: 400 response
+
+  QUrl      url(QString("https://accounts.google.com/o/oauth2/revoke"));
+  QUrlQuery query;
+
+  query.addQueryItem(QString("token"), credential.AccessToken());
+  url.setQuery(query);
+
+  qDebug() << "Revoke URL: " << url;
+
+  if (reply = manager->get(QNetworkRequest(url))) {
+    connect(
+      reply, SIGNAL(finished()),
+      this, SLOT(RevokeReplyFinished()));
+    connect(
+      reply, SIGNAL(error(QNetworkReply::NetworkError)),
+      this, SLOT(ReplyError(QNetworkReply::NetworkError)));
+    WaitForSignal(reply, SIGNAL(finished()), 5000);
+  }
+  ReplyCleanUp(SLOT(RevokeReplyFinished()));
+
+  // remove file
+  QFile::remove(storageName);
+}
+
+void LifeMotifGoogleOauth2::RevokeReplyFinished()
+{
+  const int statusCode
+    = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
+
+  switch (statusCode)
+  {
+  case 200:
+    qDebug() << "Server returned 200. Revoke on server success.";
+    break;
+
+  case 400:
+    qDebug() << "Server returned 400. Revoke on server fail.";
+  }
+}
+
+void LifeMotifGoogleOauth2::ReplyCleanUp(const char* slotToDisconnect)
+{
+  if (reply) {
+    reply->close();
+    disconnect(reply, SIGNAL(finished()), this, slotToDisconnect);
+    disconnect(
+      reply, SIGNAL(error(QNetworkReply::NetworkError)),
+      this, SLOT(ReplyError(QNetworkReply::NetworkError)));
+    reply->deleteLater();
+    reply = NULL;
   }
 }

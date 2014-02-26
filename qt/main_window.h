@@ -5,9 +5,9 @@
 #include <QSharedPointer>
 
 #include "./python_wrapper/python_wrapper.h"
-
 #include "email_cache.h"
 #include "lifemotif_diary.h"
+#include "lifemotif_google_oauth2.h"
 #include "lifemotif_settings.h"
 #include "lifemotif_utils.h"
 #include "loading_dialog.h"
@@ -86,6 +86,8 @@ private:
 
 private:
     Ui::MainWindow *ui;
+
+    LifeMotifGoogleOauth2* oauth2;
 
     // wrappers
     typedef QSharedPointer<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;

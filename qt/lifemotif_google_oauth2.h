@@ -40,13 +40,21 @@ public:
       const QString& emailAddress,
       const int debugLevel = 0);
 
+  void Revoke(const QString& storageName);
+
 private slots:
+  // slot for authentication
   void ReplyFinished();
   void ReplyError(QNetworkReply::NetworkError error);
+
+  // slot for revoke
+  void RevokeReplyFinished();
 
 private:
   bool WaitForSignal(QObject *sender, const char *signal, int timeout);
   void ParseReplyJson();
+
+  void ReplyCleanUp(const char* slotToDisconnect);
 
 private:
   QNetworkAccessManager *manager;
