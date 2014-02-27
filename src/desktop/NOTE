@@ -1,8 +1,10 @@
-===== SMTP ======
+===== SMTP/IMAP ======
 http://www.qtcentre.org/threads/2221-Sending-email-using-Qt.
 http://www.washington.edu/imap/
 http://stackoverflow.com/questions/4726633/connecting-to-imap-google-with-ssl
 http://etpan.org/libetpan.html
+https://developers.google.com/gmail/imap_extensions
+https://developers.google.com/gmail/xoauth2_protocol
 
 ===== Qt Reference URL =====
   QT Network programming: http://qt-project.org/doc/qt-5.0/qtnetwork/qtnetwork-programming.html
