@@ -1,0 +1,5 @@
+<RCC>
+    <qresource prefix="/icons">
+        <file alias="lifemotif-desktop-icon">resource/lifemotif-desktop.ico</file>
+    </qresource>
+</RCC>

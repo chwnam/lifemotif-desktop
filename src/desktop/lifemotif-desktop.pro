@@ -129,4 +129,4 @@ LIBS += \
     -lpython2.7
 
 RESOURCES += \
-    LifeMotif.qrc
+    lifemotif-desktop.qrc
