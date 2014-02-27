@@ -5,6 +5,7 @@
 #include <string>
 #include <QDir>
 #include <QFileInfo>
+#include <QString>
 
 #include "python_wrapper/python_wrapper.h"
 
@@ -17,7 +18,7 @@ public:
   static std::string JoinPath(int n, ...);
 
   static QString
-  inline JoinPath(const QString& pre, const QString& add);
+    inline JoinPath(const QString& pre, const QString& add);
 
   /* is path or file exists? */
   inline static bool Exists(const QString& path);
@@ -40,6 +41,12 @@ public:
 
   /* text manipulation */
   static QString Strip(const QString& input, const QChar& s);
+
+  /* JSON - QVariantMap save and load */
+  static bool
+    SaveJson(const QString& fileName, const QVariantMap& map);
+
+  static QVariant LoadJson(const QString& fileName, bool* isQVariantMap);
 };
 
 QString LifeMotifUtils::JoinPath(const QString& pre, const QString& add)

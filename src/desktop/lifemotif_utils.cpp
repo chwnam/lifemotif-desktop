@@ -1,6 +1,8 @@
 #include "lifemotif_utils.h"
 
 #include <QDebug>
+#include <QJsonDocument>
+#include <QFile>
 
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
@@ -86,4 +88,34 @@ bool LifeMotifUtils::HasCredentials(bool combineWithPythonScriptPath)
 {
   return IsFileReadableWritable(
           LifeMotifSettings::StorageName(combineWithPythonScriptPath));
+}
+
+#include <QJsonObject>
+bool
+  LifeMotifUtils::SaveJson(
+    const QString& fileName, const QVariantMap& map)
+{
+  const QByteArray array
+    = QJsonDocument( QJsonObject::fromVariantMap(map) ).toJson();
+  QFile w(fileName);
+  if (w.open(QIODevice::WriteOnly|QIODevice::Text)) {
+    w.write(array);
+    w.close();
+    return true;
+  }
+  return false;
+}
+
+QVariant
+  LifeMotifUtils::LoadJson(
+    const QString& fileName, bool* isQVariantMap)
+{
+  QVariant v;
+  QFile    r(fileName);
+  if (r.open(QIODevice::ReadOnly|QIODevice::Text)) {
+    QJsonDocument doc = QJsonDocument::fromJson(r.readAll());
+    *isQVariantMap = doc.isObject();
+    v = doc.toVariant();
+  }
+  return v;
 }
