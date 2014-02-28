@@ -1,16 +1,14 @@
 #include "preference_window.h"
 #include "ui_preference_window.h"
-#include "lifemotif_settings.h"
 
 #include <QMessageBox>
 #include <QDir>
 #include <QFile>
 #include <QDebug>
 
-PreferenceWindow::PreferenceWindow(
-    GoogleImapWrapper *_imap,
-    QWidget *parent) :
-  imap(_imap),
+#include "settings.h"
+
+PreferenceWindow::PreferenceWindow(QWidget *parent) :
   QDialog(parent),
   ui(new Ui::PreferenceWindow)
 {
@@ -29,11 +27,6 @@ void PreferenceWindow::UpdateUI()
 {
 }
 
-void PreferenceWindow::ReadFromSettings()
-{
-  QString pythonConfig = LifeMotifSettings::PythonConfig();
-}
-
 void PreferenceWindow::on_refreshSettingButton_clicked()
 {
 }
@@ -50,30 +43,30 @@ void PreferenceWindow::on_cleanDiskCacheButton_clicked()
 
 void PreferenceWindow::WipeCacheEntries()
 {
-  QFileInfoList entries
-      = QDir(LifeMotifSettings::CacheDir())
-          .entryInfoList(QDir::Files);
+//  QFileInfoList entries
+//      = QDir(Settings::CacheDir())
+//          .entryInfoList(QDir::Files);
 
-  qDebug() << "Removing all" << entries.size() << "entrie(s):";
-  QFile f;
+//  qDebug() << "Removing all" << entries.size() << "entrie(s):";
+//  QFile f;
 
-  for(QFileInfoList::iterator it = entries.begin(); it != entries.end(); ++it) {
-    QString pathToRemove = it->filePath();
+//  for(QFileInfoList::iterator it = entries.begin(); it != entries.end(); ++it) {
+//    QString pathToRemove = it->filePath();
 
-    qDebug() << pathToRemove.toStdString().c_str();
-    f.setFileName(pathToRemove);
-    if (f.remove() == false) {
-      qDebug() << "[!!]" << pathToRemove << "failed to remove!";
-    }
-  }
+//    qDebug() << pathToRemove.toStdString().c_str();
+//    f.setFileName(pathToRemove);
+//    if (f.remove() == false) {
+//      qDebug() << "[!!]" << pathToRemove << "failed to remove!";
+//    }
+//  }
 }
 
 void PreferenceWindow::GetMailboxList()
 {
-  if (imap) {
-    bp::object pythonMailboxList = imap->GetGoogleMailboxSimpleList();
-    MailboxListExtract(pythonMailboxList, mailboxList);
-  }
+//  if (imap) {
+//    bp::object pythonMailboxList = imap->GetGoogleMailboxSimpleList();
+//    MailboxListExtract(pythonMailboxList, mailboxList);
+//  }
 }
 
 void PreferenceWindow::UpdateMailboxComboBox()

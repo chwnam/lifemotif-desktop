@@ -34,7 +34,7 @@
    <locale language="English" country="UnitedStates"/>
   </property>
   <widget class="QWidget" name="centralWidget">
-   <widget class="LifeMotifCalendarWidget" name="calendarWidget">
+   <widget class="CalendarWidget" name="calendarWidget">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -416,9 +416,9 @@
  <layoutdefault spacing="6" margin="11"/>
  <customwidgets>
   <customwidget>
-   <class>LifeMotifCalendarWidget</class>
+   <class>CalendarWidget</class>
    <extends>QCalendarWidget</extends>
-   <header>lifemotif_calendar_widget.h</header>
+   <header>calendar_widget.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

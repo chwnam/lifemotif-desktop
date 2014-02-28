@@ -1,20 +1,26 @@
 #ifndef MESSAGE_TYPES_H
 #define MESSAGE_TYPES_H
 
-#include <string>
-#include <vector>
-#include <map>
+#include <QString>
+#include <QVector>
+#include <QMap>
 
-typedef unsigned long long ThrIdType;
-typedef unsigned long long MsgIdType;
-typedef std::string DateType;
 
-struct MessageGroup
+namespace LifeMotif
 {
-  ThrIdType threadId;
-  std::vector<MsgIdType> messageIds;
+
+typedef quint64 ThrIdType;
+typedef quint64 MsgIdType;
+typedef QString DateType;
+
+struct GoogleMessageGroup
+{
+  ThrIdType          threadId;
+  QVector<MsgIdType> messageIds;
 };
 
-typedef std::map<DateType, MessageGroup> LocalStructureType;
+typedef QMap<DateType, GoogleMessageGroup> GoogleLocalStructureType;
+
+}
 
 #endif // MESSAGE_TYPES_H

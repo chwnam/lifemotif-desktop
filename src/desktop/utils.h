@@ -6,15 +6,17 @@
 #include <QFileInfo>
 #include <QString>
 
-#include "python_wrapper/python_wrapper.h"
 
-#include "lifemotif_google_oauth2.h"
+namespace LifeMotif {
 
-class LifeMotifUtils
+class Utils
 {
 public:
   static QString
     inline JoinPath(const QString& pre, const QString& add);
+
+  /* credential check */
+  static bool IsTokenAvailable();
 
   /* is path or file exists? */
   inline static bool Exists(const QString& path);
@@ -27,68 +29,62 @@ public:
   inline static bool IsDirectoryAccessible(const QString& path);
   inline static bool IsDirectoryAccessibleWritable(const QString& path);
 
-  /* credential helper */
-  static bool HasCredentials(bool combineWithPythonScriptPath = true);
-
-  /* create wrappers */
-  static GoogleImapWrapper*     CreateImapWrapper(GoogleOauth2Wrapper* ptr);
-  static GoogleOauth2Wrapper*   CreateOauth2Wrapper();
-  static LocalStructureWrapper* CreateLocalStructureWrapper();
-
   /* text manipulation */
   static QString Strip(const QString& input, const QChar& s);
 
   /* JSON - QVariantMap save and load */
   static bool
-    SaveJson(const QString& fileName, const QVariantMap& map);
+  SaveJson(const QString& fileName, const QVariantMap& map);
 
-  static QVariant LoadJson(const QString& fileName, bool* isQVariantMap);
+  static QVariant
+  LoadJson(const QString& fileName, bool* isQVariantMap);
 };
 
-QString LifeMotifUtils::JoinPath(const QString& pre, const QString& add)
+QString Utils::JoinPath(const QString& pre, const QString& add)
 {
   return QDir(pre + QDir::separator() + add).absolutePath();
 }
 
-bool LifeMotifUtils::Exists(const QString& path)
+bool Utils::Exists(const QString& path)
 {
   return QFileInfo(path).exists();
 }
 
-bool LifeMotifUtils::IsFile(const QString& path)
+bool Utils::IsFile(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isFile();
 }
 
-bool LifeMotifUtils::IsFileReadable(const QString& path)
+bool Utils::IsFileReadable(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isFile() && fi.isReadable();
 }
 
-bool LifeMotifUtils::IsFileReadableWritable(const QString& path)
+bool Utils::IsFileReadableWritable(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isFile() && fi.isReadable() && fi.isWritable();
 }
 
-bool LifeMotifUtils::IsDirectory(const QString& path)
+bool Utils::IsDirectory(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isDir();
 }
 
-bool LifeMotifUtils::IsDirectoryAccessible(const QString& path)
+bool Utils::IsDirectoryAccessible(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isDir() && fi.isExecutable();
 }
 
-bool LifeMotifUtils::IsDirectoryAccessibleWritable(const QString& path)
+bool Utils::IsDirectoryAccessibleWritable(const QString& path)
 {
   QFileInfo fi(path);
   return fi.exists() && fi.isDir() && fi.isExecutable() && fi.isWritable();
 }
 
+}
 #endif // LIFEMOTIF_UTILS_H

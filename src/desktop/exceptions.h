@@ -5,6 +5,7 @@
 #include <string>
 
 namespace LifeMotif {
+
 class Exception : public std::exception {
 public:
   Exception(const std::string& _desc)
@@ -24,6 +25,13 @@ public:
   // ~FileNotFoundException() throw() {}
 };
 
+class DirectoryNotFoundException : public Exception {
+public:
+  DirectoryNotFoundException(const std::string& _dirName)
+    : Exception(_dirName)  { }
+  // ~DirectoryNotFoundException() throw() {}
+};
+
 // file format is invalid
 class FileInvalidException : public Exception {
 public:
@@ -35,9 +43,10 @@ public:
 // program setting is invalid
 class InvalidSetting : public Exception {
 public:
-  LifeMotifInvalidSetting(const std::string& _desc)
+  InvalidSetting(const std::string& _desc)
     : Exception(_desc) {}
 };
+
 }
 
 #endif // LIFEMOTIF_EXCEPTIONS_H

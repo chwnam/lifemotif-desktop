@@ -1,32 +1,24 @@
-#include "lifemotif_utils.h"
+#include "utils.h"
 
 #include <QDebug>
 #include <QJsonDocument>
 #include <QJsonObject>
 #include <QFile>
 
-#include "lifemotif_config.h"
-#include "lifemotif_settings.h"
+#include "config.h"
+#include "google_oauth2.h"
+#include "settings.h"
 
-GoogleOauth2Wrapper* LifeMotifUtils::CreateOauth2Wrapper()
+
+namespace LifeMotif {
+
+bool Utils::IsTokenAvailable()
 {
-  GoogleOauth2Wrapper* ptr
-      = new GoogleOauth2Wrapper(
-        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_MODULE,
-        LIFEMOTIF_GOOGLE_OAUTH2_WRAPPER_CLASS);
-  return ptr;
+  return Settings::GoogleAccessToken().isEmpty() == false &&
+         Settings::GoogleRefreshToken().isEmpty() == false;
 }
 
-LocalStructureWrapper* LifeMotifUtils::CreateLocalStructureWrapper()
-{
-  LocalStructureWrapper* ptr
-    = new LocalStructureWrapper(
-        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_MODULE,
-        LIFEMOTIF_LOCAL_STRUCTURE_WRAPPER_CLASS);
-  return ptr;
-}
-
-QString LifeMotifUtils::Strip(const QString& input, const QChar& s)
+QString Utils::Strip(const QString& input, const QChar& s)
 {
   int b, e;
 
@@ -37,7 +29,7 @@ QString LifeMotifUtils::Strip(const QString& input, const QChar& s)
 }
 
 bool
-  LifeMotifUtils::SaveJson(
+Utils::SaveJson(
     const QString& fileName, const QVariantMap& map)
 {
   const QByteArray array
@@ -52,7 +44,7 @@ bool
 }
 
 QVariant
-  LifeMotifUtils::LoadJson(
+Utils::LoadJson(
     const QString& fileName, bool* isQVariantMap)
 {
   QVariant v;
@@ -63,4 +55,6 @@ QVariant
     v = doc.toVariant();
   }
   return v;
+}
+
 }

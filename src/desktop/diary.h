@@ -29,7 +29,7 @@ public:
     return attachments.size();
   }
 
-  const LifeMotifAttachment&
+  const Attachment&
     GetAttachment(const int n) const {
     return attachments[n];
   }

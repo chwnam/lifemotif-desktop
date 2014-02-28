@@ -7,7 +7,7 @@ const int Config::majorVersion = 0;
 const int Config::minorVersion = 1;
 const int Config::revision     = 34;
 
-const char Config::organizationName[]   = "changwoo";
+const char Config::organizationName[]   = "lifemotif-desktop";
 const char Config::organizationDomain[] = "changwoo";
 const char Config::applicationName[]    = "lifemotif-desktop";
 

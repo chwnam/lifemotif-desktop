@@ -3,6 +3,8 @@
 #include <QTextStream>
 #include <iostream>
 
+namespace LifeMotif {
+
 EmailCache::EmailCache(const QString& _cacheDir)
   : cacheDir(_cacheDir)
 {
@@ -56,4 +58,6 @@ void EmailCache::BuildCacheIndex()
     qDebug() << "  >>" << messageId;
     cacheIndex.insert(messageId);
   }
+}
+
 }

@@ -29,7 +29,7 @@ public:
       static const char revokeUri[];
       static const char clientId[];
       static const char clientSecret[];
-      static const char redirectUri[];      
+      static const char redirectUri[];
     }; // class Google
   }; // class DefaultValues
 }; // class Config

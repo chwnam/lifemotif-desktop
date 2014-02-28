@@ -28,7 +28,7 @@ QString Diary::ParseMailBox(const mimetic::Mailbox& mailbox)
   if (mailbox.label() != "") { // email address with label
     QString label
         = DecodeEncodedWords(
-            LifeMotifUtils::Strip(
+            Utils::Strip(
               QString::fromStdString(mailbox.label()),
               QChar('\"')).toStdString());
     result = QString("\"%1\" <%2@%3>").arg(label, mbstr, domain);
@@ -76,7 +76,7 @@ void Diary::ParseBody(const mimetic::Body& body)
   }
 
   else if (ct.type() == std::string("image")) {
-    LifeMotifAttachment att = CallbackForBinary(body);
+    Attachment att = CallbackForBinary(body);
     attachments.push_back(att);
   }
 
@@ -129,7 +129,7 @@ QString Diary::CallbackForText(const mimetic::Body &body)
   return result;
 }
 
-LifeMotifAttachment Diary::CallbackForBinary(const mimetic::Body &body)
+Attachment Diary::CallbackForBinary(const mimetic::Body &body)
 {
   typedef mimetic::ContentTransferEncoding CTE;
   const mimetic::Header&      header = body.owner()->header();
@@ -138,7 +138,7 @@ LifeMotifAttachment Diary::CallbackForBinary(const mimetic::Body &body)
 
   const std::string&          ctem   = cte.mechanism();
 
-  LifeMotifAttachment result;
+  Attachment result;
 
   result.type    = QString::fromStdString(cty.type());
   result.subType = QString::fromStdString(cty.subtype());

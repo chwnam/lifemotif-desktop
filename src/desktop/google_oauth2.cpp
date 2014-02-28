@@ -1,31 +1,31 @@
-#include "lifemotif_google_oauth2.h"
-#include "lifemotif_google_client_info.h"
-
+#include "google_oauth2.h"
 #include <QDateTime>
-#include <QJsonDocument>
 #include <QFile>
+#include <QJsonDocument>
 
-#include "lifemotif_utils.h"
+#include "settings.h"
+#include "utils.h"
 
-LifeMotifGoogleOauth2::LifeMotifGoogleOauth2(QObject *parent)
+
+namespace LifeMotif {
+
+GoogleOAuth2::GoogleOAuth2(QObject *parent)
   : QObject(parent)
 {
   manager = new QNetworkAccessManager(this);
   reply = NULL;
 }
 
-QUrl
-  LifeMotifGoogleOauth2::GetAuthorizationUrl(const QString& secretPath)
+QUrl GoogleOAuth2::GetAuthorizationUrl()
 {
-  LifeMotifGoogleClientInfo clientInfo(secretPath);
-  QUrl                url;
-  QUrlQuery           query;
+  QUrl       url;
+  QUrlQuery  query;
 
-  const QString &authUri     = clientInfo.AuthUri();
-  const QString &clientId    = clientInfo.ClientId();
-  const QString &redirectUri = clientInfo.RedirectUri();
-  const QString responseType = QString("code");
-  const QString scope        = QString("https://mail.google.com/");
+  const QByteArray authUri      (Settings::GoogleAuthUri());
+  const QByteArray clientId     (Settings::GoogleClientId());
+  const QByteArray redirectUri  (Settings::GoogleRedirectUri());
+  const QByteArray responseType ("code");
+  const QByteArray scope        ("https://mail.google.com/");
 
   query.addQueryItem("client_id", QUrl::toPercentEncoding(clientId));
   query.addQueryItem("redirect_uri", QUrl::toPercentEncoding(redirectUri));
@@ -38,29 +38,26 @@ QUrl
   return url;
 }
 
-void
-  LifeMotifGoogleOauth2::MakeCredentials(
-    const QString& secretPath, const QString& code)
+void GoogleOAuth2::Authorize(const QByteArray& code)
 {
-  LifeMotifGoogleClientInfo clientInfo(secretPath);
   QNetworkRequest request;
 
-  const QString &tokenUri     = clientInfo.TokenUri();
-  const QString &clientId     = clientInfo.ClientId();
-  const QString &clientSecret = clientInfo.ClientSecret();
-  const QString &redirectUri  = clientInfo.RedirectUri();
-  const QString &grantType    = QString("authorization_code");
+  const QUrl       tokenUri     (Settings::GoogleTokenUri());
+  const QByteArray clientId     (Settings::GoogleClientId());
+  const QByteArray clientSecret (Settings::GoogleClientSecret());
+  const QByteArray redirectUri  (Settings::GoogleRedirectUri());
+  const QByteArray grantType    ("authorization_code");
 
   //http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkrequest.html
   QByteArray content;
 
-  content += "code="          + code.toUtf8()         + '&';
-  content += "client_id="     + clientId.toUtf8()     + '&';
-  content += "client_secret=" + clientSecret.toUtf8() + '&';
-  content += "redirect_uri="  + redirectUri.toUtf8()  + '&';
-  content += "grant_type="    + grantType.toUtf8();
+  content.append ("code="          + code         + '&');
+  content.append ("client_id="     + clientId     + '&');
+  content.append ("client_secret=" + clientSecret + '&');
+  content.append ("redirect_uri="  + redirectUri  + '&');
+  content.append ("grant_type="    + grantType);
 
-  request.setUrl(QUrl(tokenUri));
+  request.setUrl(tokenUri);
   request.setHeader(
       QNetworkRequest::ContentTypeHeader,
       "application/x-www-form-urlencoded");
@@ -86,7 +83,7 @@ void
 }
 
 bool
-  LifeMotifGoogleOauth2::WaitForSignal(
+  GoogleOAuth2::WaitForSignal(
     QObject *sender, const char *signal, int timeout)
 {
   QEventLoop loop;
@@ -104,12 +101,12 @@ bool
   return timer.isActive();
 }
 
-void LifeMotifGoogleOauth2::ReplyError(QNetworkReply::NetworkError error)
+void GoogleOAuth2::ReplyError(QNetworkReply::NetworkError error)
 {
   qDebug() << "Error code:" << error;
 }
 
-void LifeMotifGoogleOauth2::ReplyFinished()
+void GoogleOAuth2::ReplyFinished()
 {
     // header debugging code
 //  const QList<QNetworkReply::RawHeaderPair >& pairs = reply->rawHeaderPairs();
@@ -118,32 +115,11 @@ void LifeMotifGoogleOauth2::ReplyFinished()
 //    qDebug() << it->first << it->second;
 //  }
 
-  credential
-      = LifeMotifGoogleOAuth2Credential::FromGoogleReplyJson(
-          reply->readAll());
-
-  // cleanup
+  ParseReplyJson(reply->readAll());
   ReplyCleanUp(SLOT(ReplyFinished()));
 }
 
-void
-  LifeMotifGoogleOauth2::SetCredentials(const QString& storageName)
-{
-  LifeMotifUtils::SaveJson(storageName, credential.ToMap());
-}
-
-void
-  LifeMotifGoogleOauth2::GetCredentials(const QString& storageName)
-{
-  bool isQVariantMap;
-  QVariant map = LifeMotifUtils::LoadJson(storageName, &isQVariantMap);
-  if (isQVariantMap) {
-    credential
-      = LifeMotifGoogleOAuth2Credential::FromMap(map.toMap());
-  }
-}
-
-void LifeMotifGoogleOauth2::Revoke(const QString& storageName)
+void GoogleOAuth2::Revoke()
 {
   // https://accounts.google.com/o/oauth2/revoke?token=(token)
   // token can be an access token or a refresh token.
@@ -152,7 +128,7 @@ void LifeMotifGoogleOauth2::Revoke(const QString& storageName)
   QUrl      url(QString("https://accounts.google.com/o/oauth2/revoke"));
   QUrlQuery query;
 
-  query.addQueryItem(QString("token"), credential.AccessToken());
+  query.addQueryItem(QString("token"), Settings::GoogleAccessToken());
   url.setQuery(query);
 
   qDebug() << "Revoke URL: " << url;
@@ -168,11 +144,13 @@ void LifeMotifGoogleOauth2::Revoke(const QString& storageName)
   }
   ReplyCleanUp(SLOT(RevokeReplyFinished()));
 
-  // remove file
-  QFile::remove(storageName);
+  // clean tokens and expiry
+  Settings::GoogleAccessToken  (QByteArray());
+  Settings::GoogleRefreshToken (QByteArray());
+  Settings::GoogleTokenExpiry  (QString());
 }
 
-void LifeMotifGoogleOauth2::RevokeReplyFinished()
+void GoogleOAuth2::RevokeReplyFinished()
 {
   const int statusCode
     = reply->attribute(QNetworkRequest::HttpStatusCodeAttribute).toInt();
@@ -188,7 +166,7 @@ void LifeMotifGoogleOauth2::RevokeReplyFinished()
   }
 }
 
-void LifeMotifGoogleOauth2::ReplyCleanUp(const char* slotToDisconnect)
+void GoogleOAuth2::ReplyCleanUp(const char* slotToDisconnect)
 {
   if (reply) {
     reply->close();
@@ -202,36 +180,32 @@ void LifeMotifGoogleOauth2::ReplyCleanUp(const char* slotToDisconnect)
 }
 
 QByteArray
-  LifeMotifGoogleOauth2::GetImapAuthString(const QString& emailAddress)
+  GoogleOAuth2::GetImapAuthString()
 {
   QByteArray authString;
   const char a = 0x1;
 
-  authString += "user=" + emailAddress.toUtf8() + a;
+  authString += "user=" + Settings::GoogleEmailAddress().toUtf8() + a;
   authString += "auth=Bearer ";
-  authString += credential.AccessToken() + a + a;
+  authString += Settings::GoogleAccessToken() + a + a;
 
   return authString.toBase64();
 }
 
 void
-  LifeMotifGoogleOauth2::RefreshToken()
+  GoogleOAuth2::RefreshToken()
 {
-
 }
 
 void
-  LifeMotifGoogleOauth2::ImapAuthenticate(
-    const QString& storageName,
-    const QString& emailAddress)
-{
-  GetCredentials(storageName);
-  if (credential.IsExpired()) {
+  GoogleOAuth2::ImapAuthenticate()
+{  
+  if (IsTokenExpired()) {
     RefreshToken();
   }
 
   // LifeMotifImap* imap = new LifeMotifImap();
-  const QByteArray authString = GetImapAuthString(emailAddress);
+  const QByteArray authString = GetImapAuthString();
 
   // host: imap.google.com
   // port: 993
@@ -240,4 +214,27 @@ void
   // imap->Send(authString);
 
   qDebug() << "authString:" << authString;
+}
+
+void
+GoogleOAuth2::ParseReplyJson(const QByteArray& json)
+{
+  const QJsonDocument replyJson = QJsonDocument::fromJson(json);
+
+  if (replyJson.isObject()) {
+
+    const QVariantMap replyMap = replyJson.toVariant().toMap();
+
+    // calculate expiry
+    QDateTime expiry = QDateTime::currentDateTimeUtc();
+    const int expiresIn = replyMap[QString("expires_in")].toInt();
+
+    expiry = expiry.addSecs(expiresIn);
+
+    Settings::GoogleAccessToken  (replyMap["access_token"].toByteArray());
+    Settings::GoogleRefreshToken (replyMap["refresh_token"].toByteArray());
+    Settings::GoogleTokenExpiry  (expiry.toString(Qt::ISODate));
+  }
+}
+
 }

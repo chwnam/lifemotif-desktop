@@ -1,11 +1,13 @@
-#include "lifemotif_google_oauth2_credential.h"
+#include "google_oauth2_credential.h"
 
 #include <QDateTime>
 #include <QJsonDocument>
 #include <QDebug>
 
+namespace LifeMotif {
+
 QVariantMap
-  LifeMotifGoogleOAuth2Credential::ToMap()
+  GoogleOAuth2Credential::ToMap()
 {
   QVariantMap map;
 
@@ -18,10 +20,10 @@ QVariantMap
   return map;
 }
 
-LifeMotifGoogleOAuth2Credential
-  LifeMotifGoogleOAuth2Credential::FromMap(const QVariantMap& map)
+GoogleOAuth2Credential
+  GoogleOAuth2Credential::FromMap(const QVariantMap& map)
 {
-  LifeMotifGoogleOAuth2Credential credential;
+  GoogleOAuth2Credential credential;
 
   credential.AccessToken()  = map[QString("access_token")].toByteArray();
   credential.TokenType()    = map[QString("token_type")].toByteArray();
@@ -32,10 +34,10 @@ LifeMotifGoogleOAuth2Credential
   return credential;
 }
 
-LifeMotifGoogleOAuth2Credential
-  LifeMotifGoogleOAuth2Credential::FromGoogleReplyJson(const QByteArray& json)
+GoogleOAuth2Credential
+  GoogleOAuth2Credential::FromGoogleReplyJson(const QByteArray& json)
 {
-  LifeMotifGoogleOAuth2Credential credential;
+  GoogleOAuth2Credential credential;
 
   const QJsonDocument replyJson = QJsonDocument::fromJson(json);
   
@@ -66,4 +68,6 @@ LifeMotifGoogleOAuth2Credential
   }
 
   return credential;
+}
+
 }

@@ -39,14 +39,14 @@ void CalendarWidget::CustomPaintCell(
   painter->drawEllipse(rect);
 }
 
-void CalendarWidget::SetDate(const LocalStructureType& structure)
+void CalendarWidget::SetDate(const GoogleLocalStructureType& structure)
 {
   if (structure.empty() == false) {
     if (datesToPaint.isEmpty() == false) QSet<QDate>().swap(datesToPaint);
 
-    LocalStructureType::const_iterator it;
-    for(it = structure.begin(); it != structure.end(); ++it) {
-      const QString dateString = QString::fromStdString(it->first);
+    GoogleLocalStructureType::const_iterator it;
+    for(it = structure.constBegin(); it != structure.constEnd(); ++it) {
+      const QString dateString = it.key();
       const QDate   date       = QDate::fromString(dateString, "yyyyMMdd");
       datesToPaint.insert(date);
     }
@@ -55,7 +55,7 @@ void CalendarWidget::SetDate(const LocalStructureType& structure)
 
 void CalendarWidget::UpdateUI()
 {
-  if (LifeMotifUtils::HasCredentials(true) == false ||
+  if (Utils::IsTokenAvailable() == false ||
       datesToPaint.isEmpty() == true) { setDisabled(true); }
 
   else {

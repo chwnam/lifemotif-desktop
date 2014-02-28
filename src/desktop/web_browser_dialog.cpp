@@ -31,8 +31,8 @@ void WebBrowserDialog::ExtractAuthorizationCodeFromTitleTag()
     const int     pos    = titleSplitted[1].indexOf(QChar('=')) + 1;
     const QString code   = titleSplitted[1].mid(pos);
 
-    authorizationStatus = status;
-    authorizationCode   = code;
+    authorizationStatus = status.toUtf8();
+    authorizationCode   = code.toUtf8();
   }
 }
 

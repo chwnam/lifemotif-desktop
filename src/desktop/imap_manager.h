@@ -1,5 +1,5 @@
-#ifndef BASE_IMAP_H
-#define BASE_IMAP_H
+#ifndef IMAP_MANAGER_H
+#define IMAP_MANAGER_H
 
 #include <QObject>
 #include <QSslSocket>
@@ -7,12 +7,14 @@
 
 #include "imap_tag.h"
 
-class LifeMotifImap : public QObject
+namespace LifeMotif {
+
+class ImapManager : public QObject
 {
   Q_OBJECT
 
 public:
-  explicit LifeMotifImap(QObject *parent = 0);
+  explicit ImapManager(QObject *parent = 0);
 
   void Connect(const QString& host, const quint16 port, const bool useSsl);
   void Disconnect();
@@ -42,4 +44,6 @@ private:
   ImapTag     tag;
 };
 
-#endif // LIFEMOTIF_IMAP_H
+}
+
+#endif // IMAP_MANAGER_H

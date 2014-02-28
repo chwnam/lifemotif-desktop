@@ -1,6 +1,7 @@
 #include "imap_tag.h"
 
 namespace LifeMotif {
+
 ImapTag::ImapTag()
 {
   Reset();
@@ -16,4 +17,5 @@ void ImapTag::Reset(const QChar newPrefix, const quint32 newNum)
   prefix = newPrefix;
   num    = newNum;
 }
+
 }

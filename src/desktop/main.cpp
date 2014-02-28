@@ -1,5 +1,3 @@
-#include <boost/python.hpp>
-
 #include "main_window.h"
 #include <QApplication>
 #include <QDebug>
@@ -7,10 +5,10 @@
 #include <cstdio>
 #include <string>
 
-#include "lifemotif_config.h"
-#include "lifemotif_settings.h"
-#include "lifemotif_exceptions.h"
-#include "lifemotif_google_client_info.h"
+#include "config.h"
+#include "exceptions.h"
+#include "settings.h"
+
 
 void Init(QApplication* app);
 void Fin();
@@ -33,7 +31,7 @@ int main(int argc, char *argv[])
   }
 
   // lifemotif program exception
-  catch(const LifeMotifException& e) {
+  catch(const LifeMotif::Exception& e) {
     QString message;
     message = "Program is unexpectedly terminated due to the error:\n";
     message += QString(e.what());
@@ -59,7 +57,7 @@ void SetBuffer(FILE* stream, char* buffer, const int bufferSize)
       free(buffer);
       buffer = NULL;
     }
-    throw LifeMotifException("setvbuf failed!");
+    throw LifeMotif::Exception("setvbuf failed!");
   }
 }
 

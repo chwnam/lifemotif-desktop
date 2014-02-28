@@ -4,10 +4,13 @@
 #include <QByteArray>
 #include <QVariantMap>
 
-class LifeMotifGoogleOAuth2Credential
+
+namespace LifeMotif {
+
+class GoogleOAuth2Credential
 {
 public:
-  LifeMotifGoogleOAuth2Credential() {}
+  GoogleOAuth2Credential() {}
 
   inline QByteArray& TokenExpiry()  { return _tokenExpiry;  }
   inline QByteArray& AccessToken()  { return _accessToken;  }
@@ -25,10 +28,10 @@ public:
 
   QVariantMap ToMap();
 
-  static LifeMotifGoogleOAuth2Credential
+  static GoogleOAuth2Credential
     FromMap(const QVariantMap& map);
 
-  static LifeMotifGoogleOAuth2Credential
+  static GoogleOAuth2Credential
     FromGoogleReplyJson(const QByteArray& json);
 
 private:
@@ -38,5 +41,7 @@ private:
   QByteArray _tokenType;
   int        _expiresIn;
 };
+
+}
 
 #endif //  LIFEMOTIF_GOOGLE_OAUTH2_CREDENTIAL_H

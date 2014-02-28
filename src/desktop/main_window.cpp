@@ -10,18 +10,16 @@
 #include <QThread>
 #include <QThreadPool>
 #include <QWebSettings>
-
 #include <QTextStream>
 
-#include "lifemotif_config.h"
-#include "localstructure_extract.h"
+#include "config.h"
 #include "web_browser_dialog.h"
-#include "lifemotif_google_oauth2.h"
+#include "google_oauth2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
   _oauth2(0),
-  _imap(0),
+  _imapManager(0),
   _consoleDialog(0),
   ui(new Ui::MainWindow)
 {
@@ -43,63 +41,54 @@ void MainWindow::Authorize()
 {
   WebBrowserDialog wbDlg(this);
 
-  wbDlg.SetAuthorizationUrl(
-        Oauth2()->GetAuthorizationUrl(
-          LifeMotifSettings::SecretPath(true)));
+  wbDlg.SetAuthorizationUrl(OAuth2()->GetAuthorizationUrl());
   wbDlg.setWindowModality(Qt::ApplicationModal);
 
   if (wbDlg.exec() != QDialog::Accepted) {
-    QMessageBox::warning(
-          this, "Failure", "Authentication failed.");
+    QMessageBox::warning(this, "Failure", "Authentication failed.");
     return;
   }
 
-  Oauth2()->MakeCredentials(
-        LifeMotifSettings::SecretPath(),
-        wbDlg.AuthorizationCode());
-
-  Oauth2()->SetCredentials(
-        LifeMotifSettings::StorageName());
-
+  OAuth2()->Authorize(wbDlg.AuthorizationCode());
   UpdateMenu();
 }
 
 void MainWindow::BuildLocalStructre()
 {
-  QString label = LifeMotifSettings::Label();
-  bp::object structureObject =
-      imapWrapper()->FetchThreadStructure(label.toStdString());
+//  QString label = Settings::Label();
+//  bp::object structureObject =
+//      imapWrapper()->FetchThreadStructure(label.toStdString());
 
-  // extract object
-  LocalStructureExtract(structureObject, localStructure);
+//  // extract object
+//  LocalStructureExtract(structureObject, localStructure);
 
-  // save new object
-  QScopedPointer<LocalStructureWrapper>
-      lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
+//  // save new object
+//  QScopedPointer<LocalStructureWrapper>
+//      lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
 
-  const QString lsPath
-      = LifeMotifSettings::LocalStructure(true);
+//  const QString lsPath
+//      = Settings::LocalStructure(true);
 
-  lsWrapper->Build(lsPath.toStdString(), structureObject);
+//  lsWrapper->Build(lsPath.toStdString(), structureObject);
 }
 
 void MainWindow::LoadLocalStructure()
 {
-  const QString lsPath = LifeMotifSettings::LocalStructure();
+//  const QString lsPath = Settings::LocalStructure();
 
-  if (LifeMotifUtils::IsFileReadable(lsPath)) {
-    bp::object structurePythonObject;
-    QScopedPointer<LocalStructureWrapper>
-        lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
+//  if (LifeMotifUtils::IsFileReadable(lsPath)) {
+//    bp::object structurePythonObject;
+//    QScopedPointer<LocalStructureWrapper>
+//        lsWrapper(LifeMotifUtils::CreateLocalStructureWrapper());
 
-    structurePythonObject = lsWrapper->Load(lsPath.toStdString());
-    LocalStructureExtract(structurePythonObject, localStructure);
-  }
+//    structurePythonObject = lsWrapper->Load(lsPath.toStdString());
+//    LocalStructureExtract(structurePythonObject, localStructure);
+//  }
 }
 
 void MainWindow::ParseMessage(const std::string& rawMessage)
 {
-  diary = LifeMotifDiaryPtr(new LifeMotifDiary(rawMessage));
+  diary = DiaryPtr(new Diary(rawMessage));
 
   qDebug() << diary->NumberOfAttachments() << "attachment(s)";
   if (diary->NumberOfAttachments() > 0) {
@@ -112,7 +101,7 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 void MainWindow::RevokeAuthentication()
 {
   // revoke authentication and remove file
-  Oauth2()->Revoke(LifeMotifSettings::StorageName(true));
+  OAuth2()->Revoke();
 }
 
 void MainWindow::UpdateCalendar()
@@ -149,7 +138,7 @@ void MainWindow::UpdateDiaryInformationUI(void)
   ui->attatchmentComboBox->clear();
   if (nAttachments > 0) {
     for(int i = 0; i < nAttachments; ++i) {
-      const LifeMotifAttachment& att = diary->GetAttachment(i);
+      const Attachment& att = diary->GetAttachment(i);
       ui->attatchmentComboBox->insertItem(i, att.name);
     }
   }
@@ -157,30 +146,29 @@ void MainWindow::UpdateDiaryInformationUI(void)
 
 QString MainWindow::FetchMessage(const MsgIdType& id)
 {
-  QString rawMessage;
+//  QString rawMessage;
 
-  if (emailCache()->HasCache(id)) {
-    qDebug() << id << "is cached. Load from local disk.";
-    rawMessage = emailCache()->GetCache(id);
-  } else {
-    qDebug() << id << "is uncached. Fetch from the server.";
-    std::string label = LifeMotifSettings::Label().toStdString();
-    rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
-    emailCache()->SetCache(id, rawMessage);
-  }
+//  if (emailCache()->HasCache(id)) {
+//    qDebug() << id << "is cached. Load from local disk.";
+//    rawMessage = emailCache()->GetCache(id);
+//  } else {
+//    qDebug() << id << "is uncached. Fetch from the server.";
+//    std::string label = Settings::Label().toStdString();
+//    rawMessage = QString::fromStdString(imapWrapper()->FetchMail(label, id));
+//    emailCache()->SetCache(id, rawMessage);
+//  }
 
-  return rawMessage;
+//  return rawMessage;
 }
 
 DateType MainWindow::GetDateFromCalendar() const
 {
-  return
-      ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
+  return ui->calendarWidget->selectedDate().toString("yyyyMMdd");
 }
 
 void MainWindow::UpdateMenu()
 {
-  const bool enable = LifeMotifUtils::HasCredentials(true);
+  const bool enable = Utils::IsTokenAvailable();
 
   // Cannot do those actions if authenticated:
   //  - authentication
@@ -217,10 +205,7 @@ void MainWindow::OpenImapConsole()
 
 void MainWindow::ImapAuthenticate()
 {
-  const QString storageName = LifeMotifSettings::StorageName();
-  const QString emailAddress = LifeMotifSettings::EmailAddress();
-
-  Oauth2()->ImapAuthenticate(storageName, emailAddress);
+  OAuth2()->ImapAuthenticate();
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()
@@ -242,7 +227,7 @@ void MainWindow::on_attatchmentSaveAsButton_clicked()
   const int index = ui->attatchmentComboBox->currentIndex();
 
   if (index > -1) {
-    const LifeMotifAttachment& attachment = diary->GetAttachment(index);
+    const Attachment& attachment = diary->GetAttachment(index);
     QString fileName
         = QFileDialog::getSaveFileName(
           this,
@@ -283,7 +268,7 @@ void MainWindow::on_clearTextButton_clicked()
 
 void MainWindow::on_actionBrowserAuthentication_triggered()
 {
-  if (LifeMotifUtils::HasCredentials() &&
+  if (Utils::IsTokenAvailable() &&
       QMessageBox::No == QMessageBox::question(
         this,
         QString("Double Authentication"),
@@ -291,13 +276,7 @@ void MainWindow::on_actionBrowserAuthentication_triggered()
     return;
   }
 
-  AuthenticateUsingWebBrowser();
-}
-
-void MainWindow::on_actionConsoleAuthentication_triggered()
-{
-  // TODO: if the program already has been authenticated?
-  AuthenticateOnConsoleByPython();
+  Authorize();
 }
 
 void MainWindow::on_showHtmlCodeCheckBox_clicked()
@@ -313,12 +292,12 @@ void MainWindow::on_actionBuildLocalStructure_triggered()
 
 void MainWindow::on_calendarWidget_clicked(const QDate &date)
 {
-  DateType datestring = date.toString("yyyyMMdd").toStdString();
+  DateType datestring = date.toString("yyyyMMdd");
 
   // yyyyMMdd date string is the key.
   // find the email thread of the day and display in the list widget.
   if (localStructure.find(datestring) != localStructure.end()) {
-    const MessageGroup& group = localStructure[datestring];
+    const GoogleMessageGroup& group = localStructure[datestring];
     QListWidget& list = *ui->diaryList;
 
     list.clear();
@@ -349,7 +328,7 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 
 void MainWindow::on_revokeAuthentication_triggered()
 {
-  if (LifeMotifUtils::HasCredentials() &&
+  if (Utils::IsTokenAvailable() &&
       QMessageBox::No == QMessageBox::question(
         this,
         QString("Revoke Authentication"),
@@ -362,16 +341,16 @@ void MainWindow::on_revokeAuthentication_triggered()
 
 void MainWindow::on_actionPreference_triggered()
 {
-  // show preference modal dialog
-  PreferenceWindow pref(imapWrapper().data(), this);
+//  // show preference modal dialog
+//  PreferenceWindow pref(imapWrapper().data(), this);
 
-  // some tuning can be here ... center of the main window...
-  int result = pref.exec();
-  if (result == QDialog::Accepted) {
-    std::cout << "User Accepted\n";
-  } else if (result == QDialog::Rejected) {
-    std::cout << "User canceled\n";
-  }
+//  // some tuning can be here ... center of the main window...
+//  int result = pref.exec();
+//  if (result == QDialog::Accepted) {
+//    std::cout << "User Accepted\n";
+//  } else if (result == QDialog::Rejected) {
+//    std::cout << "User canceled\n";
+//  }
 }
 
 void MainWindow::on_actionAbout_triggered()

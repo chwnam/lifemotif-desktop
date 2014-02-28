@@ -4,22 +4,23 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
+#include "diary.h"
 #include "email_cache.h"
-#include "lifemotif_diary.h"
-#include "lifemotif_google_oauth2.h"
-#include "lifemotif_settings.h"
-#include "lifemotif_utils.h"
-#include "loading_dialog.h"
+#include "google_oauth2.h"
+#include "imap_console_dialog.h"
+#include "imap_manager.h"
 #include "message_types.h"
 #include "mime_raw_message_dialog.h"
 #include "mime_structure_dialog.h"
+#include "settings.h"
+#include "utils.h"
 
-#include "lifemotif_imap.h"
-#include "imap_console_dialog.h"
 
 namespace Ui {
 class MainWindow;
 }
+
+using namespace LifeMotif;
 
 class MainWindow : public QMainWindow
 {
@@ -44,9 +45,6 @@ private slots:
 
      // authentication by webbrowser (GUI)
      void on_actionBrowserAuthentication_triggered();
-
-     // authentication by console (CLI)
-     void on_actionConsoleAuthentication_triggered();
 
      // show MIME raw message
      void on_mimeRawMessageButton_clicked();
@@ -92,20 +90,20 @@ private:
     Ui::MainWindow *ui;
 
     // LifeMotif Google OAuth2
-    LifeMotifGoogleOauth2* _oauth2;
-    LifeMotifGoogleOauth2* Oauth2() {
+    GoogleOAuth2* _oauth2;
+    GoogleOAuth2* OAuth2() {
       if (_oauth2 == NULL) {
-        _oauth2 = new LifeMotifGoogleOauth2(this);
+        _oauth2 = new GoogleOAuth2(this);
       }
       return _oauth2;
     }
 
-    LifeMotifImap *_imap;
-    inline LifeMotifImap* Imap() {
-      if (_imap == NULL) {
-        _imap = new LifeMotifImap(this);
+    ImapManager *_imapManager;
+    inline ImapManager* Imap() {
+      if (_imapManager == NULL) {
+        _imapManager = new ImapManager(this);
       }
-      return _imap;
+      return _imapManager;
     }
 
     ImapConsoleDialog* _consoleDialog;
@@ -115,13 +113,6 @@ private:
       }
       return _consoleDialog;
     }
-
-    // wrappers
-    typedef QSharedPointer<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;
-    typedef QSharedPointer<GoogleImapWrapper>   GoogleImapWrapperPtr;
-
-    GoogleOauth2WrapperPtr _oauth2Wrapper;
-    GoogleImapWrapperPtr   _imapWrapper;
 
     // email cache
     typedef QSharedPointer<EmailCache> EmailCachePtr;
@@ -136,31 +127,6 @@ private:
     MimeStructureDialogPtr _mimeStructureDialog;
 
     // late type binding.
-    // GoogleOauth2Wrapper /////////////////////////////////////////////////
-    inline GoogleOauth2WrapperPtr& oauth2Wrapper() {
-      if (_oauth2Wrapper == NULL) {
-        _oauth2Wrapper
-            = GoogleOauth2WrapperPtr(LifeMotifUtils::CreateOauth2Wrapper());
-      }
-      return _oauth2Wrapper;
-    }
-    inline const GoogleOauth2WrapperPtr& oauth2Wrapper() const {
-      return oauth2Wrapper();
-    }
-
-    // GoogleImapWrapper ///////////////////////////////////////////////////
-    inline GoogleImapWrapperPtr& imapWrapper() {
-      if (_imapWrapper == NULL) {
-        _imapWrapper
-            = GoogleImapWrapperPtr(
-              LifeMotifUtils::CreateImapWrapper(oauth2Wrapper().data()));
-      }
-      return _imapWrapper;
-    }
-    inline const GoogleImapWrapperPtr& imapWrapper() const {
-      return imapWrapper();
-    }
-
     // EmailChache ////////////////////////////////////////////////////////
     inline EmailCachePtr& emailCache() {
       if (_emailCache == NULL) {
@@ -200,11 +166,11 @@ private:
     }
 
     // local structure
-    LocalStructureType localStructure;
+    GoogleLocalStructureType localStructure;
 
     // parsed email becomes diary
-    typedef QSharedPointer<LifeMotifDiary> LifeMotifDiaryPtr;
-    LifeMotifDiaryPtr diary;
+    typedef QSharedPointer<Diary> DiaryPtr;
+    DiaryPtr diary;
 };
 
 #endif // MAIN_WINDOW_H

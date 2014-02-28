@@ -2,14 +2,15 @@
 #define LIFEMOTIF_CALENDAR_WIDGET_H
 
 #include <QCalendarWidget>
-
-// all headers you use in this class should be included.
 #include <QBrush>
 #include <QMap>
 #include <QPainter>
 #include <QSet>
 #include <QTextCharFormat>
+
 #include "message_types.h"
+
+using namespace LifeMotif;
 
 class CalendarWidget : public QCalendarWidget
 {
@@ -19,12 +20,12 @@ public:
   CalendarWidget(QWidget *parent = 0);
   ~CalendarWidget();
 
-  void SetDate(const LocalStructureType& structure);
+  void SetDate(const GoogleLocalStructureType& structure);
   void UpdateUI();
 
 protected:
   void
-    paintCell(QPainter *painter, const QRect &rect, const QDate &date) const;
+  paintCell(QPainter *painter, const QRect &rect, const QDate &date) const;
 
 private:
   void CustomPaintCell(QPainter *painter, const QRect &rect) const;

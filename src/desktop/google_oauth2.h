@@ -1,5 +1,5 @@
-#ifndef LIFEMOTIF_OAUTH2_H
-#define LIFEMOTIF_OAUTH2_H
+#ifndef LIFEMOTIF_GOOGLE_OAUTH2_H
+#define LIFEMOTIF_GOOGLE_OAUTH2_H
 
 #include <QObject>
 #include <QString>
@@ -11,36 +11,21 @@
 #include <QEventLoop>
 #include <QTimer>
 
-#include "lifemotif_imap.h"
-#include "lifemotif_google_oauth2_credential.h"
+#include "imap_manager.h"
 
+namespace LifeMotif {
 
-class LifeMotifGoogleOauth2 : public QObject
+class GoogleOAuth2 : public QObject
 {
   Q_OBJECT
 
 public:
-  LifeMotifGoogleOauth2(QObject *parent = 0);
+  GoogleOAuth2(QObject *parent = 0);
 
-  QUrl
-    GetAuthorizationUrl(const QString& secretPath);
-
-  void
-    MakeCredentials(
-      const QString& secretPath, const QString& code);
-
-  void
-    SetCredentials(const QString& storageName);
-
-  void
-    GetCredentials(const QString& storageName);
-
-  void
-    ImapAuthenticate(
-      const QString& storageName,
-      const QString& emailAddress);
-
-  void Revoke(const QString& storageName);
+  QUrl GetAuthorizationUrl();
+  void Authorize(const QByteArray& code);
+  void ImapAuthenticate();
+  void Revoke();
 
 private slots:
   // slot for authentication
@@ -51,18 +36,19 @@ private slots:
   void RevokeReplyFinished();
 
 private:
-  bool WaitForSignal(QObject *sender, const char *signal, int timeout);
-  void ParseReplyJson();
-  void ReplyCleanUp(const char* slotToDisconnect);
+  void ParseReplyJson(const QByteArray& json);
   void RefreshToken();
+  void ReplyCleanUp(const char* slotToDisconnect);  
+  bool WaitForSignal(QObject *sender, const char *signal, int timeout);
 
-  QByteArray GetImapAuthString(const QString& emailAddress);
+  QByteArray GetImapAuthString();
+  bool IsTokenExpired() const {return false; }
 
 private:
   QNetworkAccessManager *manager;
   QNetworkReply         *reply;
-
-  LifeMotifGoogleOAuth2Credential credential;
 };
 
-#endif // LIFEMOTIF_OAUTH2_H
+}
+
+#endif // LIFEMOTIF_GOOGLE_OAUTH2_H

@@ -3,6 +3,7 @@
 
 #include <QDialog>
 #include <QUrl>
+#include <QByteArray>
 
 namespace Ui {
 class WebBrowserDialog;
@@ -16,9 +17,9 @@ public:
   explicit WebBrowserDialog(QWidget *parent = 0);
   ~WebBrowserDialog();
 
-  const QString& AuthorizationStatus() const { return authorizationStatus; }
-  const QString& AuthorizationCode() const   { return authorizationCode; }
-  void SetAuthorizationUrl(const QUrl& url)  { authorizationUrl = url; }
+  const QByteArray& AuthorizationStatus() const { return authorizationStatus; }
+  const QByteArray& AuthorizationCode() const   { return authorizationCode; }
+  void SetAuthorizationUrl(const QUrl& url)     { authorizationUrl = url; }
   int  exec();
 
 private slots:
@@ -29,8 +30,8 @@ private:
 
 private:
   Ui::WebBrowserDialog *ui;  
-  QString               authorizationStatus;
-  QString               authorizationCode;
+  QByteArray            authorizationStatus;
+  QByteArray            authorizationCode;
   QUrl                  authorizationUrl;
 };
 
