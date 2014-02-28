@@ -11,13 +11,13 @@
 #include <QTextCharFormat>
 #include "message_types.h"
 
-class LifeMotifCalendarWidget : public QCalendarWidget
+class CalendarWidget : public QCalendarWidget
 {
   Q_OBJECT
 
 public:
-  LifeMotifCalendarWidget(QWidget *parent = 0);
-  ~LifeMotifCalendarWidget();
+  CalendarWidget(QWidget *parent = 0);
+  ~CalendarWidget();
 
   void SetDate(const LocalStructureType& structure);
   void UpdateUI();

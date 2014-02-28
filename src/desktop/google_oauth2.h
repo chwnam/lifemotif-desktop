@@ -11,6 +11,7 @@
 #include <QEventLoop>
 #include <QTimer>
 
+#include "lifemotif_imap.h"
 #include "lifemotif_google_oauth2_credential.h"
 
 
@@ -37,8 +38,7 @@ public:
   void
     ImapAuthenticate(
       const QString& storageName,
-      const QString& emailAddress,
-      const int debugLevel = 0);
+      const QString& emailAddress);
 
   void Revoke(const QString& storageName);
 
@@ -53,8 +53,10 @@ private slots:
 private:
   bool WaitForSignal(QObject *sender, const char *signal, int timeout);
   void ParseReplyJson();
-
   void ReplyCleanUp(const char* slotToDisconnect);
+  void RefreshToken();
+
+  QByteArray GetImapAuthString(const QString& emailAddress);
 
 private:
   QNetworkAccessManager *manager;

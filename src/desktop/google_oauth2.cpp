@@ -85,7 +85,9 @@ void
   }
 }
 
-bool LifeMotifGoogleOauth2::WaitForSignal(QObject *sender, const char *signal, int timeout)
+bool
+  LifeMotifGoogleOauth2::WaitForSignal(
+    QObject *sender, const char *signal, int timeout)
 {
   QEventLoop loop;
   QTimer timer;
@@ -104,27 +106,6 @@ bool LifeMotifGoogleOauth2::WaitForSignal(QObject *sender, const char *signal, i
 
 void LifeMotifGoogleOauth2::ReplyError(QNetworkReply::NetworkError error)
 {
-  /* when you've got an error:
-    Error!
-    Error code: 299 (QNetworkReply::UnknownContentError)
-    == Reply ==
-    Pairs size: 11
-    "Cache-Control" "no-cache, no-store, max-age=0, must-revalidate"
-    "Pragma" "no-cache"
-    "Expires" "Fri, 01 Jan 1990 00:00:00 GMT"
-    "Date" "Tue, 25 Feb 2014 14:35:52 GMT"
-    "Content-Type" "application/json"
-    "X-Content-Type-Options" "nosniff"
-    "X-Frame-Options" "SAMEORIGIN"
-    "X-XSS-Protection" "1; mode=block"
-    "Server" "GSE"
-    "Alternate-Protocol" "443:quic"
-    "Transfer-Encoding" "chunked"
-    "{
-      "error" : "invalid_grant",
-      "error_description" : "Invalid code."
-    }"
-  */
   qDebug() << "Error code:" << error;
 }
 
@@ -155,10 +136,7 @@ void
   LifeMotifGoogleOauth2::GetCredentials(const QString& storageName)
 {
   bool isQVariantMap;
-  QVariant map;
-  
-  map = LifeMotifUtils::LoadJson(storageName, &isQVariantMap);
-
+  QVariant map = LifeMotifUtils::LoadJson(storageName, &isQVariantMap);
   if (isQVariantMap) {
     credential
       = LifeMotifGoogleOAuth2Credential::FromMap(map.toMap());
@@ -221,4 +199,45 @@ void LifeMotifGoogleOauth2::ReplyCleanUp(const char* slotToDisconnect)
     reply->deleteLater();
     reply = NULL;
   }
+}
+
+QByteArray
+  LifeMotifGoogleOauth2::GetImapAuthString(const QString& emailAddress)
+{
+  QByteArray authString;
+  const char a = 0x1;
+
+  authString += "user=" + emailAddress.toUtf8() + a;
+  authString += "auth=Bearer ";
+  authString += credential.AccessToken() + a + a;
+
+  return authString.toBase64();
+}
+
+void
+  LifeMotifGoogleOauth2::RefreshToken()
+{
+
+}
+
+void
+  LifeMotifGoogleOauth2::ImapAuthenticate(
+    const QString& storageName,
+    const QString& emailAddress)
+{
+  GetCredentials(storageName);
+  if (credential.IsExpired()) {
+    RefreshToken();
+  }
+
+  // LifeMotifImap* imap = new LifeMotifImap();
+  const QByteArray authString = GetImapAuthString(emailAddress);
+
+  // host: imap.google.com
+  // port: 993
+  // SSL: always true
+  // imap->Connect("imap.google", 993, true);
+  // imap->Send(authString);
+
+  qDebug() << "authString:" << authString;
 }

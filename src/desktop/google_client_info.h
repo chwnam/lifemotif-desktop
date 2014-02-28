@@ -4,11 +4,11 @@
 #include <QString>
 #include <QVariantMap>
 
-
-class LifeMotifGoogleClientInfo
+namespace LifeMotif {
+class GoogleClientInfo
 {
 public:
-  LifeMotifGoogleClientInfo(const QString& clientInfoPath);
+  GoogleClientInfo();
 
 // read-only
 //  inline       QString& AuthUri()       { return _authUri;      }
@@ -27,7 +27,7 @@ public:
   //void SaveClientInfo(const QString& clientInfoPath);
 
 private:
-  void LoadClientInfo(const QString& clientInfoPath);
+  void LoadClientInfo();
   void SetInfo(const QVariantMap& map);
 
 private:
@@ -37,5 +37,5 @@ private:
   QString _clientSecret;
   QString _redirectUri;
 };
-
+}
 #endif // LIFEMOTIF_CLIENT_INFO_H

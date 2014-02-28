@@ -1,13 +1,15 @@
-#include "lifemotif_diary.h"
+#include "diary.h"
 #include <QStack>
 #include <QPair>
 #include <QDebug>
 #include <QTextCodec>
 #include <cctype>
 
-#include "lifemotif_utils.h"
+#include "utils.h"
 
-LifeMotifDiary::LifeMotifDiary(const std::string& content)
+namespace LifeMotif {
+
+Diary::Diary(const std::string& content)
   : root(content.begin(), content.end())
 {
   const mimetic::Header& header = root.header();
@@ -17,7 +19,7 @@ LifeMotifDiary::LifeMotifDiary(const std::string& content)
   ParseBody(body);
 }
 
-QString LifeMotifDiary::ParseMailBox(const mimetic::Mailbox& mailbox)
+QString Diary::ParseMailBox(const mimetic::Mailbox& mailbox)
 {  
   QString mbstr  = QString::fromStdString(mailbox.mailbox());
   QString domain = QString::fromStdString(mailbox.domain());
@@ -37,7 +39,7 @@ QString LifeMotifDiary::ParseMailBox(const mimetic::Mailbox& mailbox)
   return result;
 }
 
-void LifeMotifDiary::ParseTopHeader(const mimetic::Header& header)
+void Diary::ParseTopHeader(const mimetic::Header& header)
 {
   // collect "from" information
   const mimetic::MailboxList &mbListFrom = header.from();
@@ -59,7 +61,7 @@ void LifeMotifDiary::ParseTopHeader(const mimetic::Header& header)
   subject = DecodeEncodedWords(header.subject());
 }
 
-void LifeMotifDiary::ParseBody(const mimetic::Body& body)
+void Diary::ParseBody(const mimetic::Body& body)
 {
   const mimetic::ContentType &ct = body.owner()->header().contentType();
 
@@ -94,7 +96,7 @@ void LifeMotifDiary::ParseBody(const mimetic::Body& body)
   }
 }
 
-QString LifeMotifDiary::CallbackForText(const mimetic::Body &body)
+QString Diary::CallbackForText(const mimetic::Body &body)
 {
   typedef mimetic::ContentTransferEncoding CTE;
   const mimetic::Header&      header = body.owner()->header();
@@ -127,7 +129,7 @@ QString LifeMotifDiary::CallbackForText(const mimetic::Body &body)
   return result;
 }
 
-LifeMotifAttachment LifeMotifDiary::CallbackForBinary(const mimetic::Body &body)
+LifeMotifAttachment Diary::CallbackForBinary(const mimetic::Body &body)
 {
   typedef mimetic::ContentTransferEncoding CTE;
   const mimetic::Header&      header = body.owner()->header();
@@ -162,7 +164,7 @@ LifeMotifAttachment LifeMotifDiary::CallbackForBinary(const mimetic::Body &body)
 }
 
 QByteArray
-  LifeMotifDiary::Base64DecodeBody(
+  Diary::Base64DecodeBody(
     const mimetic::Body& body)
 {
   QByteArray result;
@@ -188,7 +190,7 @@ QByteArray
 }
 
 QString
-  LifeMotifDiary::DecodeByteArray(const QByteArray& array, const std::string& charset)
+  Diary::DecodeByteArray(const QByteArray& array, const std::string& charset)
 {
   QString result;
 
@@ -199,7 +201,7 @@ QString
   return result;
 }
 
-QString LifeMotifDiary::DecodeEncodedWords(const std::string& input)
+QString Diary::DecodeEncodedWords(const std::string& input)
 {
   enum {LF = 0xA, CR = 0xD, TAB = 0x9, SP = 0x20};
   
@@ -237,7 +239,7 @@ QString LifeMotifDiary::DecodeEncodedWords(const std::string& input)
 }
 
 void
-  LifeMotifDiary::Dew(
+  Diary::Dew(
     const char* input,
     const std::size_t len,
     std::string& charset,
@@ -288,3 +290,4 @@ void
     } 
   }
 }
+} // namespace LifeMotif

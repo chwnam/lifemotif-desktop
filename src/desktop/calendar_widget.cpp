@@ -1,18 +1,18 @@
-#include "lifemotif_calendar_widget.h"
-#include "lifemotif_utils.h"
+#include "calendar_widget.h"
+#include "utils.h"
 
 // when linker error about 'vtable' occurs, 'run qmake' and build again.
-LifeMotifCalendarWidget::LifeMotifCalendarWidget(QWidget *parent)
+CalendarWidget::CalendarWidget(QWidget *parent)
   : QCalendarWidget(parent)
 {
 }
 
-LifeMotifCalendarWidget::~LifeMotifCalendarWidget()
+CalendarWidget::~CalendarWidget()
 {
 }
 
 void
-  LifeMotifCalendarWidget::paintCell(
+  CalendarWidget::paintCell(
     QPainter *painter, const QRect &rect, const QDate &date) const
 {
   // Draw only have articles
@@ -29,7 +29,7 @@ void
 //  }
 }
 
-void LifeMotifCalendarWidget::CustomPaintCell(
+void CalendarWidget::CustomPaintCell(
     QPainter *painter, const QRect &rect) const
 {
   QBrush brush;
@@ -39,7 +39,7 @@ void LifeMotifCalendarWidget::CustomPaintCell(
   painter->drawEllipse(rect);
 }
 
-void LifeMotifCalendarWidget::SetDate(const LocalStructureType& structure)
+void CalendarWidget::SetDate(const LocalStructureType& structure)
 {
   if (structure.empty() == false) {
     if (datesToPaint.isEmpty() == false) QSet<QDate>().swap(datesToPaint);
@@ -53,7 +53,7 @@ void LifeMotifCalendarWidget::SetDate(const LocalStructureType& structure)
   }
 }
 
-void LifeMotifCalendarWidget::UpdateUI()
+void CalendarWidget::UpdateUI()
 {
   if (LifeMotifUtils::HasCredentials(true) == false ||
       datesToPaint.isEmpty() == true) { setDisabled(true); }

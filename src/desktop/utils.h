@@ -1,7 +1,6 @@
 #ifndef LIFEMOTIF_UTILS_H
 #define LIFEMOTIF_UTILS_H
 
-#include <stdarg.h>
 #include <string>
 #include <QDir>
 #include <QFileInfo>
@@ -14,9 +13,6 @@
 class LifeMotifUtils
 {
 public:
-  /* join N path c-strings */
-  static std::string JoinPath(int n, ...);
-
   static QString
     inline JoinPath(const QString& pre, const QString& add);
 

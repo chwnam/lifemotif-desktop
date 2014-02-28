@@ -19,58 +19,32 @@
 #include "lifemotif_google_oauth2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
-    QMainWindow(parent),
-    imap(0),
-    _consoleDialog(0),
-    ui(new Ui::MainWindow)
+  QMainWindow(parent),
+  _oauth2(0),
+  _imap(0),
+  _consoleDialog(0),
+  ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
-    oauth2 = new LifeMotifGoogleOauth2(this); // QObject
-
-    LoadLocalStructure();
-    UpdateCalendar();
-    UpdateMenu();
+  ui->setupUi(this);
+  LoadLocalStructure();
+  UpdateCalendar();
+  UpdateMenu();
 }
 
 MainWindow::~MainWindow()
 {
-    delete ui;
+  delete ui;
 
-    // removes memory leak of QWebkit...
-    QWebSettings::clearMemoryCaches();
+  // removes memory leak of QWebkit...
+  QWebSettings::clearMemoryCaches();
 }
 
-void MainWindow::AuthenticateOnConsoleByPython()
-{
-  QString secretPath = LifeMotifSettings::SecretPath(true);
-  QString storageName = LifeMotifSettings::StorageName(true);
-
-  qDebug() << "Authentication by console (Python mode)."
-    << "Client secret path:" << secretPath;
-
-  const std::string
-    url = oauth2Wrapper()->GetAuthorizationURL(secretPath.toStdString());
-
-  const std::string
-    code = oauth2Wrapper()->GrantUserPermission(url);
-
-  bp::object
-    credentials = oauth2Wrapper()->MakeCredentials(code);
-
-  // keep this credentials
-  oauth2Wrapper()->SetCredentials(storageName.toStdString(), credentials);
-
-  qDebug() << "Successfully authorized.";
-
-  UpdateMenu();
-}
-
-void MainWindow::AuthenticateUsingWebBrowser()
+void MainWindow::Authorize()
 {
   WebBrowserDialog wbDlg(this);
 
   wbDlg.SetAuthorizationUrl(
-        oauth2->GetAuthorizationUrl(
+        Oauth2()->GetAuthorizationUrl(
           LifeMotifSettings::SecretPath(true)));
   wbDlg.setWindowModality(Qt::ApplicationModal);
 
@@ -80,12 +54,12 @@ void MainWindow::AuthenticateUsingWebBrowser()
     return;
   }
 
-  oauth2->MakeCredentials(
+  Oauth2()->MakeCredentials(
         LifeMotifSettings::SecretPath(),
         wbDlg.AuthorizationCode());
 
-  oauth2->SetCredentials(
-    LifeMotifSettings::StorageName());
+  Oauth2()->SetCredentials(
+        LifeMotifSettings::StorageName());
 
   UpdateMenu();
 }
@@ -129,16 +103,16 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 
   qDebug() << diary->NumberOfAttachments() << "attachment(s)";
   if (diary->NumberOfAttachments() > 0) {
-      for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
-          qDebug() << "  " << diary->GetAttachment(i).name;
-      }
+    for(int i = 0; i < diary->NumberOfAttachments(); ++i) {
+      qDebug() << "  " << diary->GetAttachment(i).name;
+    }
   }
 }
 
 void MainWindow::RevokeAuthentication()
 {
   // revoke authentication and remove file
-  oauth2->Revoke(LifeMotifSettings::StorageName(true));
+  Oauth2()->Revoke(LifeMotifSettings::StorageName(true));
 }
 
 void MainWindow::UpdateCalendar()
@@ -149,36 +123,36 @@ void MainWindow::UpdateCalendar()
 
 void MainWindow::UpdateDiaryInformationUI(void)
 {
-    // from, to, subject
-    ui->fromEdit->setText(diary->From());
-    ui->toEdit->setText(diary->To());
-    ui->subjectEdit->setText(diary->Subject());
+  // from, to, subject
+  ui->fromEdit->setText(diary->From());
+  ui->toEdit->setText(diary->To());
+  ui->subjectEdit->setText(diary->Subject());
 
-    // diary text
-    ui->diaryPlainText->clear();
-    ui->diaryHtmlText->clear();
-    if (diary->TextPlainContent().isEmpty() == false) {
-      ui->diaryPlainText->setPlainText(diary->TextPlainContent());
+  // diary text
+  ui->diaryPlainText->clear();
+  ui->diaryHtmlText->clear();
+  if (diary->TextPlainContent().isEmpty() == false) {
+    ui->diaryPlainText->setPlainText(diary->TextPlainContent());
+  }
+  if (diary->TextHtmlContent().isEmpty() == false){
+    if (ui->showHtmlCodeCheckBox->checkState() == Qt::Checked) {
+      // show html code
+      ui->diaryHtmlText->setPlainText(diary->TextHtmlContent());
+    } else if (ui->showHtmlCodeCheckBox->checkState() == Qt::Unchecked) {
+      // render as html code
+      ui->diaryHtmlText->setHtml(diary->TextHtmlContent());
     }
-    if (diary->TextHtmlContent().isEmpty() == false){
-      if (ui->showHtmlCodeCheckBox->checkState() == Qt::Checked) {
-        // show html code
-        ui->diaryHtmlText->setPlainText(diary->TextHtmlContent());
-      } else if (ui->showHtmlCodeCheckBox->checkState() == Qt::Unchecked) {
-        // render as html code
-        ui->diaryHtmlText->setHtml(diary->TextHtmlContent());
-      }
-    }
+  }
 
-    // attachment
-    const int nAttachments = diary->NumberOfAttachments();
-    ui->attatchmentComboBox->clear();
-    if (nAttachments > 0) {
-      for(int i = 0; i < nAttachments; ++i) {
-        const LifeMotifAttachment& att = diary->GetAttachment(i);
-        ui->attatchmentComboBox->insertItem(i, att.name);
-      }
+  // attachment
+  const int nAttachments = diary->NumberOfAttachments();
+  ui->attatchmentComboBox->clear();
+  if (nAttachments > 0) {
+    for(int i = 0; i < nAttachments; ++i) {
+      const LifeMotifAttachment& att = diary->GetAttachment(i);
+      ui->attatchmentComboBox->insertItem(i, att.name);
     }
+  }
 }
 
 QString MainWindow::FetchMessage(const MsgIdType& id)
@@ -201,7 +175,7 @@ QString MainWindow::FetchMessage(const MsgIdType& id)
 DateType MainWindow::GetDateFromCalendar() const
 {
   return
-    ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
+      ui->calendarWidget->selectedDate().toString("yyyyMMdd").toStdString();
 }
 
 void MainWindow::UpdateMenu()
@@ -209,7 +183,7 @@ void MainWindow::UpdateMenu()
   const bool enable = LifeMotifUtils::HasCredentials(true);
 
   // Cannot do those actions if authenticated:
-  //  - authentication 
+  //  - authentication
   ui->actionBrowserAuthentication->setEnabled(!enable);
 
   // Cannot do those actions if not authenticated.
@@ -241,6 +215,14 @@ void MainWindow::OpenImapConsole()
   ConsoleDialog()->activateWindow();
 }
 
+void MainWindow::ImapAuthenticate()
+{
+  const QString storageName = LifeMotifSettings::StorageName();
+  const QString emailAddress = LifeMotifSettings::EmailAddress();
+
+  Oauth2()->ImapAuthenticate(storageName, emailAddress);
+}
+
 void MainWindow::on_mimeRawMessageButton_clicked()
 {
   const QListWidgetItem* item = ui->diaryList->currentItem();
@@ -263,9 +245,9 @@ void MainWindow::on_attatchmentSaveAsButton_clicked()
     const LifeMotifAttachment& attachment = diary->GetAttachment(index);
     QString fileName
         = QFileDialog::getSaveFileName(
-            this,
-            QString("Save attchment as..."),
-            attachment.name);
+          this,
+          QString("Save attchment as..."),
+          attachment.name);
 
     QFile file;
     file.setFileName(fileName);
@@ -291,7 +273,7 @@ void MainWindow::on_mimeStructureButton_clicked()
 
 void MainWindow::on_actionExit_triggered()
 {
-    close();
+  close();
 }
 
 void MainWindow::on_clearTextButton_clicked()
@@ -303,10 +285,10 @@ void MainWindow::on_actionBrowserAuthentication_triggered()
 {
   if (LifeMotifUtils::HasCredentials() &&
       QMessageBox::No == QMessageBox::question(
-          this,
-          QString("Double Authentication"),
-          QString("Already authenticated! Proceed again?"))) {
-      return;
+        this,
+        QString("Double Authentication"),
+        QString("Already authenticated! Proceed again?"))) {
+    return;
   }
 
   AuthenticateUsingWebBrowser();
@@ -369,10 +351,10 @@ void MainWindow::on_revokeAuthentication_triggered()
 {
   if (LifeMotifUtils::HasCredentials() &&
       QMessageBox::No == QMessageBox::question(
-          this,
-          QString("Revoke Authentication"),
-          QString("Revoke authentication from Google. Are you sure?"))) {
-      return;
+        this,
+        QString("Revoke Authentication"),
+        QString("Revoke authentication from Google. Are you sure?"))) {
+    return;
   }
   RevokeAuthentication();
   UpdateMenu();
@@ -405,4 +387,9 @@ void MainWindow::on_actionQt_triggered()
 void MainWindow::on_OpenImapConsole_clicked()
 {
   OpenImapConsole();
+}
+
+void MainWindow::on_ImapAuthenticateButton_clicked()
+{
+  ImapAuthenticate();
 }

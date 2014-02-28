@@ -4,6 +4,7 @@
 #include <QChar>
 #include <QByteArray>
 
+namespace LifeMotif {
 class ImapTag
 {
 public:
@@ -22,5 +23,5 @@ private:
   QChar   prefix;
   quint32 num;
 };
-
+}
 #endif // IMAP_TAG_H

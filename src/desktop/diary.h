@@ -6,18 +6,14 @@
 #include <QStringList>
 #include <QVector>
 
-struct LifeMotifAttachment
-{
-  QString    name;
-  QString    type;
-  QString    subType;
-  QByteArray data;
-};
+#include "attachment.h"
 
-class LifeMotifDiary
+namespace LifeMotif {
+
+class Diary
 {
 public:
-  LifeMotifDiary(const std::string& content);
+  Diary(const std::string& content);
 
   inline const QString& From() const { return from; }
   inline const QString& To() const { return to; }
@@ -42,8 +38,8 @@ private:
   void ParseTopHeader(const mimetic::Header& header);
   void ParseBody(const mimetic::Body& body);
 
-  QString             CallbackForText(const mimetic::Body &body);
-  LifeMotifAttachment CallbackForBinary(const mimetic::Body &body);
+  QString    CallbackForText(const mimetic::Body &body);
+  Attachment CallbackForBinary(const mimetic::Body &body);
 
   QString ParseMailBox(const mimetic::Mailbox& mailbox);
   QString DecodeByteArray(const QByteArray& array, const std::string& charset);
@@ -65,9 +61,10 @@ private:
   QString subject;
   QString textPlainContent;
   QString textHtmlContent;
-  QVector<LifeMotifAttachment> attachments;
+  QVector<Attachment> attachments;
 
   mimetic::MimeEntity root;
 };
+}
 
 #endif // LIFEMOTIF_DIARY_H

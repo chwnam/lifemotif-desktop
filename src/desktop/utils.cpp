@@ -2,59 +2,11 @@
 
 #include <QDebug>
 #include <QJsonDocument>
+#include <QJsonObject>
 #include <QFile>
 
 #include "lifemotif_config.h"
 #include "lifemotif_settings.h"
-
-std::string LifeMotifUtils::JoinPath(int n, ...)
-{
-  std::string out;
-
-  va_list argp;
-
-  va_start(argp, n);
-  for (int i = 0; i < n; ++i) {
-    char *p = va_arg(argp, char *);
-
-    if (p) {
-      out.append(p);
-      if (i < n-1 && *(out.end()-1) != '/') out.push_back('/');
-    }
-  }
-  va_end(argp);
-
-  return out;
-}
-
-GoogleImapWrapper*
-LifeMotifUtils::CreateImapWrapper(GoogleOauth2Wrapper* ptr)
-{
-  GoogleImapWrapper* imapWrapper = NULL;
-
-  if (ptr) {
-    const QString storage      = LifeMotifSettings::StorageName();
-    const QString emailAddress = LifeMotifSettings::EmailAddress();
-    const int     debugLevel   = LifeMotifSettings::DebugLevel();
-
-    bp::object imapObject =
-        ptr->ImapAuthenticate(
-          storage.toStdString(),
-          emailAddress.toStdString(),
-          debugLevel);
-
-    // ImapAuthenticate may fail if 'strage_name' does not exist.
-    if (imapObject.ptr() != Py_None) {
-      imapWrapper
-        = new GoogleImapWrapper(
-            LIFEMOTIF_GOOGLE_IMAP_WRAPPER_MODULE,
-            LIFEMOTIF_GOOGLE_IMAP_WRAPPER_CLASS,
-            imapObject);
-    }
-  }
-
-  return imapWrapper;
-}
 
 GoogleOauth2Wrapper* LifeMotifUtils::CreateOauth2Wrapper()
 {
@@ -84,13 +36,6 @@ QString LifeMotifUtils::Strip(const QString& input, const QChar& s)
   return input.mid(b, e - b);
 }
 
-bool LifeMotifUtils::HasCredentials(bool combineWithPythonScriptPath)
-{
-  return IsFileReadableWritable(
-          LifeMotifSettings::StorageName(combineWithPythonScriptPath));
-}
-
-#include <QJsonObject>
 bool
   LifeMotifUtils::SaveJson(
     const QString& fileName, const QVariantMap& map)

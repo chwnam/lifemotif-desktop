@@ -1,20 +1,20 @@
-#include "lifemotif_google_client_info.h"
-#include "lifemotif_exceptions.h"
+#include "google_client_info.h"
+
 #include <QJsonDocument>
 #include <QArrayData>
-#include <QFile>
 #include <QVariantList>
 #include <QDebug>
 
-LifeMotifGoogleClientInfo::LifeMotifGoogleClientInfo(
-    const QString& clientInfoPath)
+#include "exceptions.h"
+
+namespace LifeMotif {
+GoogleClientInfo::GoogleClientInfo()
 {
   LoadClientInfo(clientInfoPath);
 }
 
 void
-LifeMotifGoogleClientInfo::LoadClientInfo(
-    const QString& clientInfoPath)
+GoogleClientInfo::LoadClientInfo()
 {
   QFile file;
 
@@ -38,7 +38,7 @@ LifeMotifGoogleClientInfo::LoadClientInfo(
 }
 
 void
-LifeMotifGoogleClientInfo::SetInfo(const QVariantMap& map)
+GoogleClientInfo::SetInfo(const QVariantMap& map)
 {
   //for(QVariantMap::const_iterator it = map.cbegin(); it != map.end(); ++it) {
   //  qDebug() << "key:" << *it; //-> << "\tvalue:" << it->second;
@@ -56,4 +56,5 @@ LifeMotifGoogleClientInfo::SetInfo(const QVariantMap& map)
   const QVariantList& redirectUris = installed["redirect_uris"].toList();
 
   _redirectUri = redirectUris[0].toString(); // 0th element
+}
 }

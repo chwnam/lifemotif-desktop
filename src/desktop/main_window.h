@@ -4,7 +4,6 @@
 #include <QMainWindow>
 #include <QSharedPointer>
 
-#include "./python_wrapper/python_wrapper.h"
 #include "email_cache.h"
 #include "lifemotif_diary.h"
 #include "lifemotif_google_oauth2.h"
@@ -15,7 +14,7 @@
 #include "mime_raw_message_dialog.h"
 #include "mime_structure_dialog.h"
 
-#include "base_imap.h"
+#include "lifemotif_imap.h"
 #include "imap_console_dialog.h"
 
 namespace Ui {
@@ -70,9 +69,10 @@ private slots:
 
      void on_OpenImapConsole_clicked();
 
+     void on_ImapAuthenticateButton_clicked();
+
 private:
-    void AuthenticateOnConsoleByPython();
-    void AuthenticateUsingWebBrowser();
+    void Authorize();
     void BuildLocalStructre();
     void ClearDiaryInformationUI();
     void LoadLocalStructure();
@@ -83,6 +83,7 @@ private:
     void UpdateMenu();
     void ShowDiary(const int entry);
     void OpenImapConsole();
+    void ImapAuthenticate();
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;
@@ -90,13 +91,24 @@ private:
 private:
     Ui::MainWindow *ui;
 
-    // LifeMotif OAuth2
-    LifeMotifGoogleOauth2* oauth2;
-    // LifeMotifGoogleImap* imap;
+    // LifeMotif Google OAuth2
+    LifeMotifGoogleOauth2* _oauth2;
+    LifeMotifGoogleOauth2* Oauth2() {
+      if (_oauth2 == NULL) {
+        _oauth2 = new LifeMotifGoogleOauth2(this);
+      }
+      return _oauth2;
+    }
 
-    BaseImap *imap;
+    LifeMotifImap *_imap;
+    inline LifeMotifImap* Imap() {
+      if (_imap == NULL) {
+        _imap = new LifeMotifImap(this);
+      }
+      return _imap;
+    }
 
-    ImapConsoleDialog *_consoleDialog;
+    ImapConsoleDialog* _consoleDialog;
     inline ImapConsoleDialog* ConsoleDialog() {
       if (_consoleDialog == NULL) {
         _consoleDialog = new ImapConsoleDialog(this);
@@ -153,7 +165,7 @@ private:
     inline EmailCachePtr& emailCache() {
       if (_emailCache == NULL) {
         _emailCache
-            = EmailCachePtr(new EmailCache(LifeMotifSettings::CacheDir()));
+          = EmailCachePtr(new EmailCache(LifeMotif::Settings::CacheDir()));
       }
       return _emailCache;
     }

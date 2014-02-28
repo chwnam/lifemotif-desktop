@@ -2,23 +2,25 @@
 #define EMAIL_CACHE_H
 
 #include "message_types.h"
-#include <set>
+#include <QSet>
 #include <QDir>
 
+namespace LifeMotif {
 class EmailCache
 {
 public:
   EmailCache(const QString& _cacheDir);
 
-  bool HasCache(MsgIdType messageId) const;
+  bool    HasCache(MsgIdType messageId) const;
   QString GetCache(MsgIdType messageId) const;
-  void SetCache(MsgIdType messageId, const QString& message);
+  void    SetCache(MsgIdType messageId, const QString& message);
 
 private:
   void BuildCacheIndex();
 
   QDir cacheDir;
-  std::set<MsgIdType> cacheIndex;
+  QSet<MsgIdType> cacheIndex;
 };
+}
 
 #endif // EMAIL_CACHE_H

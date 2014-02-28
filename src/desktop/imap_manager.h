@@ -7,15 +7,20 @@
 
 #include "imap_tag.h"
 
-class BaseImap : public QObject
+class LifeMotifImap : public QObject
 {
   Q_OBJECT
 
 public:
-  explicit BaseImap(QObject *parent = 0);
+  explicit LifeMotifImap(QObject *parent = 0);
 
   void Connect(const QString& host, const quint16 port, const bool useSsl);
   void Disconnect();
+
+  bool
+    AuthenticateXAuth2(
+      const QString& emailAddress,
+      const QString& accessToken);
 
 signals:
 

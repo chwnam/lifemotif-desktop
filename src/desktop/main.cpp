@@ -12,51 +12,24 @@
 #include "lifemotif_exceptions.h"
 #include "lifemotif_google_client_info.h"
 
-void Init();
-void PythonWorkAround();
+void Init(QApplication* app);
 void Fin();
 void SetBuffer(FILE* stream, char* buffer, const int bufferSize);
 
 int main(int argc, char *argv[])
 {
   int returnCode = EXIT_FAILURE;
-  QApplication a(argc, argv);
+  QApplication app(argc, argv);
 
   try {
-    Init();
-    qDebug() << "Initialization complete. Ready to show main window...";
-
-    // client info test
-    //const QString& secretPath = LifeMotifSettings::SecretPath(true);
-    //LifeMotifClientInfo ci;
-    //ci.LoadClientInfo(secretPath);
+    Init(&app);
 
     MainWindow w;
     w.show();
     w.raise();
     w.activateWindow();
 
-    returnCode = a.exec();
-    qDebug() << "Main window is closed. Return code =" << returnCode;
-  }
-
-  // python script error
-  catch(const bp::error_already_set&) {
-    char*     errorBuffer = NULL;
-    const int bufferSize = 4096;
-
-    fflush(stderr);
-    errorBuffer = (char*)malloc(sizeof(char)*bufferSize);
-    SetBuffer(stderr, errorBuffer, bufferSize);
-    PyErr_Print();
-
-    QString message = QString("Program is unexpectedly terminated due to the python script error:\n");
-    message += errorBuffer ? QString(errorBuffer) : QString("See console printout.");
-    QMessageBox::critical(NULL, "Critical Error", message);
-
-    fflush(stderr);
-    free(errorBuffer);
-    SetBuffer(stderr, NULL, bufferSize);
+    returnCode = app.exec();
   }
 
   // lifemotif program exception
@@ -68,36 +41,13 @@ int main(int argc, char *argv[])
   }
 
   Fin();
-  qDebug() << "Program finished.";
   return returnCode;
 }
 
-void Init()
+void Init(QApplication* app)
 {
   // this application's ini settings
-  LifeMotifSettings::Init(LIFEMOTIF_DEFAULT_SETTINGS_PATH);
-
-  if (Py_IsInitialized() == false) {
-    Py_Initialize();
-    qDebug() << "python initialized.";
-
-    PythonWorkAround();
-  }
-}
-
-void PythonWorkAround()
-{
-  const QString& qscriptpath = LifeMotifSettings::PythonScriptPath();
-  std::string workAroundCode;
-
-  workAroundCode += "import sys\n";
-  workAroundCode += "sys.path.append('" + qscriptpath.toStdString() + "')\n";
-  workAroundCode += "sys.path.append('.')\n";
-
-  if (PyRun_SimpleString(workAroundCode.c_str()) != 0) {
-    throw bp::error_already_set();
-  }
-  qDebug() << qscriptpath << "is now added to python path.";
+  LifeMotif::Settings::Init(app);
 }
 
 void SetBuffer(FILE* stream, char* buffer, const int bufferSize)
@@ -115,9 +65,5 @@ void SetBuffer(FILE* stream, char* buffer, const int bufferSize)
 
 void Fin()
 {
-  if (Py_IsInitialized() != 0) {
-    Py_Finalize();
-    qDebug() << "python finalized.";
-  }
   qDebug() << "Finalization complete.";
 }

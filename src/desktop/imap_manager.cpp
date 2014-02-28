@@ -1,16 +1,16 @@
-#include "base_imap.h"
+#include "lifemotif_imap.h"
 
 #include <QDebug>
 #include <QByteArray>
 #include <QSslCipher>
 
-BaseImap::BaseImap(QObject *parent) :
+LifeMotifImap::LifeMotifImap(QObject *parent) :
   QObject(parent),
   socket(0)
 {
 }
 
-void BaseImap::Connect(
+void LifeMotifImap::Connect(
     const QString& host,
     const quint16  port,
     const bool     useSsl)
@@ -28,7 +28,7 @@ void BaseImap::Connect(
   }
 }
 
-void BaseImap::Disconnect()
+void LifeMotifImap::Disconnect()
 {
   if (socket) {
     socket->disconnectFromHost();
@@ -36,7 +36,7 @@ void BaseImap::Disconnect()
   }
 }
 
-void BaseImap::Send(const QByteArray& data)
+void LifeMotifImap::Send(const QByteArray& data)
 {
   if (socket) {
     // append tag
@@ -49,7 +49,7 @@ void BaseImap::Send(const QByteArray& data)
 }
 
 /* * * * * * * * * * * * * * * * * * Slots * * * * * * * * * * * * * * * * * */
-void BaseImap::ConnectSlots()
+void LifeMotifImap::ConnectSlots()
 {
   /* connected */
   QObject::connect(socket, SIGNAL(onnected()),
@@ -76,7 +76,7 @@ void BaseImap::ConnectSlots()
           this, SLOT(SocketReadyRead()));
 }
 
-void BaseImap::DisconnectSlots()
+void LifeMotifImap::DisconnectSlots()
 {
   /* connected */
   QObject::disconnect(socket, SIGNAL(connected()),
@@ -103,24 +103,24 @@ void BaseImap::DisconnectSlots()
           this, SLOT(socketDisconnected()));
 }
 
-void BaseImap::SocketConnected()
+void LifeMotifImap::SocketConnected()
 {
   qDebug() << "Connected to host";
 }
 
-void BaseImap::SocketDisconnected()
+void LifeMotifImap::SocketDisconnected()
 {
   qDebug() << "Disconnected from host";
 }
 
 void
-  BaseImap::SocketStateChanged(
+  LifeMotifImap::SocketStateChanged(
     QAbstractSocket::SocketState state)
 {
   qDebug() << "Socket state has been changed:" << state;
 }
 
-void BaseImap::SocketEncrypted()
+void LifeMotifImap::SocketEncrypted()
 {
   if (socket) {
     QSslCipher cipher = socket->sessionCipher();
@@ -132,12 +132,12 @@ void BaseImap::SocketEncrypted()
   }
 }
 
-void BaseImap::SocketReadyRead()
+void LifeMotifImap::SocketReadyRead()
 {
   // parse response.
 }
 
-void BaseImap::SslErrors(const QList<QSslError> &errors)
+void LifeMotifImap::SslErrors(const QList<QSslError> &errors)
 {
   qDebug() << "SSL error: ";
   for(QList<QSslError>::const_iterator it = errors.cbegin();
