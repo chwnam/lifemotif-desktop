@@ -297,7 +297,7 @@
      <string>Display HTML Tags</string>
     </property>
    </widget>
-   <widget class="QPushButton" name="AuthenticateButton">
+   <widget class="QPushButton" name="OpenImapConsole">
     <property name="geometry">
      <rect>
       <x>10</x>
@@ -307,8 +307,7 @@
      </rect>
     </property>
     <property name="text">
-     <string>Authenticate
-Using LifeMotifOAuth2</string>
+     <string>Open IMAP console...</string>
     </property>
    </widget>
   </widget>
@@ -318,7 +317,7 @@ Using LifeMotifOAuth2</string>
      <x>0</x>
      <y>0</y>
      <width>1024</width>
-     <height>21</height>
+     <height>19</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuLifeMotif">

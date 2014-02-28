@@ -5,6 +5,7 @@
 #include <QSslSocket>
 #include <QString>
 
+#include "tag.h"
 
 namespace Ui {
 class MainWindow;
@@ -30,17 +31,23 @@ private slots:
   void sslErrors(const QList<QSslError> &errors);
 
   void on_action_exit_triggered();
-
   void on_submitButton_clicked();
+  void on_commandEdit_returnPressed();
+
+  void on_action_advance_tag_counter_triggered();
+
+  void on_action_reset_tag_triggered();
 
 private:
-  void submit(const QString& text);
+  void updateUI();
+  void submit();
   void disconnect();
   void appendString(const QString& string);
 
 private:
   Ui::MainWindow *ui;
   QSslSocket* socket;
+  Tag         tag;
 };
 
 #endif // MAIN_WINDOW_H

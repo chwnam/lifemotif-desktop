@@ -20,6 +20,8 @@
 
 MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
+    imap(0),
+    _consoleDialog(0),
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
@@ -232,6 +234,13 @@ void MainWindow::ClearDiaryInformationUI()
   ui->attatchmentComboBox->clear();
 }
 
+void MainWindow::OpenImapConsole()
+{
+  ConsoleDialog()->show();
+  ConsoleDialog()->raise();
+  ConsoleDialog()->activateWindow();
+}
+
 void MainWindow::on_mimeRawMessageButton_clicked()
 {
   const QListWidgetItem* item = ui->diaryList->currentItem();
@@ -393,7 +402,7 @@ void MainWindow::on_actionQt_triggered()
   QMessageBox::aboutQt(this, "About LifeMotif-Desktop");
 }
 
-void MainWindow::on_AuthenticateButton_clicked()
+void MainWindow::on_OpenImapConsole_clicked()
 {
-  AuthenticateUsingWebBrowser();
+  OpenImapConsole();
 }

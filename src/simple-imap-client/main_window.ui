@@ -52,13 +52,23 @@
         <property name="locale">
          <locale language="Korean" country="SouthKorea"/>
         </property>
+        <property name="readOnly">
+         <bool>true</bool>
+        </property>
        </widget>
       </item>
       <item>
-       <layout class="QHBoxLayout" name="horizontalLayout">
+       <layout class="QHBoxLayout" name="horizontalLayout" stretch="0,1,0">
         <property name="sizeConstraint">
          <enum>QLayout::SetMinAndMaxSize</enum>
         </property>
+        <item>
+         <widget class="QLineEdit" name="tagEdit">
+          <property name="readOnly">
+           <bool>true</bool>
+          </property>
+         </widget>
+        </item>
         <item>
          <widget class="QLineEdit" name="commandEdit"/>
         </item>
@@ -91,7 +101,11 @@
     <addaction name="action_connect"/>
     <addaction name="action_disconnect"/>
     <addaction name="separator"/>
+    <addaction name="action_advance_tag_counter"/>
+    <addaction name="action_reset_tag"/>
+    <addaction name="separator"/>
     <addaction name="action_exit"/>
+    <addaction name="separator"/>
    </widget>
    <addaction name="menuConnect"/>
   </widget>
@@ -108,6 +122,16 @@
   <action name="action_exit">
    <property name="text">
     <string>Exit</string>
+   </property>
+  </action>
+  <action name="action_reset_tag">
+   <property name="text">
+    <string>Reset Tag</string>
+   </property>
+  </action>
+  <action name="action_advance_tag_counter">
+   <property name="text">
+    <string>Advance Tag Counter</string>
    </property>
   </action>
  </widget>

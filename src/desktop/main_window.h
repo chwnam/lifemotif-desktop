@@ -15,6 +15,9 @@
 #include "mime_raw_message_dialog.h"
 #include "mime_structure_dialog.h"
 
+#include "base_imap.h"
+#include "imap_console_dialog.h"
+
 namespace Ui {
 class MainWindow;
 }
@@ -65,8 +68,7 @@ private slots:
 
      void on_actionQt_triggered();
 
-     // authenticate button: for testing LifeMotifOauth2
-     void on_AuthenticateButton_clicked();
+     void on_OpenImapConsole_clicked();
 
 private:
     void AuthenticateOnConsoleByPython();
@@ -80,6 +82,7 @@ private:
     void UpdateDiaryInformationUI();
     void UpdateMenu();
     void ShowDiary(const int entry);
+    void OpenImapConsole();
 
     QString  FetchMessage(const MsgIdType& id);
     DateType GetDateFromCalendar() const;
@@ -87,8 +90,19 @@ private:
 private:
     Ui::MainWindow *ui;
 
+    // LifeMotif OAuth2
     LifeMotifGoogleOauth2* oauth2;
     // LifeMotifGoogleImap* imap;
+
+    BaseImap *imap;
+
+    ImapConsoleDialog *_consoleDialog;
+    inline ImapConsoleDialog* ConsoleDialog() {
+      if (_consoleDialog == NULL) {
+        _consoleDialog = new ImapConsoleDialog(this);
+      }
+      return _consoleDialog;
+    }
 
     // wrappers
     typedef QSharedPointer<GoogleOauth2Wrapper> GoogleOauth2WrapperPtr;

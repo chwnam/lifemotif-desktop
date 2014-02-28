@@ -22,7 +22,7 @@ macx {
 TARGET = lifemotif-desktop
 TEMPLATE = app
 
-SOURCES += main.cpp\
+SOURCES += \
     python_wrapper/basepythonwrapper.cpp \
     python_wrapper/googleoauth2wrapper.cpp \
     python_wrapper/googleimapwrapper.cpp \
@@ -33,21 +33,26 @@ SOURCES += main.cpp\
     lifemotif_calendar_widget.cpp \
     lifemotif_diary.cpp \
     lifemotif_exceptions.cpp \
+    lifemotif_google_client_info.cpp \
+    lifemotif_google_oauth2.cpp \
     lifemotif_google_oauth2_credential.cpp \
     lifemotif_settings.cpp \
     lifemotif_utils.cpp \
+    loading_dialog.cpp \
     localstructure_extract.cpp \
+    mailbox_list_extract.cpp \
+    main.cpp \
     main_window.cpp \
     message_types.cpp \
     mime_raw_message_dialog.cpp \
     mime_structure_dialog.cpp \
     preference_window.cpp \
-    web_browser_dialog.cpp \
-    loading_dialog.cpp \
     runnable_helper.cpp \
-    mailbox_list_extract.cpp \
-    lifemotif_google_oauth2.cpp \
-    lifemotif_google_client_info.cpp
+    web_browser_dialog.cpp \
+    imap_tag.cpp \
+    tag_reset_dialog.cpp \
+    base_imap.cpp \
+    imap_console_dialog.cpp
 
 
 HEADERS  += \
@@ -63,6 +68,8 @@ HEADERS  += \
     lifemotif_config.h \
     lifemotif_diary.h \
     lifemotif_exceptions.h \
+    lifemotif_google_client_info.h \
+    lifemotif_google_oauth2.h \
     lifemotif_google_oauth2_credential.h \
     lifemotif_settings.h \
     lifemotif_utils.h \
@@ -76,16 +83,20 @@ HEADERS  += \
     loading_dialog.h \
     runnable_helper.h \
     mailbox_list_extract.h \
-    lifemotif_google_oauth2.h \
-    lifemotif_google_client_info.h
+    imap_tag.h \
+    tag_reset_dialog.h \
+    base_imap.h \
+    imap_console_dialog.h
 
 FORMS    += \
-    web_browser_dialog.ui \
+    loading_dialog.ui \
+    main_window.ui \
     mime_raw_message_dialog.ui \
     mime_structure_dialog.ui \
-    main_window.ui \
     preference_window.ui \
-    loading_dialog.ui
+    web_browser_dialog.ui \
+    tag_reset_dialog.ui \
+    imap_console_dialog.ui
 
 OTHER_FILES += \
     ../python/base_imap_control.py \
@@ -98,7 +109,6 @@ OTHER_FILES += \
     resource/lifemotif.ico \
     NOTE \
     TODO
-
 
 unix:!macx {
 INCLUDEPATH += \

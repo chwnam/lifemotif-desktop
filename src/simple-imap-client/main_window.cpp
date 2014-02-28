@@ -1,6 +1,7 @@
 #include "main_window.h"
 #include "ui_main_window.h"
 #include "connect_dialog.h"
+#include "tag_reset_dialog.h"
 
 #include <QDebug>
 #include <QScrollBar>
@@ -12,6 +13,7 @@ MainWindow::MainWindow(QWidget *parent) :
   ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  updateUI();
 }
 
 MainWindow::~MainWindow()
@@ -170,17 +172,50 @@ void MainWindow::on_action_exit_triggered()
 
 void MainWindow::on_submitButton_clicked()
 {
-  const QString& text = ui->commandEdit->text();
-
-  qDebug() << "Text: " << text;
-
-  submit(text);
+  submit();
 }
 
-void MainWindow::submit(const QString& text)
+void MainWindow::submit()
 {
-  if (socket) {
-    appendString(text);
-    socket->write(text.toUtf8() + "\r\n");
+  if (socket) {    
+    const QString text = ui->commandEdit->text().trimmed();
+    if (text.size()) {
+
+      const QString command
+          = QString::fromStdString(tag.issue()) + QChar(' ') + text;
+
+      appendString(command);
+      socket->write(command.toUtf8() + "\r\n");
+      tag.advance();
+      ui->commandEdit->clear();
+      updateUI();
+    }
+  }
+}
+
+void MainWindow::on_commandEdit_returnPressed()
+{
+  submit();
+}
+
+void MainWindow::updateUI()
+{
+  ui->tagEdit->setText(QString::fromStdString(tag.issue()));
+}
+
+void MainWindow::on_action_advance_tag_counter_triggered()
+{
+  tag.advance();
+  updateUI();
+}
+
+void MainWindow::on_action_reset_tag_triggered()
+{
+  TagResetDialog dlg(this);
+
+  if (QDialog::Accepted == dlg.exec()) {
+    tag.reset(dlg.NewPrefix(), dlg.NewNum());
+    dlg.close();
+    updateUI();
   }
 }
