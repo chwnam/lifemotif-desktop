@@ -1,6 +1,13 @@
 #ifndef LIFEMOTIF_CONFIG_H
 #define LIFEMOTIF_CONFIG_H
 
+#include <cstdio>
+
+#ifdef _MSC_VER
+#define snprintf _snprintf
+#endif
+
+
 namespace LifeMotif {
 class Config
 {

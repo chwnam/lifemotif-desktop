@@ -89,81 +89,56 @@ private:
 private:
     Ui::MainWindow *ui;
 
+    // Application settings
+    Settings* _settings;
+    inline Settings* settings() {
+      if (_settings == NULL) _settings = new Settings(this);
+      return _settings; }
+
     // LifeMotif Google OAuth2
     GoogleOAuth2* _oauth2;
-    GoogleOAuth2* OAuth2() {
-      if (_oauth2 == NULL) {
-        _oauth2 = new GoogleOAuth2(this);
-      }
-      return _oauth2;
-    }
+    inline GoogleOAuth2* oauth2() {
+      if (_oauth2 == NULL) _oauth2 = new GoogleOAuth2(this);
+      return _oauth2; }
 
     ImapManager *_imapManager;
-    inline ImapManager* Imap() {
-      if (_imapManager == NULL) {
-        _imapManager = new ImapManager(this);
-      }
-      return _imapManager;
-    }
+    inline ImapManager* imapManager() {
+      if (_imapManager == NULL) _imapManager = new ImapManager(this);
+      return _imapManager; }
 
-    ImapConsoleDialog* _consoleDialog;
-    inline ImapConsoleDialog* ConsoleDialog() {
-      if (_consoleDialog == NULL) {
-        _consoleDialog = new ImapConsoleDialog(this);
-      }
-      return _consoleDialog;
-    }
+    ImapConsoleDialog* _imapconsoleDialog;
+    inline ImapConsoleDialog* imapConsoleDialog() {
+      if (_imapconsoleDialog == NULL) _imapconsoleDialog = new ImapConsoleDialog(this);
+      return _imapconsoleDialog; }
 
     // email cache
     typedef QSharedPointer<EmailCache> EmailCachePtr;
     EmailCachePtr _emailCache;
+    inline EmailCachePtr& emailCache() {
+      if (_emailCache == NULL) {
+        _emailCache
+          = EmailCachePtr(new EmailCache(settings()->CacheDir())); }
+      return _emailCache; }
 
     // MIME raw message dialog
     typedef QSharedPointer<MimeRawMessageDialog> MimeRawMessageDialogPtr;
     MimeRawMessageDialogPtr _mimeRawMessageDialog;
+    inline MimeRawMessageDialogPtr& mimeRawMessageDialog() {
+      if (_mimeRawMessageDialog == NULL) {
+        _mimeRawMessageDialog
+          = MimeRawMessageDialogPtr(new MimeRawMessageDialog());
+        _mimeRawMessageDialog->setWindowModality(Qt::NonModal); }
+      return _mimeRawMessageDialog; }
 
     // MIME structure dialog
     typedef QSharedPointer<MimeStructureDialog> MimeStructureDialogPtr;
     MimeStructureDialogPtr _mimeStructureDialog;
-
-    // late type binding.
-    // EmailChache ////////////////////////////////////////////////////////
-    inline EmailCachePtr& emailCache() {
-      if (_emailCache == NULL) {
-        _emailCache
-          = EmailCachePtr(new EmailCache(LifeMotif::Settings::CacheDir()));
-      }
-      return _emailCache;
-    }
-    inline const EmailCachePtr& emailCache() const {
-      return emailCache();
-    }
-
-    // MimeRawMessageDialog ///////////////////////////////////////////////
-    inline MimeRawMessageDialogPtr& mimeRawMessageDialog() {
-      if (_mimeRawMessageDialog == NULL) {
-        _mimeRawMessageDialog
-            = MimeRawMessageDialogPtr(new MimeRawMessageDialog());
-        _mimeRawMessageDialog->setWindowModality(Qt::NonModal);
-      }
-      return _mimeRawMessageDialog;
-    }
-    inline const MimeRawMessageDialogPtr& mimeRawMessageDialog() const {
-      return mimeRawMessageDialog();
-    }
-
-    // MimeStructureDialog /////////////////////////////////////////////////////
     inline MimeStructureDialogPtr& mimeStructureDialog() {
       if (_mimeStructureDialog == NULL) {
         _mimeStructureDialog
-            = MimeStructureDialogPtr(new MimeStructureDialog());
-        _mimeStructureDialog->setWindowModality(Qt::NonModal);
-      }
-      return _mimeStructureDialog;
-    }
-    inline const MimeStructureDialogPtr& mimeStructureDialog() const {
-      return mimeStructureDialog();
-    }
+          = MimeStructureDialogPtr(new MimeStructureDialog());
+        _mimeStructureDialog->setWindowModality(Qt::NonModal); }
+      return _mimeStructureDialog; }
 
     // local structure
     GoogleLocalStructureType localStructure;

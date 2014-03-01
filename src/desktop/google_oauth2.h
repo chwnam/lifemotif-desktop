@@ -20,12 +20,28 @@ class GoogleOAuth2 : public QObject
   Q_OBJECT
 
 public:
-  GoogleOAuth2(QObject *parent = 0);
+  explicit GoogleOAuth2(QObject *parent = 0);
 
-  QUrl GetAuthorizationUrl();
-  void Authorize(const QByteArray& code);
-  void ImapAuthenticate();
-  void Revoke();
+  QUrl GetAuthorizationUrl(
+    const QByteArray& authUri,
+    const QByteArray& clientId,
+    const QByteArray& redirectUri);
+
+  void Authorize(
+    const QByteArray& code,
+    const QUrl&       tokenUri,
+    const QByteArray& clientId,
+    const QByteArray& clientSecret,
+    const QByteArray& redirectUri);
+
+  void ImapAuthenticate(
+    const QString&    emailAddress,
+    const QByteArray& accessToken);
+  
+  void Revoke(const QByteArray& accessToken);
+
+signals:
+  void GoogleAuthorized (const QVariantMap& replyJsonMap);
 
 private slots:
   // slot for authentication
@@ -41,7 +57,10 @@ private:
   void ReplyCleanUp(const char* slotToDisconnect);  
   bool WaitForSignal(QObject *sender, const char *signal, int timeout);
 
-  QByteArray GetImapAuthString();
+  QByteArray GetImapAuthString(
+    const QString&    emailAddress,
+    const QByteArray& accessToken);
+
   bool IsTokenExpired() const {return false; }
 
 private:

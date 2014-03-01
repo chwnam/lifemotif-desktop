@@ -12,12 +12,6 @@
 
 namespace LifeMotif {
 
-bool Utils::IsTokenAvailable()
-{
-  return Settings::GoogleAccessToken().isEmpty() == false &&
-         Settings::GoogleRefreshToken().isEmpty() == false;
-}
-
 QString Utils::Strip(const QString& input, const QChar& s)
 {
   int b, e;

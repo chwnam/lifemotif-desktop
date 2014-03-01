@@ -55,8 +55,7 @@ void CalendarWidget::SetDate(const GoogleLocalStructureType& structure)
 
 void CalendarWidget::UpdateUI()
 {
-  if (Utils::IsTokenAvailable() == false ||
-      datesToPaint.isEmpty() == true) { setDisabled(true); }
+  if (datesToPaint.isEmpty() == true) { setDisabled(true); }
 
   else {
 

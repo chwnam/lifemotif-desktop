@@ -10,7 +10,7 @@
 #include "settings.h"
 
 
-void Init(QApplication* app);
+void Init();
 void Fin();
 void SetBuffer(FILE* stream, char* buffer, const int bufferSize);
 
@@ -20,7 +20,7 @@ int main(int argc, char *argv[])
   QApplication app(argc, argv);
 
   try {
-    Init(&app);
+    Init();
 
     MainWindow w;
     w.show();
@@ -42,10 +42,12 @@ int main(int argc, char *argv[])
   return returnCode;
 }
 
-void Init(QApplication* app)
+void Init()
 {
-  // this application's ini settings
-  LifeMotif::Settings::Init(app);
+  QCoreApplication::setOrganizationName(Config::organizationName);
+  QCoreApplication::setOrganizationDomain(Config::organizationDomain);
+  QCoreApplication::setApplicationName(Config::applicationName);
+  QCoreApplication::setApplicationVersion(QString::fromUtf8(Config::Version()));
 }
 
 void SetBuffer(FILE* stream, char* buffer, const int bufferSize)

@@ -3,6 +3,7 @@
 
 #include <QApplication>
 #include <QByteArray>
+#include <QObject>
 #include <QSettings>
 #include <QString>
 #include <QVariant>
@@ -10,161 +11,95 @@
 #include "config.h"
 #include "utils.h"
 
-
 namespace LifeMotif {
 
-class Settings
+class Settings : public QObject
 {
+  Q_OBJECT
+
 public:
-  ~Settings();
+  explicit Settings(QObject* parent = 0);
 
 private:
-  Settings();
-
   // ini: qt-based configuration
-  static QSettings* settings;
+  QSettings* settings;
+
+signals:
+  /* general */
+  void UseFileCacheChanged(bool newValue);
+  void CacheDirChanged(const QString& newValue);
+  void LocalStructureDirChanged(const QString& newValue);
+
+  /* google settings */
+  void GoogleAuthUriChanged       (const QByteArray& newValue);
+  void GoogleTokenUriChanged      (const QByteArray& newValue);
+  void GoogleRevokeUriChanged     (const QByteArray& newValue);
+  void GoogleEmailAddressChanged  (const QString&    newValue);
+  void GoogleMailboxChanged       (const QString&    newValue);
+  void GoogleRedirectUriChanged   (const QByteArray& newValue);
+  void GoogleAccessTokenChanged   (const QByteArray& newValue);
+  void GoogleRefreshTokenChanged  (const QByteArray& newValue);
+  void GoogleTokenExpiryChanged   (const QString&    newValue);
+
+private slots:
+  void GoogleAuthorized (const QVariantMap& replyJsonMap);
 
 private:
-  static void CheckSettings();
+  void CheckSettings();
 
-  static void SetDefaultValue(
+  void SetDefaultValue(
       const QString& key, const QVariant& defaultValue = QVariant());
 
-  static void ValidateSubdiretory(
-      QDir& dir,  const QString& subdir);
+  void ValidateSubdiretory(QDir& dir, const QString& subdir);
 
 public:
-  static void Init(QApplication* app);
+  void Init();
+  bool IsTokenAvailable();
 
-  /***************************************************************************/
-  /* INI configuration                                                       */
-  /***************************************************************************/
+  /* general settings */
+  bool UseFileCache();
+  void UseFileCache(bool value);
 
-  /***************************************************************************/
-  // use_file_cache: use file cache.
-  inline static bool UseFileCache() {
-    return settings->value(QString("use_file_cache")).toBool();
-  }
-  inline static void UseFileCache(bool value) {
-    settings->setValue(QString("use_file_cache"), value);
-  }
+  const QString CacheDir();
+  void          CacheDir(const QString& value);
 
-  /***************************************************************************/
-  // cache_dir: path to cache directory, storing email messages.
-  inline static const QString CacheDir() {
-    return settings->value(QString("cache_dir")).toString();
-  }
-  inline static void CacheDir(const QString& value) {
-    settings->setValue(QString("cache_dir"), value);
-  }
+  const QString LocalStructureDir();
+  void          LocalStructureDir(const QString& value);
 
-  /***************************************************************************/
-  // local_structure_dir:
-  inline static const QString LocalStructureDir() {
-    return settings->value(QString("local_structure_dir")).toString();
-  }
-  inline static void LocalStructureDir(const QString& value) {
-    settings->setValue(QString("local_structure_dir"), value);
-  }
 
-  /***************************************************************************/
-  // google/auth_uri:
-  inline static const QByteArray GoogleAuthUri() {
-    return settings->value(QString("google/auth_uri")).toByteArray();
-  }
-  inline static void GoogleAuthUri(const QByteArray& value) {
-    settings->setValue(QString("google/auth_uri"), value);
-  }
+  /* google settings */
+  const QByteArray GoogleAuthUri();
+  void             GoogleAuthUri(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/token_uri:
-  inline static const QByteArray GoogleTokenUri() {
-    return settings->value(QString("google/token_uri")).toByteArray();
-  }
-  inline static void GoogleTokenUri(const QByteArray& value) {
-    settings->setValue(QString("google/token_uri"), value);
-  }
+  const QByteArray GoogleTokenUri();
+  void             GoogleTokenUri(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/revoke_uri:
-  inline static const QByteArray GoogleRevokeUri() {
-    return settings->value(QString("google/revoke_uri")).toByteArray();
-  }
-  inline static void GoogleRevokeUri(const QByteArray& value) {
-    settings->setValue(QString("google/revoke_uri"), value);
-  }
+  const QByteArray GoogleRevokeUri();
+  void             GoogleRevokeUri(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/email_address:
-  inline static const QString GoogleEmailAddress() {
-    return settings->value(QString("google/email_address")).toString();
-  }
-  inline static void GoogleEmailAddress(const QString& value) {
-    settings->setValue(QString("google/email_address"), value);
-  }
+  const QString GoogleEmailAddress();
+  void          GoogleEmailAddress(const QString& value);
 
-  /***************************************************************************/
-  // google/mailbox:
-  inline static const QString GoogleMailbox() {
-    return settings->value(QString("google/mailbox")).toString();
-  }
-  inline static void GoogleMailbox(const QString& value) {
-    settings->setValue(QString("google/mailbox"), value);
-  }
+  const QString GoogleMailbox();
+  void          GoogleMailbox(const QString& value);
 
-  /***************************************************************************/
-  // google/client_id: client ID from Google Developers Console
-  inline static const QByteArray GoogleClientId() {
-    return Config::DefaultValues::Google::clientId;
-  }
-//  inline static void GoogleClientId(const QByteArray& value) {
-//    settings->setValue(QByteArray("cache_dir"), value);
-//  }
+  const QByteArray GoogleClientId();
+  //void             GoogleClientId(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/client_secret: client secret from Google Developers Console
-  inline static const QByteArray GoogleClientSecret() {
-    return Config::DefaultValues::Google::clientSecret;
-  }
-//  inline static void GoogleClientSecret(const QByteArray& value) {
-//    settings->setValue(QByteArray("google/client_secret"), value);
-//  }
+  const QByteArray GoogleClientSecret();
+  // void             GoogleClientSecret(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/redirect_uri: redirect uri from Google Developers Console
-  inline static const QByteArray GoogleRedirectUri() {
-    return settings->value(QString("google/redirect_uri")).toByteArray();
-  }
-  inline static void GoogleRedirectUri(const QByteArray& value) {
-    settings->setValue(QString("google/redirect_uri"), value);
-  }
+  const QByteArray GoogleRedirectUri();
+  void             GoogleRedirectUri(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/access_token: Google OAuth2 access token
-  inline static const QByteArray GoogleAccessToken() {
-    return settings->value(QString("google/access_token")).toByteArray();
-  }
-  inline static void GoogleAccessToken(const QByteArray& value) {
-    settings->setValue(QString("google/access_token"), value);
-  }
+  const QByteArray GoogleAccessToken();
+  void             GoogleAccessToken(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/refresh_token: Google OAuth2 refresh token
-  inline static const QByteArray GoogleRefreshToken() {
-    return settings->value(QString("google/refresh_token")).toByteArray();
-  }
-  inline static void GoogleRefreshToken(const QByteArray& value) {
-    settings->setValue(QString("google/refresh_token"), value);
-  }
+  const QByteArray GoogleRefreshToken();
+  void             GoogleRefreshToken(const QByteArray& value);
 
-  /***************************************************************************/
-  // google/token_expiry: Google OAuth2 token expiry
-  inline static const QString GoogleTokenExpiry() {
-    return settings->value(QString("google/token_expiry")).toString();
-  }
-  inline static void GoogleTokenExpiry(const QString& value) {
-    settings->setValue(QString("google/token_expiry"), value);
-  }
+  const QString GoogleTokenExpiry();
+  void          GoogleTokenExpiry(const QString& value);
 };
 
 }

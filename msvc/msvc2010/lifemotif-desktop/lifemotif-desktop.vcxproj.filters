@@ -33,168 +33,57 @@
       <Extensions>cpp;moc</Extensions>
       <SourceControlFiles>False</SourceControlFiles>
     </Filter>
-    <Filter Include="Source Files\python_wrapper">
-      <UniqueIdentifier>{828bfbd6-521f-4b4f-93b8-baeab6135bb4}</UniqueIdentifier>
-    </Filter>
-    <Filter Include="Header Files\python_wrapper">
-      <UniqueIdentifier>{823f5046-ba79-4e8d-9598-bdbd40a65ccf}</UniqueIdentifier>
-    </Filter>
     <Filter Include="Others">
       <UniqueIdentifier>{7f651fd1-85ac-4202-85e2-90e62e73838f}</UniqueIdentifier>
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="..\..\..\qt\python_wrapper\basepythonwrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\python_wrapper\googleimapwrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\python_wrapper\googleoauth2wrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\python_wrapper\imapwrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\python_wrapper\localstructurewrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\python_wrapper\oauth2wrapper.cpp">
-      <Filter>Source Files\python_wrapper</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\qrc_LifeMotif.cpp">
-      <Filter>Generated Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\email_cache.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_calendar_widget.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_lifemotif_calendar_widget.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_lifemotif_calendar_widget.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_diary.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_exceptions.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_google_client_info.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_google_oauth2.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_lifemotif_google_oauth2.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_lifemotif_google_oauth2.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_google_oauth2_credential.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_settings.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\lifemotif_utils.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\loading_dialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_loading_dialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_loading_dialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\localstructure_extract.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\mailbox_list_extract.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\main.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\main_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_main_window.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_main_window.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\message_types.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\mime_raw_message_dialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_mime_raw_message_dialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_mime_raw_message_dialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\mime_structure_dialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_mime_structure_dialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_mime_structure_dialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\preference_window.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_preference_window.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_preference_window.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\runnable_helper.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="..\..\..\qt\web_browser_dialog.cpp">
-      <Filter>Source Files</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Debug\moc_web_browser_dialog.cpp">
-      <Filter>Generated Files\Debug</Filter>
-    </ClCompile>
-    <ClCompile Include="GeneratedFiles\Release\moc_web_browser_dialog.cpp">
-      <Filter>Generated Files\Release</Filter>
-    </ClCompile>
+    <None Include="..\..\..\LICENSE.LGPL">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\LICENSE.MIT">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\README">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\src\desktop\resource\lifemotif-desktop.ico">
+      <Filter>Resource Files</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="..\..\..\qt\python_wrapper\basepythonwrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\attachment.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\googleimapwrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\config.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\googleoauth2wrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\diary.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\imapwrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\email_cache.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\localstructurewrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\exceptions.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\oauth2wrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\imap_tag.h">
+      <Filter>Header Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\python_wrapper\python_wrapper.h">
-      <Filter>Header Files\python_wrapper</Filter>
+    <ClInclude Include="..\..\..\src\desktop\loading_dialog.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\desktop\message_types.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="..\..\..\src\desktop\utils.h">
+      <Filter>Header Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_imap_console_dialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_imap_console_window.h">
+      <Filter>Generated Files</Filter>
     </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_loading_dialog.h">
       <Filter>Generated Files</Filter>
@@ -211,111 +100,210 @@
     <ClInclude Include="GeneratedFiles\ui_preference_window.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
+    <ClInclude Include="GeneratedFiles\ui_tag_reset_dialog.h">
+      <Filter>Generated Files</Filter>
+    </ClInclude>
     <ClInclude Include="GeneratedFiles\ui_web_browser_dialog.h">
       <Filter>Generated Files</Filter>
     </ClInclude>
-    <ClInclude Include="..\..\..\qt\email_cache.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_config.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_diary.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_exceptions.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_google_client_info.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_google_oauth2_credential.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_settings.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\lifemotif_utils.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\localstructure_extract.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\mailbox_list_extract.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\message_types.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
-    <ClInclude Include="..\..\..\qt\runnable_helper.h">
-      <Filter>Header Files</Filter>
-    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <CustomBuild Include="..\..\..\qt\loading_dialog.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\calendar_widget.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\main_window.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\google_oauth2.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\mime_raw_message_dialog.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\imap_console_dialog.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\mime_structure_dialog.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\imap_manager.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\preference_window.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\main_window.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\web_browser_dialog.ui">
-      <Filter>Form Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\mime_raw_message_dialog.h">
+      <Filter>Header Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\LifeMotif.qrc">
+    <CustomBuild Include="..\..\..\src\desktop\mime_structure_dialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\preference_window.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\tag_reset_dialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\web_browser_dialog.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\lifemotif-desktop.qrc">
       <Filter>Resource Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\lifemotif_calendar_widget.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\imap_console_dialog.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\lifemotif_google_oauth2.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\imap_console_window.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\loading_dialog.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\loading_dialog.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\main_window.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\main_window.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\mime_raw_message_dialog.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\mime_raw_message_dialog.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\mime_structure_dialog.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\mime_structure_dialog.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\preference_window.h">
-      <Filter>Header Files</Filter>
+    <CustomBuild Include="..\..\..\src\desktop\preference_window.ui">
+      <Filter>Form Files</Filter>
     </CustomBuild>
-    <CustomBuild Include="..\..\..\qt\web_browser_dialog.h">
+    <CustomBuild Include="..\..\..\src\desktop\tag_reset_dialog.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\web_browser_dialog.ui">
+      <Filter>Form Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\settings.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
   <ItemGroup>
-    <None Include="..\..\..\LICENSE.LGPL">
-      <Filter>Others</Filter>
-    </None>
-    <None Include="..\..\..\qt\resource\lifemotif.ico">
-      <Filter>Resource Files</Filter>
-    </None>
-    <None Include="..\..\..\LICENSE.MIT">
-      <Filter>Others</Filter>
-    </None>
-    <None Include="..\..\..\README">
-      <Filter>Others</Filter>
-    </None>
-    <None Include="..\..\..\qt\NOTE">
-      <Filter>Others</Filter>
-    </None>
-    <None Include="..\..\..\qt\TODO">
-      <Filter>Others</Filter>
-    </None>
+    <ClCompile Include="GeneratedFiles\Debug\moc_calendar_widget.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_calendar_widget.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_google_oauth2.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_google_oauth2.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_imap_console_dialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_imap_console_dialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_imap_manager.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_imap_manager.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_main_window.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_main_window.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mime_raw_message_dialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mime_raw_message_dialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_mime_structure_dialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_mime_structure_dialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_preference_window.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_preference_window.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_tag_reset_dialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_tag_reset_dialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_web_browser_dialog.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_web_browser_dialog.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\attachment.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\calendar_widget.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\config.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\diary.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\email_cache.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\exceptions.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\google_oauth2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\imap_console_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\imap_manager.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\imap_tag.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\loading_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\main.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\main_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\message_types.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\mime_raw_message_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\mime_structure_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\preference_window.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\settings.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\tag_reset_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\utils.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\web_browser_dialog.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\qrc_lifemotif-desktop.cpp">
+      <Filter>Generated Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_settings.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_settings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
   </ItemGroup>
 </Project>

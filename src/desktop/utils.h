@@ -15,9 +15,6 @@ public:
   static QString
     inline JoinPath(const QString& pre, const QString& add);
 
-  /* credential check */
-  static bool IsTokenAvailable();
-
   /* is path or file exists? */
   inline static bool Exists(const QString& path);
 

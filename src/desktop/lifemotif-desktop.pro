@@ -23,12 +23,6 @@ TARGET = lifemotif-desktop
 TEMPLATE = app
 
 SOURCES += \
-    #python_wrapper/basepythonwrapper.cpp \
-    #python_wrapper/googleoauth2wrapper.cpp \
-    #python_wrapper/googleimapwrapper.cpp \
-    #python_wrapper/imapwrapper.cpp \
-    #python_wrapper/oauth2wrapper.cpp \
-    #python_wrapper/localstructurewrapper.cpp \
     email_cache.cpp \
     loading_dialog.cpp \
     main.cpp \
@@ -48,19 +42,11 @@ SOURCES += \
     calendar_widget.cpp \
     exceptions.cpp \
     google_oauth2.cpp \
-    google_oauth2_credential.cpp \
     imap_manager.cpp \
     utils.cpp
 
 
 HEADERS  += \
-    #python_wrapper/basepythonwrapper.h \
-    #python_wrapper/googleoauth2wrapper.h \
-    #python_wrapper/googleimapwrapper.h \
-    #python_wrapper/imapwrapper.h \
-    #python_wrapper/oauth2wrapper.h \
-    #python_wrapper/localstructurewrapper.h \
-    #python_wrapper/python_wrapper.h \
     email_cache.h \
     main_window.h \
     message_types.h \
@@ -79,7 +65,6 @@ HEADERS  += \
     calendar_widget.h \
     exceptions.h \
     google_oauth2.h \
-    google_oauth2_credential.h \
     imap_manager.h \
     utils.h
 

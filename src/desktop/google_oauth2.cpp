@@ -1,5 +1,5 @@
 #include "google_oauth2.h"
-#include <QDateTime>
+
 #include <QFile>
 #include <QJsonDocument>
 
@@ -16,21 +16,22 @@ GoogleOAuth2::GoogleOAuth2(QObject *parent)
   reply = NULL;
 }
 
-QUrl GoogleOAuth2::GetAuthorizationUrl()
+QUrl
+  GoogleOAuth2::GetAuthorizationUrl(
+  const QByteArray& authUri,
+  const QByteArray& clientId,
+  const QByteArray& redirectUri)
 {
   QUrl       url;
   QUrlQuery  query;
 
-  const QByteArray authUri      (Settings::GoogleAuthUri());
-  const QByteArray clientId     (Settings::GoogleClientId());
-  const QByteArray redirectUri  (Settings::GoogleRedirectUri());
   const QByteArray responseType ("code");
   const QByteArray scope        ("https://mail.google.com/");
 
-  query.addQueryItem("client_id", QUrl::toPercentEncoding(clientId));
-  query.addQueryItem("redirect_uri", QUrl::toPercentEncoding(redirectUri));
+  query.addQueryItem("client_id",     QUrl::toPercentEncoding(clientId));
+  query.addQueryItem("redirect_uri",  QUrl::toPercentEncoding(redirectUri));
   query.addQueryItem("response_type", QUrl::toPercentEncoding(responseType));
-  query.addQueryItem("scope", QUrl::toPercentEncoding(scope));
+  query.addQueryItem("scope",         QUrl::toPercentEncoding(scope));
 
   url.setUrl(authUri);
   url.setQuery(query);
@@ -38,15 +39,16 @@ QUrl GoogleOAuth2::GetAuthorizationUrl()
   return url;
 }
 
-void GoogleOAuth2::Authorize(const QByteArray& code)
+void GoogleOAuth2::Authorize(
+  const QByteArray& code,
+  const QUrl&       tokenUri,
+  const QByteArray& clientId,
+  const QByteArray& clientSecret,
+  const QByteArray& redirectUri)
 {
   QNetworkRequest request;
 
-  const QUrl       tokenUri     (Settings::GoogleTokenUri());
-  const QByteArray clientId     (Settings::GoogleClientId());
-  const QByteArray clientSecret (Settings::GoogleClientSecret());
-  const QByteArray redirectUri  (Settings::GoogleRedirectUri());
-  const QByteArray grantType    ("authorization_code");
+  const QByteArray grantType ("authorization_code");
 
   //http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkrequest.html
   QByteArray content;
@@ -119,7 +121,7 @@ void GoogleOAuth2::ReplyFinished()
   ReplyCleanUp(SLOT(ReplyFinished()));
 }
 
-void GoogleOAuth2::Revoke()
+void GoogleOAuth2::Revoke(const QByteArray& accessToken)
 {
   // https://accounts.google.com/o/oauth2/revoke?token=(token)
   // token can be an access token or a refresh token.
@@ -128,7 +130,7 @@ void GoogleOAuth2::Revoke()
   QUrl      url(QString("https://accounts.google.com/o/oauth2/revoke"));
   QUrlQuery query;
 
-  query.addQueryItem(QString("token"), Settings::GoogleAccessToken());
+  query.addQueryItem(QString("token"), accessToken);
   url.setQuery(query);
 
   qDebug() << "Revoke URL: " << url;
@@ -143,11 +145,6 @@ void GoogleOAuth2::Revoke()
     WaitForSignal(reply, SIGNAL(finished()), 5000);
   }
   ReplyCleanUp(SLOT(RevokeReplyFinished()));
-
-  // clean tokens and expiry
-  Settings::GoogleAccessToken  (QByteArray());
-  Settings::GoogleRefreshToken (QByteArray());
-  Settings::GoogleTokenExpiry  (QString());
 }
 
 void GoogleOAuth2::RevokeReplyFinished()
@@ -180,14 +177,16 @@ void GoogleOAuth2::ReplyCleanUp(const char* slotToDisconnect)
 }
 
 QByteArray
-  GoogleOAuth2::GetImapAuthString()
+  GoogleOAuth2::GetImapAuthString(
+  const QString&    emailAddress,
+  const QByteArray& accessToken)
 {
   QByteArray authString;
   const char a = 0x1;
 
-  authString += "user=" + Settings::GoogleEmailAddress().toUtf8() + a;
+  authString += "user=" + emailAddress.toUtf8() + a;
   authString += "auth=Bearer ";
-  authString += Settings::GoogleAccessToken() + a + a;
+  authString += accessToken + a + a;
 
   return authString.toBase64();
 }
@@ -198,14 +197,16 @@ void
 }
 
 void
-  GoogleOAuth2::ImapAuthenticate()
+  GoogleOAuth2::ImapAuthenticate(
+  const QString&    emailAddress,
+  const QByteArray& accessToken)
 {  
   if (IsTokenExpired()) {
     RefreshToken();
   }
 
   // LifeMotifImap* imap = new LifeMotifImap();
-  const QByteArray authString = GetImapAuthString();
+  const QByteArray authString = GetImapAuthString(emailAddress, accessToken);
 
   // host: imap.google.com
   // port: 993
@@ -220,20 +221,8 @@ void
 GoogleOAuth2::ParseReplyJson(const QByteArray& json)
 {
   const QJsonDocument replyJson = QJsonDocument::fromJson(json);
-
   if (replyJson.isObject()) {
-
-    const QVariantMap replyMap = replyJson.toVariant().toMap();
-
-    // calculate expiry
-    QDateTime expiry = QDateTime::currentDateTimeUtc();
-    const int expiresIn = replyMap[QString("expires_in")].toInt();
-
-    expiry = expiry.addSecs(expiresIn);
-
-    Settings::GoogleAccessToken  (replyMap["access_token"].toByteArray());
-    Settings::GoogleRefreshToken (replyMap["refresh_token"].toByteArray());
-    Settings::GoogleTokenExpiry  (expiry.toString(Qt::ISODate));
+    emit GoogleAuthorized(replyJson.toVariant().toMap());
   }
 }
 

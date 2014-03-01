@@ -18,12 +18,15 @@
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
+  _settings(0),
   _oauth2(0),
   _imapManager(0),
-  _consoleDialog(0),
+  _imapconsoleDialog(0),
   ui(new Ui::MainWindow)
 {
   ui->setupUi(this);
+  settings()->Init();
+
   LoadLocalStructure();
   UpdateCalendar();
   UpdateMenu();
@@ -41,7 +44,16 @@ void MainWindow::Authorize()
 {
   WebBrowserDialog wbDlg(this);
 
-  wbDlg.SetAuthorizationUrl(OAuth2()->GetAuthorizationUrl());
+  QObject::connect(
+    oauth2(), SIGNAL(GoogleAuthorized (const QVariantMap& replyJsonMap)),
+    settings(), SLOT(GoogleAuthorized (const QVariantMap& replyJsonMap)));
+
+  wbDlg.SetAuthorizationUrl(
+    oauth2()->GetAuthorizationUrl(
+      settings()->GoogleAuthUri(),
+      settings()->GoogleClientId(),
+      settings()->GoogleRedirectUri()));
+
   wbDlg.setWindowModality(Qt::ApplicationModal);
 
   if (wbDlg.exec() != QDialog::Accepted) {
@@ -49,7 +61,17 @@ void MainWindow::Authorize()
     return;
   }
 
-  OAuth2()->Authorize(wbDlg.AuthorizationCode());
+  oauth2()->Authorize(
+    wbDlg.AuthorizationCode(),
+    QUrl(settings()->GoogleTokenUri()),
+    settings()->GoogleClientId(),
+    settings()->GoogleClientSecret(),
+    settings()->GoogleRedirectUri());
+
+  QObject::disconnect(
+    oauth2(), SIGNAL(GoogleAuthorized (const QVariantMap& replyJsonMap)),
+    settings(), SLOT(GoogleAuthorized (const QVariantMap& replyJsonMap)));
+
   UpdateMenu();
 }
 
@@ -101,7 +123,12 @@ void MainWindow::ParseMessage(const std::string& rawMessage)
 void MainWindow::RevokeAuthentication()
 {
   // revoke authentication and remove file
-  OAuth2()->Revoke();
+  oauth2()->Revoke(settings()->GoogleAccessToken());
+
+  // remove tokens, and token expiry
+  settings()->GoogleAccessToken(QByteArray());
+  settings()->GoogleRefreshToken(QByteArray());
+  settings()->GoogleTokenExpiry(QString());
 }
 
 void MainWindow::UpdateCalendar()
@@ -146,7 +173,7 @@ void MainWindow::UpdateDiaryInformationUI(void)
 
 QString MainWindow::FetchMessage(const MsgIdType& id)
 {
-//  QString rawMessage;
+  QString rawMessage;
 
 //  if (emailCache()->HasCache(id)) {
 //    qDebug() << id << "is cached. Load from local disk.";
@@ -158,7 +185,7 @@ QString MainWindow::FetchMessage(const MsgIdType& id)
 //    emailCache()->SetCache(id, rawMessage);
 //  }
 
-//  return rawMessage;
+  return rawMessage;
 }
 
 DateType MainWindow::GetDateFromCalendar() const
@@ -168,7 +195,7 @@ DateType MainWindow::GetDateFromCalendar() const
 
 void MainWindow::UpdateMenu()
 {
-  const bool enable = Utils::IsTokenAvailable();
+  const bool enable = settings()->IsTokenAvailable();
 
   // Cannot do those actions if authenticated:
   //  - authentication
@@ -198,14 +225,16 @@ void MainWindow::ClearDiaryInformationUI()
 
 void MainWindow::OpenImapConsole()
 {
-  ConsoleDialog()->show();
-  ConsoleDialog()->raise();
-  ConsoleDialog()->activateWindow();
+  imapConsoleDialog()->show();
+  imapConsoleDialog()->raise();
+  imapConsoleDialog()->activateWindow();
 }
 
 void MainWindow::ImapAuthenticate()
 {
-  OAuth2()->ImapAuthenticate();
+  oauth2()->ImapAuthenticate(
+    settings()->GoogleEmailAddress(),
+    settings()->GoogleAccessToken());
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()
@@ -268,7 +297,7 @@ void MainWindow::on_clearTextButton_clicked()
 
 void MainWindow::on_actionBrowserAuthentication_triggered()
 {
-  if (Utils::IsTokenAvailable() &&
+  if (settings()->IsTokenAvailable() &&
       QMessageBox::No == QMessageBox::question(
         this,
         QString("Double Authentication"),
@@ -328,7 +357,7 @@ void MainWindow::on_diaryList_clicked(const QModelIndex &index)
 
 void MainWindow::on_revokeAuthentication_triggered()
 {
-  if (Utils::IsTokenAvailable() &&
+  if (settings()->IsTokenAvailable() &&
       QMessageBox::No == QMessageBox::question(
         this,
         QString("Revoke Authentication"),
