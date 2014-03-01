@@ -16,6 +16,10 @@ const char Config::DefaultValues::fileCacheDir[]      = "cache";
 const char Config::DefaultValues::localStructureDir[] = "local";
 
 const char
+Config::DefaultValues::Google::scope[]
+= "https://mail.google.com/";
+
+const char
 Config::DefaultValues::Google::authUri[]
 = "https://accounts.google.com/o/oauth2/auth";
 

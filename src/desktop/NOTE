@@ -3,14 +3,18 @@ http://www.qtcentre.org/threads/2221-Sending-email-using-Qt.
 http://www.washington.edu/imap/
 http://stackoverflow.com/questions/4726633/connecting-to-imap-google-with-ssl
 http://etpan.org/libetpan.html
+
+===== Google GMAIL =====
 https://developers.google.com/gmail/imap_extensions
 https://developers.google.com/gmail/xoauth2_protocol
+http://email.about.com/od/accessinggmail/f/Gmail_IMAP_Settings.htm
 
 ===== Qt Reference URL =====
   QT Network programming: http://qt-project.org/doc/qt-5.0/qtnetwork/qtnetwork-programming.html
   QNetworkRequest: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkrequest.html
   QNetworkAccessManager: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkaccessmanager.html
   QNetworkReply: http://qt-project.org/doc/qt-5.0/qtnetwork/qnetworkreply.html
+  QSslSocket: http://qt-project.org/doc/qt-4.8/qsslsocket.html
 
 ===== Google OAuth2 Reference =====
 

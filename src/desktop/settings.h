@@ -43,6 +43,7 @@ signals:
 
 private slots:
   void GoogleAuthorized (const QVariantMap& replyJsonMap);
+  void GoogleTokenRefreshed (const QVariantMap& replyJsonMap);
 
 private:
   void CheckSettings();
@@ -52,53 +53,60 @@ private:
 
   void ValidateSubdiretory(QDir& dir, const QString& subdir);
 
+  QString GetTokenExpiry(const int expiresIn) const;
+
 public:
   void Init();
-  bool IsTokenAvailable();
+  bool IsTokenAvailable() const;
+
+  bool IsGoogleTokenAvailable() const;
+  bool IsGoogleTokenExpired() const;
 
   /* general settings */
-  bool UseFileCache();
+  const bool UseFileCache() const;
   void UseFileCache(bool value);
 
-  const QString CacheDir();
+  const QString CacheDir() const;
   void          CacheDir(const QString& value);
 
-  const QString LocalStructureDir();
+  const QString LocalStructureDir() const;
   void          LocalStructureDir(const QString& value);
 
 
   /* google settings */
-  const QByteArray GoogleAuthUri();
+  const QByteArray GoogleScope() const;
+
+  const QByteArray GoogleAuthUri() const;
   void             GoogleAuthUri(const QByteArray& value);
 
-  const QByteArray GoogleTokenUri();
+  const QByteArray GoogleTokenUri() const;
   void             GoogleTokenUri(const QByteArray& value);
 
-  const QByteArray GoogleRevokeUri();
+  const QByteArray GoogleRevokeUri() const;
   void             GoogleRevokeUri(const QByteArray& value);
 
-  const QString GoogleEmailAddress();
+  const QString GoogleEmailAddress() const;
   void          GoogleEmailAddress(const QString& value);
 
-  const QString GoogleMailbox();
+  const QString GoogleMailbox() const;
   void          GoogleMailbox(const QString& value);
 
-  const QByteArray GoogleClientId();
+  const QByteArray GoogleClientId() const;
   //void             GoogleClientId(const QByteArray& value);
 
-  const QByteArray GoogleClientSecret();
+  const QByteArray GoogleClientSecret() const;
   // void             GoogleClientSecret(const QByteArray& value);
 
-  const QByteArray GoogleRedirectUri();
+  const QByteArray GoogleRedirectUri() const;
   void             GoogleRedirectUri(const QByteArray& value);
 
-  const QByteArray GoogleAccessToken();
+  const QByteArray GoogleAccessToken() const;
   void             GoogleAccessToken(const QByteArray& value);
 
-  const QByteArray GoogleRefreshToken();
+  const QByteArray GoogleRefreshToken() const;
   void             GoogleRefreshToken(const QByteArray& value);
 
-  const QString GoogleTokenExpiry();
+  const QString GoogleTokenExpiry() const;
   void          GoogleTokenExpiry(const QString& value);
 };
 

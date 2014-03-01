@@ -31,6 +31,7 @@ public:
 
     class Google {
     public:
+      static const char scope[];
       static const char authUri[];
       static const char tokenUri[];
       static const char revokeUri[];

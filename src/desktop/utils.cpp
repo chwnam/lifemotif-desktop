@@ -51,4 +51,23 @@ Utils::LoadJson(
   return v;
 }
 
+bool
+Utils::WaitForSignal(
+  QObject* sender, const char *signal, int timeoutMsec)
+{
+  QEventLoop loop;
+  QTimer     timer;
+
+  timer.setInterval(timeoutMsec);
+  timer.setSingleShot(true);
+
+  loop.connect(sender, signal, SLOT(quit()));
+  loop.connect(&timer, SIGNAL(timeout()), SLOT(quit()));
+
+  timer.start();
+  loop.exec();
+
+  return timer.isActive();
+}
+
 }

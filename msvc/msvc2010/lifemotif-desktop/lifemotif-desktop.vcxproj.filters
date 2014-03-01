@@ -50,6 +50,12 @@
     <None Include="..\..\..\src\desktop\resource\lifemotif-desktop.ico">
       <Filter>Resource Files</Filter>
     </None>
+    <None Include="..\..\..\src\desktop\NOTE">
+      <Filter>Others</Filter>
+    </None>
+    <None Include="..\..\..\src\desktop\TODO">
+      <Filter>Others</Filter>
+    </None>
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="..\..\..\src\desktop\attachment.h">
@@ -169,6 +175,9 @@
       <Filter>Form Files</Filter>
     </CustomBuild>
     <CustomBuild Include="..\..\..\src\desktop\settings.h">
+      <Filter>Header Files</Filter>
+    </CustomBuild>
+    <CustomBuild Include="..\..\..\src\desktop\google_xoauth2.h">
       <Filter>Header Files</Filter>
     </CustomBuild>
   </ItemGroup>
@@ -303,6 +312,15 @@
       <Filter>Generated Files\Debug</Filter>
     </ClCompile>
     <ClCompile Include="GeneratedFiles\Release\moc_settings.cpp">
+      <Filter>Generated Files\Release</Filter>
+    </ClCompile>
+    <ClCompile Include="..\..\..\src\desktop\google_xoauth2.cpp">
+      <Filter>Source Files</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Debug\moc_google_xoauth2.cpp">
+      <Filter>Generated Files\Debug</Filter>
+    </ClCompile>
+    <ClCompile Include="GeneratedFiles\Release\moc_google_xoauth2.cpp">
       <Filter>Generated Files\Release</Filter>
     </ClCompile>
   </ItemGroup>

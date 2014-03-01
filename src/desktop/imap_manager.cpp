@@ -4,6 +4,7 @@
 #include <QByteArray>
 #include <QSslCipher>
 
+#include "utils.h"
 
 namespace LifeMotif {
 
@@ -13,49 +14,76 @@ ImapManager::ImapManager(QObject *parent) :
 {
 }
 
-void ImapManager::Connect(
-    const QString& host,
-    const quint16  port,
-    const bool     useSsl)
-{
-  if (socket == NULL) {
-    socket = new QSslSocket(this);
-    ConnectSlots();
-
-    if (useSsl) {
-      socket->connectToHostEncrypted(host, port);
-    }
-    else {
-      socket->connectToHost(host, port);
-    }
-  }
-}
-
-void ImapManager::Disconnect()
+ImapManager::~ImapManager()
 {
   if (socket) {
-    socket->disconnectFromHost();
     DisconnectSlots();
   }
 }
 
-void ImapManager::Send(const QByteArray& data)
+bool ImapManager::Connect(
+  const QString& host,
+  const quint16  port,
+  const bool     useSsl)
+{
+  if (socket == NULL) {
+    socket = new QSslSocket(this);
+    ConnectSlots();
+  }
+
+  if (useSsl) {
+    socket->connectToHostEncrypted(host, port);
+    if (socket->waitForConnected() == false) return false;
+    if (socket->waitForEncrypted() == false) return false;
+  } else {
+    socket->connectToHost(host, port);
+    if (socket->waitForConnected() == false) return false;
+  }
+
+  return true;
+}
+
+void ImapManager::Disconnect()
+{
+  if (socket && socket->state() == QAbstractSocket::ConnectedState) {
+    socket->disconnectFromHost();
+  }
+}
+
+void ImapManager::SendCommand(const QByteArray& data)
 {
   if (socket) {
     // append tag
-    QByteArray dataWithTag = tag.Issue() + ' ' + data;
-    socket->write(dataWithTag + "\r\n");
-    tag.Advance();
+    const QByteArray request = tag.Issue() + ' ' + data;
 
-    // emit signal.
+    emit clientRequest(request);
+    socket->write(request + "\r\n");
+    tag.Advance();
+    socket->waitForReadyRead();
   }
 }
+
+//void ImapManager::ResponseReady(const QByteArray& response)
+//{
+//  qDebug() << __FUNCTION__ << ">>" << response;
+//}
+//
+//void ImapManager::ResponseCapability(const QByteArray& response)
+//{
+//  qDebug() << __FUNCTION__ << ">>" << response;
+//}
+//
+//void ImapManager::ResponseXOAuth2(const QByteArray& response)
+//{
+//  qDebug() << __FUNCTION__ << ">>" << response;
+//}
+
 
 /* * * * * * * * * * * * * * * * * * Slots * * * * * * * * * * * * * * * * * */
 void ImapManager::ConnectSlots()
 {
   /* connected */
-  QObject::connect(socket, SIGNAL(onnected()),
+  QObject::connect(socket, SIGNAL(connected()),
           this, SLOT(SocketConnected()));
 
   /* disconnected */
@@ -68,7 +96,7 @@ void ImapManager::ConnectSlots()
 
   /* encrypted */
   QObject::connect(socket, SIGNAL(encrypted()),
-          this, SLOT(socketEncrypted()));
+          this, SLOT(SocketEncrypted()));
 
   /* ssl errors */
   QObject::connect(socket, SIGNAL(sslErrors(QList<QSslError>)),
@@ -83,27 +111,27 @@ void ImapManager::DisconnectSlots()
 {
   /* connected */
   QObject::disconnect(socket, SIGNAL(connected()),
-          this, SLOT(socketConnected()));
+          this, SLOT(SocketConnected()));
 
   /* state changed */
   QObject::disconnect(socket, SIGNAL(stateChanged(QAbstractSocket::SocketState)),
-          this, SLOT(socketStateChanged(QAbstractSocket::SocketState)));
+          this, SLOT(SocketStateChanged(QAbstractSocket::SocketState)));
 
   /* encrypted */
   QObject::disconnect(socket, SIGNAL(encrypted()),
-          this, SLOT(socketEncrypted()));
+          this, SLOT(SocketEncrypted()));
 
   /* ssl errors */
   QObject::disconnect(socket, SIGNAL(sslErrors(QList<QSslError>)),
-          this, SLOT(sslErrors(QList<QSslError>)));
+          this, SLOT(SslErrors(QList<QSslError>)));
 
   /* ready read */
   QObject::disconnect(socket, SIGNAL(readyRead()),
-          this, SLOT(socketReadyRead()));
+          this, SLOT(SocketReadyRead()));
 
   /* disconnected */
   QObject::disconnect(socket, SIGNAL(disconnected()),
-          this, SLOT(socketDisconnected()));
+          this, SLOT(SocketDisconnected()));
 }
 
 void ImapManager::SocketConnected()
@@ -117,8 +145,8 @@ void ImapManager::SocketDisconnected()
 }
 
 void
-  ImapManager::SocketStateChanged(
-    QAbstractSocket::SocketState state)
+ImapManager::SocketStateChanged(
+  QAbstractSocket::SocketState state)
 {
   qDebug() << "Socket state has been changed:" << state;
 }
@@ -137,7 +165,9 @@ void ImapManager::SocketEncrypted()
 
 void ImapManager::SocketReadyRead()
 {
-  // parse response.
+  if (socket) {
+    emit dataReceived(socket->readAll());
+  }
 }
 
 void ImapManager::SslErrors(const QList<QSslError> &errors)

@@ -8,8 +8,6 @@
 #include <QNetworkAccessManager>
 #include <QNetworkRequest>
 #include <QNetworkReply>
-#include <QEventLoop>
-#include <QTimer>
 
 #include "imap_manager.h"
 
@@ -34,34 +32,36 @@ public:
     const QByteArray& clientSecret,
     const QByteArray& redirectUri);
 
-  void ImapAuthenticate(
-    const QString&    emailAddress,
-    const QByteArray& accessToken);
-  
+  void Refresh(
+    const QUrl&       tokenUri,
+    const QByteArray& clientId,
+    const QByteArray& clientSecret,
+    const QByteArray& refreshToken);
+
   void Revoke(const QByteArray& accessToken);
 
 signals:
-  void GoogleAuthorized (const QVariantMap& replyJsonMap);
+  void GoogleAuthorized (const QVariantMap&);
+  void GoogleTokenRefreshed (const QVariantMap&);
 
 private slots:
   // slot for authentication
-  void ReplyFinished();
-  void ReplyError(QNetworkReply::NetworkError error);
+  void AuthReplyFinished();
+
+  // slot for token refresh
+  void RefreshReplyFinished();
 
   // slot for revoke
   void RevokeReplyFinished();
 
+  void ReplyError(QNetworkReply::NetworkError error);
+
+  
+
 private:
-  void ParseReplyJson(const QByteArray& json);
-  void RefreshToken();
+  void ParseAuthReplyJson(const QByteArray& json);
+  void ParseRefresReplyJson(const QByteArray& json);
   void ReplyCleanUp(const char* slotToDisconnect);  
-  bool WaitForSignal(QObject *sender, const char *signal, int timeout);
-
-  QByteArray GetImapAuthString(
-    const QString&    emailAddress,
-    const QByteArray& accessToken);
-
-  bool IsTokenExpired() const {return false; }
 
 private:
   QNetworkAccessManager *manager;

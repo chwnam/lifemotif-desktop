@@ -4,18 +4,16 @@ TODOS
 - About 창의 메시지 조금 더 추가
   - 버전, 저작권, 만든 이.
   - 의존 라이브러리.
-- imapWrapper는 1시간이 지나도 쓸 수 있는 건가?
-    만약 시간이 오래 되어 이메일 서버에서 로그아웃 되면?
+   만약 시간이 오래 되어 이메일 서버에서 로그아웃 되면?
 
 Version 0.1.0034 (Feb. 28th, 2014)
 ==================================
 <Milestone Version>
+- A big change! Namespace "LifeMotif" declared.
 - File naming convention changed
   + use lowercase include '_'.
   + do not use blank
-  - Usually namespace 'LifeMotif' is not used in each file name
-
-- A big change! Namespace "LifeMotif" declared.
+  + Namespace 'LifeMotif' is not used in each file name
 
 - Python wrapper removal
   - OAuth2

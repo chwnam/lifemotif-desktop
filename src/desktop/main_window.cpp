@@ -15,6 +15,7 @@
 #include "config.h"
 #include "web_browser_dialog.h"
 #include "google_oauth2.h"
+#include "google_xoauth2.h"
 
 MainWindow::MainWindow(QWidget *parent) :
   QMainWindow(parent),
@@ -45,8 +46,8 @@ void MainWindow::Authorize()
   WebBrowserDialog wbDlg(this);
 
   QObject::connect(
-    oauth2(), SIGNAL(GoogleAuthorized (const QVariantMap& replyJsonMap)),
-    settings(), SLOT(GoogleAuthorized (const QVariantMap& replyJsonMap)));
+    oauth2(), SIGNAL(GoogleAuthorized (const QVariantMap&)),
+    settings(), SLOT(GoogleAuthorized (const QVariantMap&)));
 
   wbDlg.SetAuthorizationUrl(
     oauth2()->GetAuthorizationUrl(
@@ -232,9 +233,49 @@ void MainWindow::OpenImapConsole()
 
 void MainWindow::ImapAuthenticate()
 {
-  oauth2()->ImapAuthenticate(
-    settings()->GoogleEmailAddress(),
-    settings()->GoogleAccessToken());
+  // token refresh
+  if (settings()->IsGoogleTokenExpired()) {
+
+    QObject::connect(
+      oauth2(), SIGNAL(GoogleTokenRefreshed (const QVariantMap&)),
+      settings(), SLOT(GoogleTokenRefreshed (const QVariantMap&)));
+
+    oauth2()->Refresh(QUrl(settings()->GoogleTokenUri()),
+                      settings()->GoogleClientId(),
+                      settings()->GoogleClientSecret(),
+                      settings()->GoogleRefreshToken());                                   
+
+    QObject::disconnect(
+      oauth2(), SIGNAL(GoogleTokenRefreshed (const QVariantMap&)),
+      settings(), SLOT(GoogleTokenRefreshed (const QVariantMap&)));
+  }
+
+  // host: imap.google.com
+  // port: 993
+  // SSL: always true
+  imapManager()->Connect(QString("imap.gmail.com"), 993, true);
+
+  if (GoogleXOAuth2(imapManager()).Authorize(
+        settings()->GoogleEmailAddress(),
+        settings()->GoogleAccessToken()) == false) {
+    QMessageBox::critical(this, "Failure", "Login failed!");
+    imapManager()->Disconnect();
+    return;
+  }
+}
+
+void MainWindow::ShowDiary(const int entry)
+{
+  // get message id
+  DateType ds = GetDateFromCalendar();
+
+  if (localStructure.find(ds) != localStructure.end()) {
+    MsgIdType msgId = localStructure[ds].messageIds[entry];
+    // fetch message by message id, and parse email message
+    ParseMessage(FetchMessage(msgId).toStdString());
+    // update ui
+    UpdateDiaryInformationUI();
+  }
 }
 
 void MainWindow::on_mimeRawMessageButton_clicked()
@@ -333,20 +374,6 @@ void MainWindow::on_calendarWidget_clicked(const QDate &date)
     for(std::size_t i = 0; i < group.messageIds.size(); ++i) {
       list.addItem(QString::number(group.messageIds[i]));
     }
-  }
-}
-
-void MainWindow::ShowDiary(const int entry)
-{
-  // get message id
-  DateType ds = GetDateFromCalendar();
-
-  if (localStructure.find(ds) != localStructure.end()) {
-    MsgIdType msgId = localStructure[ds].messageIds[entry];
-    // fetch message by message id, and parse email message
-    ParseMessage(FetchMessage(msgId).toStdString());
-    // update ui
-    UpdateDiaryInformationUI();
   }
 }
 

@@ -4,8 +4,10 @@
 #include <QObject>
 #include <QSslSocket>
 #include <QString>
+#include <QByteArray>
 
 #include "imap_tag.h"
+
 
 namespace LifeMotif {
 
@@ -15,16 +17,19 @@ class ImapManager : public QObject
 
 public:
   explicit ImapManager(QObject *parent = 0);
+  ~ImapManager();
 
-  void Connect(const QString& host, const quint16 port, const bool useSsl);
+  bool Connect(const QString& host, const quint16 port, bool useSsl = true);
   void Disconnect();
+  void SendCommand(const QByteArray& data);
 
-  bool
-    AuthenticateXAuth2(
-      const QString& emailAddress,
-      const QString& accessToken);
+  //bool AuthenticateXOAuth2(
+  //    const QString& emailAddress,
+  //    const QByteArray& accessToken);
 
 signals:
+  void dataReceived(const QByteArray&);
+  void clientRequest(const QByteArray&);
 
 private slots:
   void SocketConnected();
@@ -36,12 +41,24 @@ private slots:
 
 private:
   void ConnectSlots();
-  void DisconnectSlots();
-  void Send(const QByteArray& data);
+  void DisconnectSlots(); 
+
+  //QByteArray XOAuth2String(
+  //  const QString&    emailAddress,
+  //  const QByteArray& accessToken);
+
+  /* response functions */
+  //void ResponseReady(const QByteArray& response);
+  //void ResponseCapability(const QByteArray& response);
+  //void ResponseXOAuth2(const QByteArray& response);
 
 private:
   QSslSocket *socket;
   ImapTag     tag;
+  
+
+  //typedef void (ImapManager::*ResponseFunction) (const QByteArray& data);
+  //ResponseFunction responseFunction;
 };
 
 }

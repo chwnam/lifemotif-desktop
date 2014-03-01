@@ -32,10 +32,29 @@ void Settings::Init()
   qDebug() << "All settings are checked and initialized.";
 }
 
-bool Settings::IsTokenAvailable()
+bool Settings::IsTokenAvailable() const
 {
   return GoogleAccessToken().isEmpty()  == false &&
          GoogleRefreshToken().isEmpty() == false;
+}
+
+bool Settings::IsGoogleTokenAvailable() const
+{
+  return GoogleAccessToken().isEmpty()  == false &&
+         GoogleRefreshToken().isEmpty() == false;
+}
+
+bool Settings::IsGoogleTokenExpired() const
+{
+  const QDateTime now = QDateTime::currentDateTimeUtc();
+  const QDateTime expiry
+    = QDateTime::fromString(GoogleTokenExpiry(), Qt::ISODate);
+
+  qDebug() << "now:" << now;
+  qDebug() << "expire:" << expiry;
+  qDebug() << "expiry < now:" << (expiry < now);
+
+  return expiry < now;
 }
 
 void Settings::CheckSettings()
@@ -75,6 +94,10 @@ void Settings::CheckSettings()
   SetDefaultValue(
     QString("local_structure_dir"),
     QVariant(localSturctureDirDefault));
+
+  SetDefaultValue(
+    QString("google/scope"),
+    QVariant(Config::DefaultValues::Google::scope));
 
   SetDefaultValue(
     QString("google/auth_uri"),
@@ -151,7 +174,7 @@ Settings::ValidateSubdiretory(
 
 /***************************************************************************/
 // use_file_cache: use file cache.
-bool Settings::UseFileCache() {
+const bool Settings::UseFileCache() const {
   return settings->value(QString("use_file_cache")).toBool();
 }
 void Settings::UseFileCache(bool value) {
@@ -161,7 +184,7 @@ void Settings::UseFileCache(bool value) {
 
 /***************************************************************************/
 // cache_dir: path to cache directory, storing email messages.
-const QString Settings::CacheDir() {
+const QString Settings::CacheDir() const {
   return settings->value(QString("cache_dir")).toString();
 }
 void Settings::CacheDir(const QString& value) {
@@ -171,7 +194,7 @@ void Settings::CacheDir(const QString& value) {
 
 /***************************************************************************/
 // local_structure_dir:
-const QString Settings::LocalStructureDir() {
+const QString Settings::LocalStructureDir() const {
   return settings->value(QString("local_structure_dir")).toString();
 }
 void Settings::LocalStructureDir(const QString& value) {
@@ -180,8 +203,14 @@ void Settings::LocalStructureDir(const QString& value) {
 }
 
 /***************************************************************************/
+// google/scope (gmail):
+const QByteArray Settings::GoogleScope() const {
+  return settings->value(QString("google/scope")).toByteArray();
+}
+
+/***************************************************************************/
 // google/auth_uri:
-const QByteArray Settings::GoogleAuthUri() {
+const QByteArray Settings::GoogleAuthUri() const {
   return settings->value(QString("google/auth_uri")).toByteArray();
 }
 void Settings::GoogleAuthUri(const QByteArray& value) {
@@ -191,7 +220,7 @@ void Settings::GoogleAuthUri(const QByteArray& value) {
 
 /***************************************************************************/
 // google/token_uri:
-const QByteArray Settings::GoogleTokenUri() {
+const QByteArray Settings::GoogleTokenUri() const {
   return settings->value(QString("google/token_uri")).toByteArray();
 }
 void Settings::GoogleTokenUri(const QByteArray& value) {
@@ -201,7 +230,7 @@ void Settings::GoogleTokenUri(const QByteArray& value) {
 
 /***************************************************************************/
 // google/revoke_uri:
-const QByteArray Settings::GoogleRevokeUri() {
+const QByteArray Settings::GoogleRevokeUri() const {
   return settings->value(QString("google/revoke_uri")).toByteArray();
 }
 void Settings::GoogleRevokeUri(const QByteArray& value) {
@@ -211,7 +240,7 @@ void Settings::GoogleRevokeUri(const QByteArray& value) {
 
 /***************************************************************************/
 // google/email_address:
-const QString Settings::GoogleEmailAddress() {
+const QString Settings::GoogleEmailAddress() const {
   return settings->value(QString("google/email_address")).toString();
 }
 void Settings::GoogleEmailAddress(const QString& value) {
@@ -221,7 +250,7 @@ void Settings::GoogleEmailAddress(const QString& value) {
 
 /***************************************************************************/
 // google/mailbox:
-const QString Settings::GoogleMailbox() {
+const QString Settings::GoogleMailbox() const {
   return settings->value(QString("google/mailbox")).toString();
 }
 void Settings::GoogleMailbox(const QString& value) {
@@ -231,7 +260,7 @@ void Settings::GoogleMailbox(const QString& value) {
 
 /***************************************************************************/
 // google/client_id: client ID from Google Developers Console
-const QByteArray Settings::GoogleClientId() {
+const QByteArray Settings::GoogleClientId() const {
   return Config::DefaultValues::Google::clientId;
 }
 //  void Settings::GoogleClientId(const QByteArray& value) {
@@ -240,7 +269,7 @@ const QByteArray Settings::GoogleClientId() {
 
 /***************************************************************************/
 // google/client_secret: client secret from Google Developers Console
-const QByteArray Settings::GoogleClientSecret() {
+const QByteArray Settings::GoogleClientSecret() const {
   return Config::DefaultValues::Google::clientSecret;
 }
 //  void Settings::GoogleClientSecret(const QByteArray& value) {
@@ -249,7 +278,7 @@ const QByteArray Settings::GoogleClientSecret() {
 
 /***************************************************************************/
 // google/redirect_uri: redirect uri from Google Developers Console
-const QByteArray Settings::GoogleRedirectUri() {
+const QByteArray Settings::GoogleRedirectUri() const {
   return settings->value(QString("google/redirect_uri")).toByteArray();
 }
 void Settings::GoogleRedirectUri(const QByteArray& value) {
@@ -259,7 +288,7 @@ void Settings::GoogleRedirectUri(const QByteArray& value) {
 
 /***************************************************************************/
 // google/access_token: Google OAuth2 access token
-const QByteArray Settings::GoogleAccessToken() {
+const QByteArray Settings::GoogleAccessToken() const {
   return settings->value(QString("google/access_token")).toByteArray();
 }
 void Settings::GoogleAccessToken(const QByteArray& value) {
@@ -269,7 +298,7 @@ void Settings::GoogleAccessToken(const QByteArray& value) {
 
 /***************************************************************************/
 // google/refresh_token: Google OAuth2 refresh token
-const QByteArray Settings::GoogleRefreshToken() {
+const QByteArray Settings::GoogleRefreshToken() const {
   return settings->value(QString("google/refresh_token")).toByteArray();
 }
 void Settings::GoogleRefreshToken(const QByteArray& value) {
@@ -279,7 +308,7 @@ void Settings::GoogleRefreshToken(const QByteArray& value) {
 
 /***************************************************************************/
 // google/token_expiry: Google OAuth2 token expiry
-const QString Settings::GoogleTokenExpiry() {
+const QString Settings::GoogleTokenExpiry() const {
   return settings->value(QString("google/token_expiry")).toString();
 }
 void Settings::GoogleTokenExpiry(const QString& value) {
@@ -290,14 +319,28 @@ void Settings::GoogleTokenExpiry(const QString& value) {
 void Settings::GoogleAuthorized(const QVariantMap& replyJsonMap)
 {
   // calculate expiry
-  QDateTime expiry    = QDateTime::currentDateTimeUtc();
-  const int expiresIn = replyJsonMap[QString("expires_in")].toInt();
-
-  expiry = expiry.addSecs(expiresIn);
+  const QString expiry
+    = GetTokenExpiry(replyJsonMap[QString("expires_in")].toInt());
 
   GoogleAccessToken  (replyJsonMap["access_token"].toByteArray());
   GoogleRefreshToken (replyJsonMap["refresh_token"].toByteArray());
-  GoogleTokenExpiry  (expiry.toString(Qt::ISODate));
+  GoogleTokenExpiry  (expiry);
+}
+
+void Settings::GoogleTokenRefreshed (const QVariantMap& replyJsonMap)
+{
+  // update our refresh token and expiry
+  const QString expiry
+    = GetTokenExpiry(replyJsonMap[QString("expires_in")].toInt());
+
+  GoogleAccessToken  (replyJsonMap["access_token"].toByteArray());
+  GoogleTokenExpiry  (expiry);
+}
+
+QString Settings::GetTokenExpiry(const int expiresIn) const
+{
+  return
+    QDateTime::currentDateTimeUtc().addSecs(expiresIn).toString(Qt::ISODate);
 }
 
 }

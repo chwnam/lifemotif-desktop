@@ -3,8 +3,10 @@
 
 #include <string>
 #include <QDir>
+#include <QEventLoop>
 #include <QFileInfo>
 #include <QString>
+#include <QTimer>
 
 
 namespace LifeMotif {
@@ -12,8 +14,8 @@ namespace LifeMotif {
 class Utils
 {
 public:
-  static QString
-    inline JoinPath(const QString& pre, const QString& add);
+  inline static QString
+  JoinPath(const QString& pre, const QString& add);
 
   /* is path or file exists? */
   inline static bool Exists(const QString& path);
@@ -35,6 +37,9 @@ public:
 
   static QVariant
   LoadJson(const QString& fileName, bool* isQVariantMap);
+
+  static bool WaitForSignal(
+    QObject* sender, const char *signal, int timeoutMsec);
 };
 
 QString Utils::JoinPath(const QString& pre, const QString& add)

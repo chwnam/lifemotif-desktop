@@ -74,33 +74,18 @@ void GoogleOAuth2::Authorize(
     reply = manager->post(request, content);
 
     if (reply) {
-      connect(reply, SIGNAL(finished()), this, SLOT(ReplyFinished()));
+      connect(
+        reply, SIGNAL(finished()),
+        this, SLOT(AuthReplyFinished()));
+
       connect(
         reply, SIGNAL(error(QNetworkReply::NetworkError)),
         this, SLOT(ReplyError(QNetworkReply::NetworkError)));
+
       //WaitForSignal(manager, SIGNAL(finished(QNetworkReply*)), 5000);
-      WaitForSignal(reply, SIGNAL(finished()), 5000);
+      Utils::WaitForSignal(reply, SIGNAL(finished()), 5000);
     }
   }
-}
-
-bool
-  GoogleOAuth2::WaitForSignal(
-    QObject *sender, const char *signal, int timeout)
-{
-  QEventLoop loop;
-  QTimer timer;
-
-  timer.setInterval(timeout);
-  timer.setSingleShot(true);
-
-  loop.connect(sender, signal, SLOT(quit()));
-  loop.connect(&timer, SIGNAL(timeout()), SLOT(quit()));
-
-  timer.start();
-  loop.exec();
-
-  return timer.isActive();
 }
 
 void GoogleOAuth2::ReplyError(QNetworkReply::NetworkError error)
@@ -108,7 +93,7 @@ void GoogleOAuth2::ReplyError(QNetworkReply::NetworkError error)
   qDebug() << "Error code:" << error;
 }
 
-void GoogleOAuth2::ReplyFinished()
+void GoogleOAuth2::AuthReplyFinished()
 {
     // header debugging code
 //  const QList<QNetworkReply::RawHeaderPair >& pairs = reply->rawHeaderPairs();
@@ -117,8 +102,14 @@ void GoogleOAuth2::ReplyFinished()
 //    qDebug() << it->first << it->second;
 //  }
 
-  ParseReplyJson(reply->readAll());
-  ReplyCleanUp(SLOT(ReplyFinished()));
+  ParseAuthReplyJson(reply->readAll());
+  ReplyCleanUp(SLOT(AuthReplyFinished()));
+}
+
+void GoogleOAuth2::RefreshReplyFinished()
+{
+  ParseRefresReplyJson(reply->readAll());
+  ReplyCleanUp(SLOT(RefreshReplyFinished()));
 }
 
 void GoogleOAuth2::Revoke(const QByteArray& accessToken)
@@ -142,7 +133,7 @@ void GoogleOAuth2::Revoke(const QByteArray& accessToken)
     connect(
       reply, SIGNAL(error(QNetworkReply::NetworkError)),
       this, SLOT(ReplyError(QNetworkReply::NetworkError)));
-    WaitForSignal(reply, SIGNAL(finished()), 5000);
+    Utils::WaitForSignal(reply, SIGNAL(finished()), 5000);
   }
   ReplyCleanUp(SLOT(RevokeReplyFinished()));
 }
@@ -176,53 +167,63 @@ void GoogleOAuth2::ReplyCleanUp(const char* slotToDisconnect)
   }
 }
 
-QByteArray
-  GoogleOAuth2::GetImapAuthString(
-  const QString&    emailAddress,
-  const QByteArray& accessToken)
-{
-  QByteArray authString;
-  const char a = 0x1;
-
-  authString += "user=" + emailAddress.toUtf8() + a;
-  authString += "auth=Bearer ";
-  authString += accessToken + a + a;
-
-  return authString.toBase64();
-}
-
 void
-  GoogleOAuth2::RefreshToken()
+  GoogleOAuth2::Refresh(
+  const QUrl&       tokenUri,
+  const QByteArray& clientId,
+  const QByteArray& clientSecret,
+  const QByteArray& refreshToken)
 {
-}
+  QNetworkRequest request;  
+  QByteArray content;
 
-void
-  GoogleOAuth2::ImapAuthenticate(
-  const QString&    emailAddress,
-  const QByteArray& accessToken)
-{  
-  if (IsTokenExpired()) {
-    RefreshToken();
+  content.append ("client_id="     + clientId     + '&');
+  content.append ("client_secret=" + clientSecret + '&');
+  content.append ("refresh_token=" + refreshToken + '&');
+  content.append ("grant_type="    + QByteArray("refresh_token"));
+
+  request.setUrl(tokenUri);
+
+  request.setHeader(
+    QNetworkRequest::ContentTypeHeader,
+    "application/x-www-form-urlencoded");
+
+  request.setHeader(
+    QNetworkRequest::ContentLengthHeader,
+    content.size());
+
+  if (manager) {
+    reply = manager->post(request, content);
+
+    if (reply) {
+      connect(
+        reply, SIGNAL(finished()),
+        this, SLOT(RefreshReplyFinished()));
+
+      connect(
+        reply, SIGNAL(error(QNetworkReply::NetworkError)),
+        this, SLOT(ReplyError(QNetworkReply::NetworkError)));      
+
+      Utils::WaitForSignal(reply, SIGNAL(finished()), 30000);
+    }
   }
-
-  // LifeMotifImap* imap = new LifeMotifImap();
-  const QByteArray authString = GetImapAuthString(emailAddress, accessToken);
-
-  // host: imap.google.com
-  // port: 993
-  // SSL: always true
-  // imap->Connect("imap.google", 993, true);
-  // imap->Send(authString);
-
-  qDebug() << "authString:" << authString;
 }
 
 void
-GoogleOAuth2::ParseReplyJson(const QByteArray& json)
+GoogleOAuth2::ParseAuthReplyJson(const QByteArray& json)
 {
   const QJsonDocument replyJson = QJsonDocument::fromJson(json);
   if (replyJson.isObject()) {
     emit GoogleAuthorized(replyJson.toVariant().toMap());
+  }
+}
+
+void
+  GoogleOAuth2::ParseRefresReplyJson(const QByteArray& json)
+{
+  const QJsonDocument replyJson = QJsonDocument::fromJson(json);
+  if (replyJson.isObject()) {
+    emit GoogleTokenRefreshed(replyJson.toVariant().toMap());
   }
 }
 
