@@ -39,6 +39,9 @@ bool ImapManager::Connect(
     socket->connectToHost(host, port);
     if (socket->waitForConnected() == false) return false;
   }
+ 
+  // Wait for the server
+  socket->waitForBytesWritten();
 
   return true;
 }
@@ -166,7 +169,10 @@ void ImapManager::SocketEncrypted()
 void ImapManager::SocketReadyRead()
 {
   if (socket) {
-    emit dataReceived(socket->readAll());
+    QByteArray payload = socket->readAll();
+    qDebug() << "Payload:" << payload << "\n";
+    socket->flush();
+    emit dataReceived(payload);
   }
 }
 

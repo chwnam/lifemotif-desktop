@@ -284,7 +284,7 @@ void MainWindow::on_mimeRawMessageButton_clicked()
 
   if (item) {
     mimeRawMessageDialog()->SetEditText(
-          FetchMessage(item->text().toULongLong()));
+      FetchMessage(item->text().toULongLong()));
     mimeRawMessageDialog()->setFocus();
     mimeRawMessageDialog()->show();
     mimeRawMessageDialog()->raise();

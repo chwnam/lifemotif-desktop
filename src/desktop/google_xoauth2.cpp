@@ -27,11 +27,11 @@ bool GoogleXOAuth2::Authorize(
   const QString& emailAddress, const QByteArray& accessToken) 
 {
   // check server capability
-  // assure that the server supports XAOUTH2
+  // assure that the server supports XOAUTH2
   responseFunction = &GoogleXOAuth2::CheckCapability;
   imapManager->SendCommand("CAPABILITY");
 
-  // server does not support XAUTH2.
+  // server does not support XOAUTH2.
   if (ok == false) { return false; }
 
   // proceed authorization
@@ -88,7 +88,6 @@ void GoogleXOAuth2::CheckCapability(const QByteArray& capability)
         return;
       }
     }
-    
   }  
 }
 
@@ -114,13 +113,10 @@ void GoogleXOAuth2::CheckAuthResponse(const QByteArray& authResponse)
     const QVariantMap& response = json.toVariant().toMap();
 
     qDebug() << response;
-
-    // scope check
     if (response[QString("status")].toInt() == 200) {
       ok = true;
     }
-
-  }  
+  }   
 }
 
 void GoogleXOAuth2::ConnectImapSignals()

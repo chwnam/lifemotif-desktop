@@ -9,18 +9,18 @@ TODOS
 Version 0.1.0034 (Feb. 28th, 2014)
 ==================================
 <Milestone Version>
-- A big change! Namespace "LifeMotif" declared.
-- File naming convention changed
++ A big change! Namespace "LifeMotif" declared.
++ File naming convention changed
   + use lowercase include '_'.
   + do not use blank
   + Namespace 'LifeMotif' is not used in each file name
 
 - Python wrapper removal
-  - OAuth2
-  - IMAP
+  + OAuth2
+  + IMAP
   - Local structure
 
-- Python config (.json) removal
++ Python config (.json) removal
 - 차후를 위한 견고한 이메일 파싱, 및 문자열 디코딩.
 - 최소한의 Look & Feel만은 갖추기. 현재는 내부 API에 더 초점을 맞춤.
   - 제시된 기능은 모두 GUI로 동작가능해야 함.
