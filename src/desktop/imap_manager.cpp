@@ -40,7 +40,7 @@ bool ImapManager::Connect(
     if (socket->waitForConnected() == false) return false;
   }
  
-  // Wait for the server
+  // Wait for server greeting message.
   socket->waitForBytesWritten();
 
   return true;
@@ -169,19 +169,15 @@ void ImapManager::SocketEncrypted()
 void ImapManager::SocketReadyRead()
 {
   if (socket) {
-    QByteArray payload = socket->readAll();
-    qDebug() << "Payload:" << payload << "\n";
-    socket->flush();
-    emit dataReceived(payload);
+    emit dataReceived(socket->readAll());
   }
 }
 
 void ImapManager::SslErrors(const QList<QSslError> &errors)
 {
   qDebug() << "SSL error: ";
-  for(QList<QSslError>::const_iterator it = errors.cbegin();
-      it != errors.cend();
-      ++it) {
+  QList<QSslError>::const_iterator it;
+  for(it = errors.cbegin(); it != errors.cend(); ++it) {
     qDebug() << "\t" << *it;
   }
   qDebug() << "";

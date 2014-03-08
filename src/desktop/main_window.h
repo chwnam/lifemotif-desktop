@@ -107,9 +107,7 @@ private:
       return _imapManager; }
 
     ImapConsoleDialog* _imapconsoleDialog;
-    inline ImapConsoleDialog* imapConsoleDialog() {
-      if (_imapconsoleDialog == NULL) _imapconsoleDialog = new ImapConsoleDialog(this);
-      return _imapconsoleDialog; }
+    ImapConsoleDialog* imapConsoleDialog();
 
     // email cache
     typedef QSharedPointer<EmailCache> EmailCachePtr;

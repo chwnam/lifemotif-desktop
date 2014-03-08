@@ -37,6 +37,11 @@ MainWindow::~MainWindow()
 {
   delete ui;
 
+  // disconnect imapConsoleDialog
+  if (_imapconsoleDialog) {
+
+  }
+
   // removes memory leak of QWebkit...
   QWebSettings::clearMemoryCaches();
 }
@@ -427,4 +432,19 @@ void MainWindow::on_OpenImapConsole_clicked()
 void MainWindow::on_ImapAuthenticateButton_clicked()
 {
   ImapAuthenticate();
+}
+
+ImapConsoleDialog* MainWindow::imapConsoleDialog()
+{
+  if (_imapconsoleDialog == NULL) {
+    _imapconsoleDialog = new ImapConsoleDialog(imapManager(), this);
+    // signal connection
+    QObject::connect(
+      imapManager(), SIGNAL(dataReceived(const QByteArray&)),
+      imapConsoleDialog(), SLOT(ImapDataReceived(const QByteArray&)));
+    QObject::connect(
+      imapManager(), SIGNAL(clientRequest(const QByteArray&)),
+      imapConsoleDialog(), SLOT(ImapClientRequest(const QByteArray&)));
+  }
+  return _imapconsoleDialog;
 }

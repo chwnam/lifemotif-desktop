@@ -43,6 +43,7 @@ SOURCES += \
     exceptions.cpp \
     google_oauth2.cpp \
     imap_manager.cpp \
+    google_xoauth2.cpp \
     utils.cpp
 
 
@@ -66,6 +67,7 @@ HEADERS  += \
     exceptions.h \
     google_oauth2.h \
     imap_manager.h \
+    google_xoauth2.h \
     utils.h
 
 FORMS    += \

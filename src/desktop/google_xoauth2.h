@@ -37,6 +37,7 @@ private:
 
   void CheckCapability(const QByteArray& capability);
   void CheckAuthResponse(const QByteArray& authResponse);
+  void PrintResponse(const QByteArray& authResponse);
 
   void ConnectImapSignals();
   void DisconnectImapSignals();

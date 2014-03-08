@@ -5,7 +5,9 @@
 #include <QString>
 #include <QScrollBar>
 
-ImapConsoleDialog::ImapConsoleDialog(QWidget *parent) :
+ImapConsoleDialog::ImapConsoleDialog(
+    LifeMotif::ImapManager *_imapManager, QWidget *parent) :
+  imapManager(_imapManager),
   QDialog(parent),
   ui(new Ui::ImapConsoleDialog)
 {
@@ -39,14 +41,8 @@ void ImapConsoleDialog::on_submitButton_clicked()
 void ImapConsoleDialog::submit()
 {  
   const QString text = ui->commandEdit->text().trimmed();
-  if (text.size()) {
-    //const QString command
-//        = QString::fromStdString(tag.issue()) + QChar(' ') + text;
-
-//    appendString(command);
-    //socket->write(command.toUtf8() + "\r\n");
-    //tag.advance();
-//  ui->commandEdit->clear();
+  if (imapManager) {
+    imapManager->SendCommand(text.toUtf8());
     updateUI();
   }
 }
@@ -58,5 +54,17 @@ void ImapConsoleDialog::on_commandEdit_returnPressed()
 
 void ImapConsoleDialog::updateUI()
 {
-  //ui->tagEdit->setText(QString::fromStdString(tag.issue()));
+  ui->commandEdit->clear();
+}
+
+// when imap_manager signals dataReceived
+void ImapConsoleDialog::ImapDataReceived(const QByteArray& response)
+{
+  ui->textEdit->append(QString::fromUtf8(response));
+}
+
+// when imap_manager signals clientRequest
+void ImapConsoleDialog::ImapClientRequest(const QByteArray& command)
+{
+  ui->textEdit->append(QString::fromUtf8(command));
 }

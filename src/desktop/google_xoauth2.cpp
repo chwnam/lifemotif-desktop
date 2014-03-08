@@ -23,6 +23,10 @@ ImapManager* GoogleXOAuth2::Imap()
   return imapManager;
 }
 
+void GoogleXOAuth2::PrintResponse(const QByteArray& response)
+{
+}
+
 bool GoogleXOAuth2::Authorize(
   const QString& emailAddress, const QByteArray& accessToken) 
 {
@@ -41,6 +45,11 @@ bool GoogleXOAuth2::Authorize(
       XOAuth2String(emailAddress, accessToken);
   imapManager->SendCommand(authCmd);
 
+  if (ok == false) {
+    responseFunction = &GoogleXOAuth2::PrintResponse;
+    imapManager->SendCommand("");
+  }
+
   return ok;
 }
 
@@ -53,6 +62,8 @@ QByteArray GoogleXOAuth2::XOAuth2String(
   authString += "user=" + emailAddress.toUtf8() + a;
   authString += "auth=Bearer ";
   authString += accessToken + a + a;
+
+  qDebug() << "AuthString:" << authString;
 
   return authString.toBase64();
 }
@@ -93,30 +104,40 @@ void GoogleXOAuth2::CheckCapability(const QByteArray& capability)
 
 void GoogleXOAuth2::CheckAuthResponse(const QByteArray& authResponse)
 {
+  // https://developers.google.com/gmail/xoauth2_protocol#the_sasl_xoauth2_mechanism
+
   qDebug() << "S:" << authResponse;
 
-  QByteArray::const_iterator it = authResponse.cbegin();
-  while(*it == QChar('+') || *it == QChar(' ')) ++it;
+  if (authResponse[0] == '*') {
+    ok = true;
+  } else {
+    QByteArray::const_iterator it = authResponse.cbegin();
+    while(*it == QChar('+') || *it == QChar(' ')) ++it;
 
-  const QJsonDocument json
-    = QJsonDocument::fromJson(
-        QByteArray::fromBase64(
-          authResponse.mid(it - authResponse.cbegin())));
+    const QJsonDocument json
+      = QJsonDocument::fromJson(
+          QByteArray::fromBase64(
+            authResponse.mid(it - authResponse.cbegin())));
 
-  // check the response is 200
-  /* sample :
-  {"status":"400","schemes":"Bearer","scope":"https://mail.google.com/"}
-  */
+    // check the response is 200
+    /* sample :
+    {"status":"400","schemes":"Bearer","scope":"https://mail.google.com/"}
+    */
 
-  ok = false;
-  if (json.isObject()) {
-    const QVariantMap& response = json.toVariant().toMap();
+    ok = false;
 
-    qDebug() << response;
-    if (response[QString("status")].toInt() == 200) {
-      ok = true;
+    if (json.isObject()) {
+
+      // initial client request causing an error
+      const QVariantMap& response = json.toVariant().toMap();
+
+      qDebug() << response;
+
+      if (response[QString("status")].toInt() >= 400) {
+        ok = false;
+      }
     }
-  }   
+  }
 }
 
 void GoogleXOAuth2::ConnectImapSignals()
